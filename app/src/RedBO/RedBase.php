@@ -6,7 +6,7 @@
  * Time: 9:10 AM
  */
 
-namespace RedBO;
+namespace KaiApp\RedBO;
 use RedBeanPHP\Facade;
 
 require_once("RedConnection.php");
@@ -51,17 +51,14 @@ abstract class RedBase
         if (empty($items))
             return false;
 
-        if (is_array($items)) {
-            foreach ($items as $item)
-                Facade::trash($item);
-        } else
-            Facade::trash($items);
+        (is_array($items)) ? Facade::trashAll($items) : Facade::trash($items);
 
         return true;
     }
 
     public function wipe() {
-        Facade::wipe( $this->type );
+        $items = Facade::findAll($this->type);
+        Facade::trashAll( $items );
         return true;
     }
 

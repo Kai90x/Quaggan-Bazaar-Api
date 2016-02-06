@@ -1,5 +1,5 @@
 <?php
-namespace RedBO;
+namespace KaiApp\RedBO;
 require_once("RedConnection.php");
 /**
  * Created by PhpStorm.
@@ -7,7 +7,6 @@ require_once("RedConnection.php");
  * Date: 4/26/2015
  * Time: 7:41 PM
  */
-use Utils\Common;
 use RedBeanPHP;
 use RedBeanPHP\Facade;
 

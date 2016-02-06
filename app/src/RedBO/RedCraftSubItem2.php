@@ -1,15 +1,12 @@
 <?php
-namespace RedBO;
+namespace KaiApp\RedBO;
 /**
  * Created by PhpStorm.
  * User: Kai
  * Date: 4/26/2015
  * Time: 7:41 PM
  */
-use RedBeanPHP;
-use RedBeanPHP\Facade;
-
-class RedCraftSubItem2 extends RedBeanPHP\RedCraftSubItemBase {
+class RedCraftSubItem2 extends RedCraftSubItemBase {
 
     public function __construct()
     {

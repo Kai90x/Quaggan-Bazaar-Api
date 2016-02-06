@@ -6,10 +6,9 @@
  * Time: 10:18 AM
  */
 
-namespace RedBeanPHP;
+namespace KaiApp\RedBO;
 
-
-use RedBO\RedBase;
+use RedBeanPHP\Facade;
 
 class RedCraftSubItemBase extends RedBase
 {

@@ -1,14 +1,13 @@
 <?php
-namespace RedBO;
+namespace KaiApp\RedBO;
+use RedBeanPHP\Facade;
+
 /**
  * Created by PhpStorm.
  * User: Kai
  * Date: 4/26/2015
  * Time: 7:41 PM
  */
-use RedBeanPHP;
-use RedBeanPHP\Facade;
-
 class RedCrafting extends RedBase {
 
 	const CRAFTING = 'craftings';
@@ -30,11 +29,6 @@ class RedCrafting extends RedBase {
 
 	public function delete($gw_item_id) {
         return parent::delete("gw_item_id",$gw_item_id);
-	}
-
-	public function wipe() {
-		  Facade::wipe( $this->type );
-		  return true;
 	}
 
 }

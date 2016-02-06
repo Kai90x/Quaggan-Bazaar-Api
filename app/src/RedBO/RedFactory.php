@@ -6,15 +6,11 @@
  * Time: 3:29 PM
  */
 
-namespace RedBO;
+namespace KaiApp\RedBO;
 
 class RedFactory {
 
     function __construct() {
-    }
-
-    public static function GetRedItem() {
-        return new RedItem();
     }
 
     public static function GetRedIngredients() {
