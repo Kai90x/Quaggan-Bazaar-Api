@@ -11,6 +11,7 @@ namespace KaiApp\Controller;
 use Jgut\Slim\Controller\Base as JGutBaseController;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
+use League\Fractal\Serializer\DataArraySerializer;
 use Slim\Http\Response;
 
 class BaseController extends JGutBaseController
@@ -20,9 +21,10 @@ class BaseController extends JGutBaseController
     public function __construct()
     {
         $this->fractal = new Manager();
+        $this->fractal->setSerializer(new DataArraySerializer());
     }
 
-    protected function collectionResponse(Collection $object,Response $response,$status = 200) {
+    protected function complexResponse($object,Response $response,$status = 200) {
         $response = $response->withJson($this->fractal->createData($object)->toJson())
             ->withStatus($status);
         return $response;

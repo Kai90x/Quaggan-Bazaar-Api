@@ -36,7 +36,7 @@ abstract class RedBase
 
     protected function getOne($attribute, $id)
     {
-        $item = Facade::findOne($this->type, ' ? = ? ', array($attribute, $id));
+        $item = Facade::findOne($this->type, $attribute.' = ? ', array($id));
         return empty($item) ? null : $item;
     }
 
@@ -46,7 +46,7 @@ abstract class RedBase
     }
 
     protected function delete( $attribute, $id) {
-        $items = Facade::find($this->type,' ? = ? ', array( $attribute, $id ));
+        $items = Facade::find($this->type,$attribute.' = ? ', array( $id ));
 
         if (empty($items))
             return false;
@@ -63,8 +63,8 @@ abstract class RedBase
     }
 
     protected function toBeanColumn($column) {
-        return preg_replace_callback('/[A-Z]/', function($matches){
+        return strtolower(preg_replace_callback('/[A-Z]/', function($matches){
             return $matches[0] = '_' . ucfirst($matches[0]);
-        }, $column);
+        }, $column)) ;
     }
 }

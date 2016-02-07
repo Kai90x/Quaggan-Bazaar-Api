@@ -8,6 +8,8 @@
 
 namespace KaiApp\Controller;
 
+use KaiApp\JsonTransformers\LegendaryIdsTransformer;
+use KaiApp\JsonTransformers\LegendaryTransformer;
 use KaiApp\RedBO\RedCrafting;
 use KaiApp\RedBO\RedCraftSubItem1;
 use KaiApp\RedBO\RedCraftSubItem2;
@@ -15,6 +17,7 @@ use KaiApp\RedBO\RedCraftSubItem3;
 use KaiApp\RedBO\RedCraftSubItem4;
 use KaiApp\Utils\BeanUtils;
 use League\Fractal\Resource\Collection;
+use League\Fractal\Resource\Item;
 
 class CraftingController extends BaseController
 {
@@ -36,49 +39,24 @@ class CraftingController extends BaseController
     }
 
     public function get($request, $response, array $args) {
-        $craft = $this->redCrafting->getById($args['id']);
+        $craft = $this->redCrafting->getWithDetails($args['id']);
         if (empty($craft))
-            return $this->simpleResponse("Missing id",$response,404);
-
-        $craftId = $craft->id;
-
-        $sub1IdsArr = array();
-        $sub2IdsArr = array();
-        $sub3IdsArr = array();
+            return $this->simpleResponse("invalid id passed",$response,500);
 
         $sub1Items = null;
         $sub2Items = null;
         $sub3Items = null;
         $sub4Items = null;
 
-        $sub1Items = $this->redCraftSubItem1->getAllByCraftId($craftId);
+        $sub1Items = $this->redCraftSubItem1->getAllWithDetails(array($craft[0]["id"]));
         if (!empty($sub1Items)) {
-            $i = 0;
-            foreach($sub1Items as $sub1Item) {
-                $sub1IdsArr[$i] = $sub1Item->id;
-                $i++;
-            }
-
             //Get all sub item level 2
-            $sub2Items = $this->redCraftSubItem2->getAllByCraftIds($sub1IdsArr);
+            $sub2Items = $this->redCraftSubItem2->getAllWithDetails($this->getIds($sub1Items));
             if (!empty($sub2Items)) {
-                $i = 0;
-                foreach($sub2Items as $sub2Item) {
-                    $sub2IdsArr[$i] = $sub2Item->id;
-                    $i++;
-                }
-
-                //Get all sub item level 3
-                $sub3Items = $this->redCraftSubItem3->getAllByCraftIds($sub2IdsArr);
+                $sub3Items = $this->redCraftSubItem3->getAllWithDetails($this->getIds($sub2Items));
                 if (!empty($sub3Items)) {
-                    $i = 0;
-                    foreach($sub3Items as $sub3Item) {
-                        $sub3IdsArr[$i] = $sub3Item->id;
-                        $i++;
-                    }
-
                     //Get all sub item level 4
-                    $sub4Items = $this->redCraftSubItem4->getAllByCraftIds($sub3IdsArr);
+                    $sub4Items = $this->redCraftSubItem4->getAllWithDetails($this->getIds($sub3Items));
                 }
             }
         }
@@ -87,61 +65,64 @@ class CraftingController extends BaseController
         if (!empty($sub1Items)) {
             foreach($sub1Items as $sub1Item) {
                 if(!empty($sub2Items)) {
-                    $sub1Item->sub2Item = array();
+                    $sub1Item["sub2Item"] = array();
 
                     foreach($sub2Items as $sub2Item) {
-                        if ($sub1Item->id == $sub2Item->craftsubitem1Id) {
+                        if ($sub1Item["id"] == $sub2Item["craftsubitem1_id"]) {
                             if(!empty($sub3Items)) {
-                                $sub2Item->sub3Item = array();
+                                $sub2Item["sub3Item"] = array();
 
                                 foreach($sub3Items as $sub3Item) {
-                                    if ($sub2Item->id == $sub3Item->craftsubitem2Id) {
+                                    if ($sub2Item["id"] == $sub3Item["craftsubitem2_id"]) {
                                         if(!empty($sub4Items)) {
-                                            $sub3Item->sub4Item = array();
+                                            $sub3Item["sub4Item"] = array();
 
                                             foreach($sub4Items as $sub4Item) {
-                                                if ($sub3Item->id == $sub4Item->craftsubitem3Id) {
+                                                if ($sub3Item["id"] == $sub4Item["craftsubitem3_id"]) {
 
-                                                    array_push($sub3Item->sub4Item,$sub4Item);
+                                                    array_push($sub3Item["sub4Item"],$sub4Item);
                                                 }
                                             }
                                         }
 
-                                        array_push($sub2Item->sub3Item,$sub3Item);
+                                        array_push($sub2Item["sub3Item"],$sub3Item);
                                     }
                                 }
                             }
 
-                            array_push($sub1Item->sub2Item,$sub2Item);
+                            array_push($sub1Item["sub2Item"],$sub2Item);
                         }
                     }
                 }
             }
-            $craft->sub1Items = $sub1Items;
 
-            echo json_encode(Common::GenerateResponse(Common::STATUS_SUCCESS,$craft->export()));
+            $craft[0]["sub1Item"] = $sub1Items;
+
+            return $this->complexResponse(new Item($craft[0], new LegendaryTransformer()),$response);
         } else {
-            echo json_encode(Common::GenerateResponse(Common::STATUS_ERROR, "An error has occured while fetching this craft"));
+            return $this->simpleResponse("An error has occurred",$response, 500);
         }
 
 
+    }
+
+    private function getIds($items) {
+        $ids = array();
+        $i = 0;
+        foreach($items as $item) {
+            $ids[$i] = $item["id"];
+            $i++;
+        }
+
+        return $ids;
     }
 
     public function all($request, $response, array $args) {
         $crafts = $this->redCrafting->getAll();
         if (empty($crafts))
             return $this->simpleResponse("No crafts found",$response, 404);
-        else {
-            $resource = new Collection(BeanUtils::beanToArray($crafts), function (array $craft) {
-                return [
-                    'id' => $craft['id'],
-                    'GuildItemId' => $craft['gw_item_id'],
-                    'DateCreated' => $craft['date_created']
-                ];
-            });
 
-            return $this->collectionResponse($resource, $response);
-        }
+        return $this->complexResponse(new Collection($crafts, new LegendaryIdsTransformer()),$response);
     }
 
     public function reset($request, $response, array $args) {
