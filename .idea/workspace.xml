@@ -1,0 +1,1152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="62307992-24f5-47a4-be70-09a06f3d6bd7" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/RedBO/RedConnection.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/Controller/test.php" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/src/Action/test.php" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/lib/RedClasses/RedConnection.php" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/RedClasses/RedBase.php" afterPath="$PROJECT_DIR$/app/src/RedBO/RedBase.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/RedClasses/RedCraftSubItem1.php" afterPath="$PROJECT_DIR$/app/src/RedBO/RedCraftSubItem1.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/RedClasses/RedCraftSubItem2.php" afterPath="$PROJECT_DIR$/app/src/RedBO/RedCraftSubItem2.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/RedClasses/RedCraftSubItem3.php" afterPath="$PROJECT_DIR$/app/src/RedBO/RedCraftSubItem3.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/RedClasses/RedCraftSubItem4.php" afterPath="$PROJECT_DIR$/app/src/RedBO/RedCraftSubItem4.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/RedClasses/RedCraftSubItemBase.php" afterPath="$PROJECT_DIR$/app/src/RedBO/RedCraftSubItemBase.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/RedClasses/RedCrafting.php" afterPath="$PROJECT_DIR$/app/src/RedBO/RedCrafting.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/RedClasses/RedDailyAchivements.php" afterPath="$PROJECT_DIR$/app/src/RedBO/RedDailyAchivements.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/RedClasses/RedDungeons.php" afterPath="$PROJECT_DIR$/app/src/RedBO/RedDungeons.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/RedClasses/RedFactory.php" afterPath="$PROJECT_DIR$/app/src/RedBO/RedFactory.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/RedClasses/RedGuildItem.php" afterPath="$PROJECT_DIR$/app/src/RedBO/RedGuildItem.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/RedClasses/RedGuildPrices.php" afterPath="$PROJECT_DIR$/app/src/RedBO/RedGuildPrices.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/RedClasses/RedGuildPricesHistory.php" afterPath="$PROJECT_DIR$/app/src/RedBO/RedGuildPricesHistory.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/RedClasses/RedInfixAttributes.php" afterPath="$PROJECT_DIR$/app/src/RedBO/RedInfixAttributes.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/RedClasses/RedInfixBuff.php" afterPath="$PROJECT_DIR$/app/src/RedBO/RedInfixBuff.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/RedClasses/RedInfusionSlot.php" afterPath="$PROJECT_DIR$/app/src/RedBO/RedInfusionSlot.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/RedClasses/RedIngredients.php" afterPath="$PROJECT_DIR$/app/src/RedBO/RedIngredients.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/RedClasses/RedItemDetails.php" afterPath="$PROJECT_DIR$/app/src/RedBO/RedItemDetails.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/RedClasses/RedItemDetailsInfixUpgrade.php" afterPath="$PROJECT_DIR$/app/src/RedBO/RedItemDetailsInfixUpgrade.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/RedClasses/RedNews.php" afterPath="$PROJECT_DIR$/app/src/RedBO/RedNews.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/RedClasses/RedQuery.php" afterPath="$PROJECT_DIR$/app/src/RedBO/RedQuery.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/RedClasses/RedRecipe.php" afterPath="$PROJECT_DIR$/app/src/RedBO/RedRecipe.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/RedClasses/rb.php" afterPath="$PROJECT_DIR$/app/src/RedBO/rb.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/Serialization/Achievements/Achievements.php" afterPath="$PROJECT_DIR$/app/src/Serialization/Achievements/Achievements.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/Serialization/Achievements/OutputProperty.php" afterPath="$PROJECT_DIR$/app/src/Serialization/Achievements/OutputProperty.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/Serialization/Achievements/Result.php" afterPath="$PROJECT_DIR$/app/src/Serialization/Achievements/Result.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/Serialization/Attributes.php" afterPath="$PROJECT_DIR$/app/src/Serialization/Attributes.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/Serialization/Buff.php" afterPath="$PROJECT_DIR$/app/src/Serialization/Buff.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/Serialization/Buys.php" afterPath="$PROJECT_DIR$/app/src/Serialization/Buys.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/Serialization/Detail.php" afterPath="$PROJECT_DIR$/app/src/Serialization/Detail.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/Serialization/InfixUpgrade.php" afterPath="$PROJECT_DIR$/app/src/Serialization/InfixUpgrade.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/Serialization/InfusionSlot.php" afterPath="$PROJECT_DIR$/app/src/Serialization/InfusionSlot.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/Serialization/Ingredients.php" afterPath="$PROJECT_DIR$/app/src/Serialization/Ingredients.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/Serialization/Item.php" afterPath="$PROJECT_DIR$/app/src/Serialization/Item.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/Serialization/Prices.php" afterPath="$PROJECT_DIR$/app/src/Serialization/Prices.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/Serialization/Recipe.php" afterPath="$PROJECT_DIR$/app/src/Serialization/Recipe.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/Serialization/Sells.php" afterPath="$PROJECT_DIR$/app/src/Serialization/Sells.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/Utils/Common.php" afterPath="$PROJECT_DIR$/app/src/Utils/Common.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/Utils/ResponseUtil.php" afterPath="$PROJECT_DIR$/app/src/Utils/ResponseUtil.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/KaiApp/Controller/BaseController.php" afterPath="$PROJECT_DIR$/app/src/Controller/BaseController.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/KaiApp/Controller/CraftingController.php" afterPath="$PROJECT_DIR$/app/src/Controller/CraftingController.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/KaiApp/Controller/DailyController.php" afterPath="$PROJECT_DIR$/app/src/Controller/DailyController.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/KaiApp/Controller/DungeonsController.php" afterPath="$PROJECT_DIR$/app/src/Controller/DungeonsController.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/KaiApp/Controller/EmailController.php" afterPath="$PROJECT_DIR$/app/src/Controller/EmailController.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/KaiApp/Controller/EventController.php" afterPath="$PROJECT_DIR$/app/src/Controller/EventController.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/KaiApp/Controller/ItemsController.php" afterPath="$PROJECT_DIR$/app/src/Controller/ItemsController.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/KaiApp/Controller/NewsController.php" afterPath="$PROJECT_DIR$/app/src/Controller/NewsController.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/KaiApp/Controller/PriceController.php" afterPath="$PROJECT_DIR$/app/src/Controller/PriceController.php" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/KaiApp/Controller/RecipeController.php" afterPath="$PROJECT_DIR$/app/src/Controller/RecipeController.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/Dependencies.php" afterPath="$PROJECT_DIR$/app/Dependencies.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/Routes.php" afterPath="$PROJECT_DIR$/app/Routes.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/composer/autoload_namespaces.php" afterPath="$PROJECT_DIR$/vendor/composer/autoload_namespaces.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/composer/autoload_psr4.php" afterPath="$PROJECT_DIR$/vendor/composer/autoload_psr4.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/composer.json" afterPath="$PROJECT_DIR$/composer.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/composer.lock" afterPath="$PROJECT_DIR$/composer.lock" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+    </list>
+    <ignored path="GuildWarsV2Api.iws" />
+    <ignored path=".idea/workspace.xml" />
+    <ignored path=".idea/dataSources.local.xml" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
+  <component name="ComposerSettings">
+    <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
+    <pharPath>/usr/local/bin/composer</pharPath>
+  </component>
+  <component name="CreatePatchCommitExecutor">
+    <option name="PATCH_PATH" value="" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FavoritesManager">
+    <favorites_list name="GuildWarsV2Api" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf>
+      <file leaf-file-name="Dependencies.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/Dependencies.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-1.3333334">
+              <caret line="11" column="41" selection-start-line="11" selection-start-column="41" selection-end-line="11" selection-end-column="41" />
+              <folding>
+                <element signature="e#6#101#0#PHP" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CraftingController.php" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/Controller/CraftingController.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0795756">
+              <caret line="108" column="21" selection-start-line="108" selection-start-column="21" selection-end-line="108" selection-end-column="21" />
+              <folding>
+                <element signature="e#134#151#0#PHP" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="RedFactory.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/RedBO/RedFactory.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-3.125">
+              <caret line="10" column="16" selection-start-line="10" selection-start-column="6" selection-end-line="10" selection-end-column="16" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="RedConnection.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/RedBO/RedConnection.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-2.5">
+              <caret line="4" column="0" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="RedCrafting.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/RedBO/RedCrafting.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-0.625">
+              <caret line="1" column="15" selection-start-line="1" selection-start-column="15" selection-end-line="1" selection-end-column="15" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="RedCraftSubItem1.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/RedBO/RedCraftSubItem1.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-7.5">
+              <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Common.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/Utils/Common.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-0.625">
+              <caret line="9" column="14" selection-start-line="9" selection-start-column="14" selection-end-line="9" selection-end-column="14" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Buff.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/Serialization/Buff.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-0.0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="rb.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/RedBO/rb.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-361.875">
+              <caret line="1139" column="14" selection-start-line="1139" selection-start-column="6" selection-end-line="1139" selection-end-column="14" />
+              <folding>
+                <marker date="1438579374000" expanded="true" signature="126365:126492" placeholder="INSERT INTO ..." />
+                <marker date="1438579374000" expanded="true" signature="126762:126803" placeholder="INSERT INTO ..." />
+                <marker date="1438579374000" expanded="true" signature="129124:129155" placeholder="ALTER TABLE ..." />
+                <marker date="1438579374000" expanded="true" signature="131520:131575" placeholder="SELECT ${{$f..." />
+                <marker date="1438579374000" expanded="true" signature="131582:131595" placeholder="-- keep-cach..." />
+                <marker date="1438579374000" expanded="true" signature="132003:132035" placeholder="SELECT ${{$t..." />
+                <marker date="1438579374000" expanded="true" signature="133052:133479" placeholder="SELECT ${{$d..." />
+                <marker date="1438579374000" expanded="true" signature="133492:133505" placeholder="-- keep-cach..." />
+                <marker date="1438579374000" expanded="true" signature="133584:133818" placeholder="SELECT ${{$d..." />
+                <marker date="1438579374000" expanded="true" signature="133831:133844" placeholder="-- keep-cach..." />
+                <marker date="1438579374000" expanded="true" signature="134659:134812" placeholder="SELECT ${{$l..." />
+                <marker date="1438579374000" expanded="true" signature="134813:134826" placeholder="-- keep-cach..." />
+                <marker date="1438579374000" expanded="true" signature="134942:135043" placeholder="SELECT ${{$l..." />
+                <marker date="1438579374000" expanded="true" signature="135044:135057" placeholder="-- keep-cach..." />
+                <marker date="1438579374000" expanded="true" signature="135648:135904" placeholder="SELECT ${{$t..." />
+                <marker date="1438579374000" expanded="true" signature="136449:136479" placeholder="SELECT COUNT..." />
+                <marker date="1438579374000" expanded="true" signature="136486:136499" placeholder="-- keep-cach..." />
+                <marker date="1438579374000" expanded="true" signature="136988:137224" placeholder="SELECT COUNT..." />
+                <marker date="1438579374000" expanded="true" signature="137237:137250" placeholder="-- keep-cach..." />
+                <marker date="1438579374000" expanded="true" signature="137348:137498" placeholder="SELECT COUNT..." />
+                <marker date="1438579374000" expanded="true" signature="137511:137524" placeholder="-- keep-cach..." />
+                <marker date="1438579374000" expanded="true" signature="137975:137996" placeholder="DELETE FROM ..." />
+                <marker date="1438579374000" expanded="true" signature="138360:138442" placeholder="DELETE FROM ..." />
+                <marker date="1438579374000" expanded="true" signature="138536:138587" placeholder="DELETE FROM ..." />
+                <marker date="1438579374000" expanded="true" signature="138971:139013" placeholder="ALTER TABLE ..." />
+                <marker date="1438579374000" expanded="true" signature="143020:144245" placeholder="SELECT infor..." />
+                <marker date="1438579374000" expanded="true" signature="149395:149478" placeholder="ALTER TABLE ..." />
+                <marker date="1438579374000" expanded="true" signature="151069:151211" placeholder="ALTER TABLE ..." />
+                <marker date="1438579374000" expanded="true" signature="152007:152032" placeholder="DROP TABLE I..." />
+                <marker date="1438579374000" expanded="true" signature="154602:154633" placeholder="DROP TABLE I..." />
+                <marker date="1438579374000" expanded="true" signature="154873:154918" placeholder="INSERT INTO ..." />
+                <marker date="1438579374000" expanded="true" signature="154896:154909" placeholder="SELECT * FRO..." />
+                <marker date="1438579374000" expanded="true" signature="154969:154988" placeholder="DROP TABLE `..." />
+                <marker date="1438579374000" expanded="true" signature="155881:155901" placeholder="INSERT INTO ..." />
+                <marker date="1438579374000" expanded="true" signature="155902:155926" placeholder="SELECT * FRO..tmp_backup..." />
+                <marker date="1438579374000" expanded="true" signature="155940:155961" placeholder="DROP TABLE t..." />
+                <marker date="1438579374000" expanded="true" signature="160409:160444" placeholder="ALTER TABLE ..." />
+                <marker date="1438579374000" expanded="true" signature="161040:161120" placeholder="SELECT name ..sqlite_master..." />
+                <marker date="1438579374000" expanded="true" signature="163072:163084" placeholder="DELETE FROM ..." />
+                <marker date="1438579374000" expanded="true" signature="163519:163544" placeholder="DROP TABLE I..." />
+                <marker date="1438579374000" expanded="true" signature="163624:163649" placeholder="DROP TABLE I..." />
+                <marker date="1438579374000" expanded="true" signature="165633:167656" placeholder="SELECT infor..key_column_usage..." />
+                <marker date="1438579374000" expanded="true" signature="169366:169467" placeholder="SELECT table..tables..." />
+                <marker date="1438579374000" expanded="true" signature="169843:169930" placeholder="SELECT colum..columns..." />
+                <marker date="1438579374000" expanded="true" signature="172328:172340" placeholder="ALTER TABLE ..." />
+                <marker date="1438579374000" expanded="true" signature="172827:172926" placeholder="ALTER TABLE ..." />
+                <marker date="1438579374000" expanded="true" signature="174350:174454" placeholder="ALTER TABLE ..." />
+                <marker date="1438579374000" expanded="true" signature="174807:174838" placeholder="DROP TABLE I..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Routes.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/Routes.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-4.375">
+              <caret line="7" column="25" selection-start-line="7" selection-start-column="25" selection-end-line="7" selection-end-column="25" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FrameworkCommandLineHistory">
+    <commandsHistory>
+      <command text="/vendor/bin/phpcs -h" />
+      <command text="cd vendor/" />
+      <command text="cs bin/phpcs" />
+      <command text="cd bin/phpcs" />
+      <command text="cd bin/" />
+      <command text="phpcs -h" />
+      <command text="phpcbf -h" />
+      <command text="php phpcs -h" />
+      <command text="composer update" />
+      <command text="cd -h" />
+      <command text="cd " />
+      <command text="cd  -" />
+      <command text="cd -" />
+      <command text="composer update" />
+      <command text="cd /Applications/XAMPP/xamppfiles/htdocs/QuagganBazaarApi" />
+      <command text="composer update" />
+      <command text="composer require php-di/php-di " />
+      <command text="composer update" />
+      <command text="composer require juliangut/slim-controller" />
+      <command text="composer update" />
+      <command text="composer require juliangut/slim-controller" />
+      <command text="composer update" />
+      <command text="composer require juliangut/slim-controller" />
+      <command text="composer require slim/twig-view" />
+      <command text="composer update" />
+    </commandsHistory>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="mock:///Dummy.txt" root0="SKIP_INSPECTION" />
+    <setting file="mock:///Dummy.txt" root0="SKIP_INSPECTION" />
+    <setting file="dummy://restClient/response17.html" root0="SKIP_INSPECTION" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/lib/RedClasses/RedFactory.php" />
+        <option value="$PROJECT_DIR$/src/KaiApp/Controller/itemsguildprice.php" />
+        <option value="$PROJECT_DIR$/lib/RedClasses/RedGuildPricesHistory.php" />
+        <option value="$PROJECT_DIR$/lib/RedClasses/RedConnection.php" />
+        <option value="$PROJECT_DIR$/src/KaiApp/Controller/crafting.php" />
+        <option value="$PROJECT_DIR$/lib/Classes/Attributes.php" />
+        <option value="$PROJECT_DIR$/lib/Classes/Achivements/OutputProperty.php" />
+        <option value="$PROJECT_DIR$/lib/RedClasses/RedRecipe.php" />
+        <option value="$PROJECT_DIR$/lib/RedClasses/RedCrafting.php" />
+        <option value="$PROJECT_DIR$/lib/RedClasses/RedBase.php" />
+        <option value="$PROJECT_DIR$/lib/RedClasses/RedCraftSubItemBase.php" />
+        <option value="$PROJECT_DIR$/lib/RedClasses/RedCraftSubItem1.php" />
+        <option value="$PROJECT_DIR$/lib/RedClasses/RedCraftSubItem2.php" />
+        <option value="$PROJECT_DIR$/lib/RedClasses/RedCraftSubItem3.php" />
+        <option value="$PROJECT_DIR$/lib/RedClasses/RedCraftSubItem4.php" />
+        <option value="$PROJECT_DIR$/lib/Utils/Common.php" />
+        <option value="$PROJECT_DIR$/src/KaiApp/Controller/daily.php" />
+        <option value="$PROJECT_DIR$/src/KaiApp/Controller/dungeons.php" />
+        <option value="$PROJECT_DIR$/src/KaiApp/Controller/email.php" />
+        <option value="$PROJECT_DIR$/src/KaiApp/Controller/event.php" />
+        <option value="$PROJECT_DIR$/src/KaiApp/Controller/items.php" />
+        <option value="$PROJECT_DIR$/src/KaiApp/Controller/news.php" />
+        <option value="$PROJECT_DIR$/src/KaiApp/Controller/price.php" />
+        <option value="$PROJECT_DIR$/src/KaiApp/Controller/recipe.php" />
+        <option value="$PROJECT_DIR$/src/KaiApp/Controller/BaseController.php" />
+        <option value="$PROJECT_DIR$/src/KaiApp/Controller/CraftingController.php" />
+        <option value="$PROJECT_DIR$/Views/Index.php" />
+        <option value="$PROJECT_DIR$/Views/Index.html.twig" />
+        <option value="$PROJECT_DIR$/test.php" />
+        <option value="$PROJECT_DIR$/app/test.php" />
+        <option value="$PROJECT_DIR$/vendor/composer/autoload_psr4.php" />
+        <option value="$PROJECT_DIR$/app/Controller/test.php" />
+        <option value="$PROJECT_DIR$/app/src/Action/test.php" />
+        <option value="$PROJECT_DIR$/composer.json" />
+        <option value="$PROJECT_DIR$/index.php" />
+        <option value="$PROJECT_DIR$/app/Dependencies.php" />
+        <option value="$PROJECT_DIR$/app/src/Controller/BaseController.php" />
+        <option value="$PROJECT_DIR$/app/src/Controller/test.php" />
+        <option value="$PROJECT_DIR$/app/Routes.php" />
+        <option value="$PROJECT_DIR$/lib/RedBO/RedConnection.php" />
+        <option value="$PROJECT_DIR$/lib/RedBO/RedCrafting.php" />
+        <option value="$PROJECT_DIR$/app/src/Controller/CraftingController.php" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" />
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+  </component>
+  <component name="NamedScopeManager">
+    <order />
+  </component>
+  <component name="PhpServers">
+    <servers />
+  </component>
+  <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true">
+    <include_path>
+      <path value="$PROJECT_DIR$/vendor/swiftmailer/swiftmailer" />
+      <path value="$PROJECT_DIR$/vendor/composer" />
+      <path value="$PROJECT_DIR$/vendor/ircmaxell/password-compat" />
+      <path value="$PROJECT_DIR$/vendor/slim/slim" />
+      <path value="$PROJECT_DIR$/vendor/netresearch/jsonmapper" />
+      <path value="$PROJECT_DIR$/vendor/athari/yalinqo" />
+      <path value="$PROJECT_DIR$/vendor/league/fractal" />
+      <path value="$PROJECT_DIR$/vendor/nategood/httpful" />
+      <path value="$PROJECT_DIR$/vendor/php-di/phpdoc-reader" />
+      <path value="$PROJECT_DIR$/vendor/php-di/invoker" />
+      <path value="$PROJECT_DIR$/vendor/php-di/php-di" />
+      <path value="$PROJECT_DIR$/vendor/container-interop/container-interop" />
+      <path value="$PROJECT_DIR$/vendor/nikic/fast-route" />
+      <path value="$PROJECT_DIR$/vendor/pimple/pimple" />
+      <path value="$PROJECT_DIR$/vendor/psr/http-message" />
+      <path value="$PROJECT_DIR$/vendor/juliangut/slim-controller" />
+      <path value="$PROJECT_DIR$/vendor/twig/twig" />
+      <path value="$PROJECT_DIR$/vendor/slim/twig-view" />
+    </include_path>
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="x" value="143" />
+    <option name="y" value="46" />
+    <option name="width" value="1360" />
+    <option name="height" value="741" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="false">
+    <OptionsSetting value="true" id="Add" />
+    <OptionsSetting value="true" id="Remove" />
+    <OptionsSetting value="true" id="Checkout" />
+    <OptionsSetting value="true" id="Update" />
+    <OptionsSetting value="true" id="Status" />
+    <OptionsSetting value="true" id="Edit" />
+    <ConfirmationsSetting value="0" id="Add" />
+    <ConfirmationsSetting value="0" id="Remove" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="QuagganBazaarApi" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="External Libraries" />
+              <option name="myItemType" value="com.jetbrains.php.config.PhpExternalLibrariesNodePatcher$PatchedExternalLibrariesNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="QuagganBazaarApi" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="QuagganBazaarApi" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="QuagganBazaarApi" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="QuagganBazaarApi" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="QuagganBazaarApi" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="QuagganBazaarApi" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="QuagganBazaarApi" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="QuagganBazaarApi" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="RedBO" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="QuagganBazaarApi" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="QuagganBazaarApi" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Controller" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+      <pane id="Scope" />
+      <pane id="Scratches" />
+      <pane id="AndroidView">
+        <subPane />
+      </pane>
+      <pane id="PackagesPane" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="true" />
+    <property name="FullScreen" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth0" value="99" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder0" value="0" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth1" value="99" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder1" value="1" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth2" value="99" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder2" value="2" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth3" value="773" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder3" value="3" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth0" value="99" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder0" value="0" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth1" value="98" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder1" value="1" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth2" value="99" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder2" value="2" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth3" value="774" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder3" value="3" />
+    <property name="recentsLimit" value="5" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/app/src/Action" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/app/src" />
+      <recent name="$PROJECT_DIR$/app" />
+      <recent name="$PROJECT_DIR$/app/src/Action" />
+    </key>
+  </component>
+  <component name="RestClientSettings">
+    <option name="REQUEST_HISTORY">
+      <list>
+        <RestClientRequest>
+          <option name="httpMethod" value="GET" />
+          <option name="urlBase" value="http://localhost" />
+          <option name="urlPath" value="/QuagganBazaarApi/test" />
+          <option name="headers">
+            <list>
+              <KeyValuePair>
+                <option name="key" value="Accept" />
+                <option name="value" value="*/*" />
+              </KeyValuePair>
+              <KeyValuePair>
+                <option name="key" value="Cache-Control" />
+                <option name="value" value="no-cache" />
+              </KeyValuePair>
+            </list>
+          </option>
+          <option name="parametersEnabled" value="true" />
+          <option name="textToSend" value="" />
+          <option name="filesToSend" value="" />
+        </RestClientRequest>
+        <RestClientRequest>
+          <option name="httpMethod" value="GET" />
+          <option name="urlBase" value="http://localhost" />
+          <option name="urlPath" value="/" />
+          <option name="headers">
+            <list>
+              <KeyValuePair>
+                <option name="key" value="Accept" />
+                <option name="value" value="*/*" />
+              </KeyValuePair>
+              <KeyValuePair>
+                <option name="key" value="Cache-Control" />
+                <option name="value" value="no-cache" />
+              </KeyValuePair>
+            </list>
+          </option>
+          <option name="parametersEnabled" value="true" />
+          <option name="textToSend" value="" />
+          <option name="filesToSend" value="" />
+        </RestClientRequest>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="JavaScript Debug.Resolver.php">
+    <configuration default="false" name="Resolver.php" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63343/QuagganBazaarApi/slim-controller/src/Resolver.php">
+      <method />
+    </configuration>
+    <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug">
+      <method />
+    </configuration>
+    <configuration default="true" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
+      <TestRunner />
+      <method />
+    </configuration>
+    <configuration default="true" type="PhpBehatConfigurationType" factoryName="Behat">
+      <BehatRunner />
+      <method />
+    </configuration>
+    <configuration default="true" type="PhpLocalRunConfigurationType" factoryName="PHP Console">
+      <method />
+    </configuration>
+    <configuration default="true" type="PhpUnitRemoteRunConfigurationType" factoryName="PHPUnit on Server">
+      <method />
+    </configuration>
+    <configuration default="true" type="js.build_tools.gulp" factoryName="Gulp.js">
+      <method />
+    </configuration>
+    <list size="1">
+      <item index="0" class="java.lang.String" itemvalue="JavaScript Debug.Resolver.php" />
+    </list>
+    <recent_temporary>
+      <list size="1">
+        <item index="0" class="java.lang.String" itemvalue="JavaScript Debug.Resolver.php" />
+      </list>
+    </recent_temporary>
+    <configuration name="&lt;template&gt;" type="Applet" default="true" selected="false">
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+    </configuration>
+    <configuration name="&lt;template&gt;" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" default="true" selected="false">
+      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
+    </configuration>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="62307992-24f5-47a4-be70-09a06f3d6bd7" name="Default" comment="" />
+      <created>1446363443658</created>
+      <option name="number" value="Default" />
+      <updated>1446363443658</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="143" y="46" width="1360" height="741" extended-state="6" />
+    <editor active="true" />
+    <layout>
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.27366865" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39940828" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32886904" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="REST Client" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.36160713" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2492647" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Command Line Tools Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31994048" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+    </layout>
+  </component>
+  <component name="Vcs.Log.UiProperties">
+    <option name="RECENTLY_FILTERED_USER_GROUPS">
+      <collection />
+    </option>
+    <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+      <collection />
+    </option>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <option name="time" value="3" />
+    </breakpoint-manager>
+    <watches-manager />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/app/src/RedBO/RedGuildPricesHistory.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.68833333">
+          <caret line="89" column="33" selection-start-line="89" selection-start-column="33" selection-end-line="89" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/Serialization/Achievements/OutputProperty.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-1.25">
+          <caret line="7" column="30" selection-start-line="7" selection-start-column="30" selection-end-line="7" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/Serialization/Achievements/Achievements.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-1.25">
+          <caret line="7" column="23" selection-start-line="7" selection-start-column="10" selection-end-line="7" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/assets/plugins/ckeditor/lang/ca.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="1.3333334">
+          <caret line="4" column="1614" selection-start-line="4" selection-start-column="1614" selection-end-line="4" selection-end-column="1614" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/Serialization/Attributes.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.034168564">
+          <caret line="1" column="14" selection-start-line="1" selection-start-column="14" selection-end-line="1" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/RedBO/RedRecipe.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.0">
+          <caret line="66" column="34" selection-start-line="66" selection-start-column="20" selection-end-line="66" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/RedBO/RedQuery.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="42.333332">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <marker date="1454763919000" expanded="true" signature="-1:-1" placeholder="SELECT COUNT..item..." />
+            <marker date="1454763919000" expanded="true" signature="-1:-1" placeholder="SELECT MAX(d..prices..." />
+            <marker date="1454763919000" expanded="true" signature="-1:-1" placeholder="SELECT * FRO..item..." />
+            <marker date="1454763919000" expanded="true" signature="-1:-1" placeholder="SELECT MAX(d..prices..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/RedBO/RedNews.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="19.375">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/RedBO/RedDailyAchivements.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="13.75">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/RedBO/RedDungeons.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="1.25">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/RedBO/RedGuildPrices.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-56.875">
+          <caret line="92" column="47" selection-start-line="92" selection-start-column="37" selection-end-line="92" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/RedBO/RedGuildItem.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="4.375">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <marker date="1454763919000" expanded="true" signature="-1:-1" placeholder="DELETE FROM ..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/RedBO/RedCraftSubItem2.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-9.375">
+          <caret line="16" column="5" selection-start-line="13" selection-start-column="4" selection-end-line="16" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/RedBO/RedCraftSubItem3.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-6.875">
+          <caret line="12" column="23" selection-start-line="12" selection-start-column="23" selection-end-line="12" selection-end-column="61" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/Utils/ResponseUtil.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-5.0">
+          <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/RedBO/RedCraftSubItemBase.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.71153843">
+          <caret line="36" column="0" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/RedBO/RedCraftSubItem4.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-10.625">
+          <caret line="18" column="0" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/Controller/DailyController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-3.125">
+          <caret line="10" column="17" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/Controller/DungeonsController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-3.125">
+          <caret line="10" column="17" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/Controller/EmailController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-5.0">
+          <caret line="13" column="34" selection-start-line="13" selection-start-column="34" selection-end-line="13" selection-end-column="34" />
+          <folding>
+            <element signature="e#133#150#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/Controller/EventController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-3.75">
+          <caret line="11" column="34" selection-start-line="11" selection-start-column="34" selection-end-line="11" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/Controller/ItemsController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.625">
+          <caret line="14" column="34" selection-start-line="14" selection-start-column="34" selection-end-line="14" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/Controller/NewsController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-3.75">
+          <caret line="12" column="33" selection-start-line="12" selection-start-column="33" selection-end-line="12" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/Controller/PriceController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.625">
+          <caret line="13" column="34" selection-start-line="13" selection-start-column="34" selection-end-line="13" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/Controller/RecipeController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-3.75">
+          <caret line="14" column="35" selection-start-line="14" selection-start-column="35" selection-end-line="14" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Views/_Layout.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="80.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.htaccess">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Views/Index.twig">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-8.916667">
+          <caret line="20" column="42" selection-start-line="20" selection-start-column="42" selection-end-line="20" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vendor/juliangut/slim-controller/src/Resolver.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-12.875">
+          <caret line="26" column="0" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vendor/juliangut/slim-controller/src/Controller.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vendor/juliangut/slim-controller/tests/Controller/BaseTest.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vendor/juliangut/slim-controller/tests/Controller/ResolverTest.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/RedBO/RedBase.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="2.2962964">
+          <caret line="67" column="35" selection-start-line="67" selection-start-column="23" selection-end-line="67" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vendor/composer/autoload_psr4.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7407407">
+          <caret line="20" column="15" selection-start-line="19" selection-start-column="5" selection-end-line="19" selection-end-column="15" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vendor/composer/autoload_files.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vendor/juliangut/slim-controller/src/Base.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3530864">
+          <caret line="15" column="6" selection-start-line="15" selection-start-column="6" selection-end-line="15" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/composer.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5555556">
+          <caret line="15" column="18" selection-start-line="15" selection-start-column="18" selection-end-line="15" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/index.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-8.125">
+          <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/Controller/BaseController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-8.833333">
+          <caret line="30" column="78" selection-start-line="30" selection-start-column="78" selection-end-line="30" selection-end-column="78" />
+          <folding>
+            <element signature="e#134#186#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/Controller/test.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-8.75">
+          <caret line="19" column="1" selection-start-line="19" selection-start-column="1" selection-end-line="19" selection-end-column="1" />
+          <folding>
+            <element signature="e#133#155#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Dependencies.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-1.3333334">
+          <caret line="11" column="41" selection-start-line="11" selection-start-column="41" selection-end-line="11" selection-end-column="41" />
+          <folding>
+            <element signature="e#6#101#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Routes.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-4.375">
+          <caret line="7" column="25" selection-start-line="7" selection-start-column="25" selection-end-line="7" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/RedBO/RedConnection.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-2.5">
+          <caret line="4" column="0" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/RedBO/RedCrafting.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.625">
+          <caret line="1" column="15" selection-start-line="1" selection-start-column="15" selection-end-line="1" selection-end-column="15" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/RedBO/RedCraftSubItem1.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-7.5">
+          <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/Utils/Common.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.625">
+          <caret line="9" column="14" selection-start-line="9" selection-start-column="14" selection-end-line="9" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/Serialization/Buff.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/RedBO/rb.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-361.875">
+          <caret line="1139" column="14" selection-start-line="1139" selection-start-column="6" selection-end-line="1139" selection-end-column="14" />
+          <folding>
+            <marker date="1438579374000" expanded="true" signature="126365:126492" placeholder="INSERT INTO ..." />
+            <marker date="1438579374000" expanded="true" signature="126762:126803" placeholder="INSERT INTO ..." />
+            <marker date="1438579374000" expanded="true" signature="129124:129155" placeholder="ALTER TABLE ..." />
+            <marker date="1438579374000" expanded="true" signature="131520:131575" placeholder="SELECT ${{$f..." />
+            <marker date="1438579374000" expanded="true" signature="131582:131595" placeholder="-- keep-cach..." />
+            <marker date="1438579374000" expanded="true" signature="132003:132035" placeholder="SELECT ${{$t..." />
+            <marker date="1438579374000" expanded="true" signature="133052:133479" placeholder="SELECT ${{$d..." />
+            <marker date="1438579374000" expanded="true" signature="133492:133505" placeholder="-- keep-cach..." />
+            <marker date="1438579374000" expanded="true" signature="133584:133818" placeholder="SELECT ${{$d..." />
+            <marker date="1438579374000" expanded="true" signature="133831:133844" placeholder="-- keep-cach..." />
+            <marker date="1438579374000" expanded="true" signature="134659:134812" placeholder="SELECT ${{$l..." />
+            <marker date="1438579374000" expanded="true" signature="134813:134826" placeholder="-- keep-cach..." />
+            <marker date="1438579374000" expanded="true" signature="134942:135043" placeholder="SELECT ${{$l..." />
+            <marker date="1438579374000" expanded="true" signature="135044:135057" placeholder="-- keep-cach..." />
+            <marker date="1438579374000" expanded="true" signature="135648:135904" placeholder="SELECT ${{$t..." />
+            <marker date="1438579374000" expanded="true" signature="136449:136479" placeholder="SELECT COUNT..." />
+            <marker date="1438579374000" expanded="true" signature="136486:136499" placeholder="-- keep-cach..." />
+            <marker date="1438579374000" expanded="true" signature="136988:137224" placeholder="SELECT COUNT..." />
+            <marker date="1438579374000" expanded="true" signature="137237:137250" placeholder="-- keep-cach..." />
+            <marker date="1438579374000" expanded="true" signature="137348:137498" placeholder="SELECT COUNT..." />
+            <marker date="1438579374000" expanded="true" signature="137511:137524" placeholder="-- keep-cach..." />
+            <marker date="1438579374000" expanded="true" signature="137975:137996" placeholder="DELETE FROM ..." />
+            <marker date="1438579374000" expanded="true" signature="138360:138442" placeholder="DELETE FROM ..." />
+            <marker date="1438579374000" expanded="true" signature="138536:138587" placeholder="DELETE FROM ..." />
+            <marker date="1438579374000" expanded="true" signature="138971:139013" placeholder="ALTER TABLE ..." />
+            <marker date="1438579374000" expanded="true" signature="143020:144245" placeholder="SELECT infor..." />
+            <marker date="1438579374000" expanded="true" signature="149395:149478" placeholder="ALTER TABLE ..." />
+            <marker date="1438579374000" expanded="true" signature="151069:151211" placeholder="ALTER TABLE ..." />
+            <marker date="1438579374000" expanded="true" signature="152007:152032" placeholder="DROP TABLE I..." />
+            <marker date="1438579374000" expanded="true" signature="154602:154633" placeholder="DROP TABLE I..." />
+            <marker date="1438579374000" expanded="true" signature="154873:154918" placeholder="INSERT INTO ..." />
+            <marker date="1438579374000" expanded="true" signature="154896:154909" placeholder="SELECT * FRO..." />
+            <marker date="1438579374000" expanded="true" signature="154969:154988" placeholder="DROP TABLE `..." />
+            <marker date="1438579374000" expanded="true" signature="155881:155901" placeholder="INSERT INTO ..." />
+            <marker date="1438579374000" expanded="true" signature="155902:155926" placeholder="SELECT * FRO..tmp_backup..." />
+            <marker date="1438579374000" expanded="true" signature="155940:155961" placeholder="DROP TABLE t..." />
+            <marker date="1438579374000" expanded="true" signature="160409:160444" placeholder="ALTER TABLE ..." />
+            <marker date="1438579374000" expanded="true" signature="161040:161120" placeholder="SELECT name ..sqlite_master..." />
+            <marker date="1438579374000" expanded="true" signature="163072:163084" placeholder="DELETE FROM ..." />
+            <marker date="1438579374000" expanded="true" signature="163519:163544" placeholder="DROP TABLE I..." />
+            <marker date="1438579374000" expanded="true" signature="163624:163649" placeholder="DROP TABLE I..." />
+            <marker date="1438579374000" expanded="true" signature="165633:167656" placeholder="SELECT infor..key_column_usage..." />
+            <marker date="1438579374000" expanded="true" signature="169366:169467" placeholder="SELECT table..tables..." />
+            <marker date="1438579374000" expanded="true" signature="169843:169930" placeholder="SELECT colum..columns..." />
+            <marker date="1438579374000" expanded="true" signature="172328:172340" placeholder="ALTER TABLE ..." />
+            <marker date="1438579374000" expanded="true" signature="172827:172926" placeholder="ALTER TABLE ..." />
+            <marker date="1438579374000" expanded="true" signature="174350:174454" placeholder="ALTER TABLE ..." />
+            <marker date="1438579374000" expanded="true" signature="174807:174838" placeholder="DROP TABLE I..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/RedBO/RedFactory.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-3.125">
+          <caret line="10" column="16" selection-start-line="10" selection-start-column="6" selection-end-line="10" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/Controller/CraftingController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0795756">
+          <caret line="108" column="21" selection-start-line="108" selection-start-column="21" selection-end-line="108" selection-end-column="21" />
+          <folding>
+            <element signature="e#134#151#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>
