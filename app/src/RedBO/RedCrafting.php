@@ -1,6 +1,5 @@
 <?php
 namespace KaiApp\RedBO;
-use RedBeanPHP\Facade;
 
 /**
  * Created by PhpStorm.
@@ -24,11 +23,11 @@ class RedCrafting extends RedBase {
 
     public function getById($gw_item_id)
     {
-        return parent::getOne("gw_item_id",$gw_item_id);
+        return parent::getOne(parent::toBeanColumn("gwItemId"),$gw_item_id);
     }
 
 	public function delete($gw_item_id) {
-        return parent::delete("gw_item_id",$gw_item_id);
+        return parent::delete(parent::toBeanColumn("gwItemId"),$gw_item_id);
 	}
 
 }

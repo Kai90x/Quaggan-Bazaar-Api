@@ -8,10 +8,9 @@
 $app->get('/legendaries','\KaiApp\Controller\CraftingController:all');
 $app->get('/legendaries/:id','\KaiApp\Controller\CraftingController:get');
 $app->put('/legendaries','\KaiApp\Controller\CraftingController:reset');
-$app->get('/test', 'KaiApp\Controller\test:dispatch');
 
 $app->get('/', function ($request, $response, $args) {
     $args["routes"] = array();
-    $args["routes"]["legendary"] = "/legendary";
+    $args["routes"]["legendaries"] = "/legendaries";
     return $this->view->render($response, 'Index.twig',$args);
 })->setName('index');

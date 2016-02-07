@@ -5,7 +5,7 @@
  * Date: 8/15/15
  * Time: 6:45 PM
  */
-namespace Serialization\Achievements;
+namespace KaiApp\Serialization\Achievements;
 
 class Result
 {

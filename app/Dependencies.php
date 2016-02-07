@@ -5,19 +5,24 @@
  * Date: 2/6/16
  * Time: 2:34 PM
  */
-use Jgut\Slim\Controller\Resolver;
 // Define your controllers
-$controllers = [
-    'KaiApp\Controller\test',
-    'KaiApp\Controller\CraftingController'
-];
-
 $container = $app->getContainer();
 
-// Register Controllers
-foreach (Resolver::resolve($controllers) as $controller => $callback) {
-    $container[$controller] = $callback;
-}
+$container['RedCrafting'] = function ($c) {
+    return new KaiApp\RedBO\RedCrafting();
+};
+$container['RedCraftingSubItem1'] = function ($c) {
+    return new KaiApp\RedBO\RedCraftSubItem1();
+};
+$container['RedCraftingSubItem2'] = function ($c) {
+    return new KaiApp\RedBO\RedCraftSubItem2();
+};
+$container['RedCraftingSubItem3'] = function ($c) {
+    return new KaiApp\RedBO\RedCraftSubItem3();
+};
+$container['RedCraftingSubItem4'] = function ($c) {
+    return new KaiApp\RedBO\RedCraftSubItem4();
+};
 
 // Register component on container
 $container['view'] = function ($container) {
@@ -28,4 +33,11 @@ $container['view'] = function ($container) {
     ));
 
     return $view;
+};
+
+$container['\KaiApp\Controller\CraftingController'] = function ($container) {
+    $controller = new KaiApp\Controller\CraftingController($container->get("RedCrafting"),$container->get("RedCraftingSubItem1"),$container->get("RedCraftingSubItem2"),
+    $container->get("RedCraftingSubItem3"),$container->get("RedCraftingSubItem4"));
+    $controller->setContainer($container);
+    return $controller;
 };

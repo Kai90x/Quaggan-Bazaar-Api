@@ -28,9 +28,18 @@ class BaseController extends JGutBaseController
         return $response;
     }
 
-    protected function simpleResponse($arr,Response $response,$status = 404) {
+    protected function simpleResponse($arr,Response $response,$status = 200) {
         $response = $response->withJson(json_encode($arr))
                              ->withStatus($status);
         return $response;
+    }
+
+    public static function checkEmptyParams($params) {
+        foreach($params as $param) {
+            if (empty($param))
+                return true;
+        }
+
+        return false;
     }
 }

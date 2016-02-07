@@ -1,5 +1,5 @@
 <?php
-namespace Serialization;
+namespace KaiApp\Serialization;
 class Buys
 {
     /**

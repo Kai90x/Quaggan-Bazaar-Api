@@ -1,5 +1,5 @@
 <?php
-namespace Utils;
+namespace KaiApp\Utils;
 /**
  * Created by PhpStorm.
  * User: Kai
@@ -18,41 +18,7 @@ class Common {
     const GUILDWAR2_RECIPE = "recipes";
     const GUILDWAR2_PRICES = "commerce/prices";
 
-    public static function NewDate() {
-        return date('Y-m-d H:i:s');
-    }
-
-    public static function StripHTMLCharacter($str) {
-        return trim(preg_replace('/ +/', ' ', preg_replace('/[^A-Za-z0-9 ]/', ' ', urldecode(html_entity_decode(strip_tags($str))))));;
-    }
-
     public static function GetEventTimerUrl() {
         return  Common::EVENT_TIME_API.Common::IMPORTIO_API;
     }
-
-    public static function ConvertBeanToArray($Beans,$Name){
-        $Arr = array();
-        $i = 0;
-
-        if (!empty($Beans)) {
-            foreach ($Beans as $Bean) {
-                $Arr[$Name][$i] = $Bean->export();
-                $i++;
-            }
-
-            return $Arr;
-        } else {
-            return $Arr;
-        }
-    }
-
-    public static function CheckEmptyParams($params) {
-        foreach($params as $param) {
-            if (empty($param))
-                return true;
-        }
-
-        return false;
-    }
-
 }

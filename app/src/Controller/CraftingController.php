@@ -8,14 +8,35 @@
 
 namespace KaiApp\Controller;
 
-use Utils\Common;
-use KaiApp\RedBO\RedFactory;
+use KaiApp\RedBO\RedCrafting;
+use KaiApp\RedBO\RedCraftSubItem1;
+use KaiApp\RedBO\RedCraftSubItem2;
+use KaiApp\RedBO\RedCraftSubItem3;
+use KaiApp\RedBO\RedCraftSubItem4;
+use KaiApp\Utils\BeanUtils;
+use League\Fractal\Resource\Collection;
 
 class CraftingController extends BaseController
 {
+    private $redCrafting;
+    private $redCraftSubItem1;
+    private $redCraftSubItem2;
+    private $redCraftSubItem3;
+    private $redCraftSubItem4;
+
+    public function __construct(RedCrafting $_redCrafting,RedCraftSubItem1 $_redCraftSubItem1,
+        RedCraftSubItem2 $_redCraftSubItem2,RedCraftSubItem3 $_redCraftSubItem3, RedCraftSubItem4 $_redCraftSubItem4) {
+        $this->redCrafting = $_redCrafting;
+        $this->redCraftSubItem1 = $_redCraftSubItem1;
+        $this->redCraftSubItem2 = $_redCraftSubItem2;
+        $this->redCraftSubItem3 = $_redCraftSubItem3;
+        $this->redCraftSubItem4 = $_redCraftSubItem4;
+
+        parent::__construct();
+    }
 
     public function get($request, $response, array $args) {
-        $craft = RedFactory::GetRedCrafting()->getById($args['id']);
+        $craft = $this->redCrafting->getById($args['id']);
         if (empty($craft))
             return $this->simpleResponse("Missing id",$response,404);
 
@@ -30,7 +51,7 @@ class CraftingController extends BaseController
         $sub3Items = null;
         $sub4Items = null;
 
-        $sub1Items = RedFactory::GetRedCraftSubItem1()->getAllByCraftId($craftId);
+        $sub1Items = $this->redCraftSubItem1->getAllByCraftId($craftId);
         if (!empty($sub1Items)) {
             $i = 0;
             foreach($sub1Items as $sub1Item) {
@@ -39,7 +60,7 @@ class CraftingController extends BaseController
             }
 
             //Get all sub item level 2
-            $sub2Items = RedFactory::GetRedCraftSubItem2()->getAllByCraftIds($sub1IdsArr);
+            $sub2Items = $this->redCraftSubItem2->getAllByCraftIds($sub1IdsArr);
             if (!empty($sub2Items)) {
                 $i = 0;
                 foreach($sub2Items as $sub2Item) {
@@ -48,7 +69,7 @@ class CraftingController extends BaseController
                 }
 
                 //Get all sub item level 3
-                $sub3Items = RedFactory::GetRedCraftSubItem3()->getAllByCraftIds($sub2IdsArr);
+                $sub3Items = $this->redCraftSubItem3->getAllByCraftIds($sub2IdsArr);
                 if (!empty($sub3Items)) {
                     $i = 0;
                     foreach($sub3Items as $sub3Item) {
@@ -57,7 +78,7 @@ class CraftingController extends BaseController
                     }
 
                     //Get all sub item level 4
-                    $sub4Items = RedFactory::GetRedCraftSubItem4()->getAllByCraftIds($sub3IdsArr);
+                    $sub4Items = $this->redCraftSubItem4->getAllByCraftIds($sub3IdsArr);
                 }
             }
         }
@@ -107,20 +128,28 @@ class CraftingController extends BaseController
     }
 
     public function all($request, $response, array $args) {
-        $crafts = RedFactory::GetRedCrafting()->getAll();
+        $crafts = $this->redCrafting->getAll();
         if (empty($crafts))
-            $this->simpleResponse("No crafts found",$response, 404);
+            return $this->simpleResponse("No crafts found",$response, 404);
         else {
-            $this->simpleResponse($crafts,$response);
+            $resource = new Collection(BeanUtils::beanToArray($crafts), function (array $craft) {
+                return [
+                    'id' => $craft['id'],
+                    'GuildItemId' => $craft['gw_item_id'],
+                    'DateCreated' => $craft['date_created']
+                ];
+            });
+
+            return $this->collectionResponse($resource, $response);
         }
     }
 
     public function reset($request, $response, array $args) {
-        RedFactory::GetRedCraftSubItem4()->wipe();
-        RedFactory::GetRedCraftSubItem3()->wipe();
-        RedFactory::GetRedCraftSubItem2()->wipe();
-        RedFactory::GetRedCraftSubItem1()->wipe();
-        RedFactory::GetRedCrafting()->wipe();
+        $this->redCraftSubItem4->wipe();
+        $this->redCraftSubItem3->wipe();
+        $this->redCraftSubItem2->wipe();
+        $this->redCraftSubItem1->wipe();
+        $this->redCrafting->wipe();
         $this->addAll();
 
         $this->simpleResponse("Legendaries have been reset",$response);
@@ -153,1519 +182,1519 @@ class CraftingController extends BaseController
 
     private function addTwilight() {
         //Twilight
-        $craftId = RedFactory::GetRedCrafting()->add(30704);
+        $craftId = $this->redCrafting->add(30704);
 
         //Gift of Fortune
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19626,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19626,1);
 
             //Gift of Magic
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19673,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19673,1);
 
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24300,250);//Elaborate totem
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24277,250);//Pile of crystalline dust
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24283,250);//Powerful venom sac
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24295,250);//Vial of powerful blood
+            $this->redCraftSubItem3->add($subitem2Id,24300,250);//Elaborate totem
+            $this->redCraftSubItem3->add($subitem2Id,24277,250);//Pile of crystalline dust
+            $this->redCraftSubItem3->add($subitem2Id,24283,250);//Powerful venom sac
+            $this->redCraftSubItem3->add($subitem2Id,24295,250);//Vial of powerful blood
 
             //Gift of Might
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19672,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19672,1);
 
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24358,250);//Ancient Bone
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24289,250);//Armored Scale
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24351,250);//Vicious Claw
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24357,250);//Vicious Fang
+            $this->redCraftSubItem3->add($subitem2Id,24358,250);//Ancient Bone
+            $this->redCraftSubItem3->add($subitem2Id,24289,250);//Armored Scale
+            $this->redCraftSubItem3->add($subitem2Id,24351,250);//Vicious Claw
+            $this->redCraftSubItem3->add($subitem2Id,24357,250);//Vicious Fang
 
             //Glob of Ectoplasm
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19721,250);
+            $this->redCraftSubItem2->add($subitem1Id,19721,250);
             //Mystic Clover
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19675,77);
+            $this->redCraftSubItem2->add($subitem1Id,19675,77);
 
         //Gift of Mastery
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19674,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19674,1);
 
             //Bloodstone Shard
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,20797,1);
+            $this->redCraftSubItem2->add($subitem1Id,20797,1);
 
             //Gift of Battle
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19678,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19678,1);
 
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,35510,500);//Badge of Honor
+            $this->redCraftSubItem3->add($subitem2Id,35510,500);//Badge of Honor
 
             //Gift of Exploration
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19677,1);
+            $this->redCraftSubItem2->add($subitem1Id,19677,1);
 
             //Obsidian Shard
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19925,250);
+            $this->redCraftSubItem2->add($subitem1Id,19925,250);
 
         //Gift of Twilight
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19648,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19648,1);
 
             //Gift of Darkness
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19631,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19631,1);
 
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19737,250);//Cured Hardened Leather Square
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19664,1);//Gift of Ascalon
-            $subitem4Id = RedFactory::GetRedCraftSubItem4()->add($subitem3Id,16982,500);//Ascalonian Tear
+            $this->redCraftSubItem3->add($subitem2Id,19737,250);//Cured Hardened Leather Square
+            $subitem3Id = $this->redCraftSubItem3->add($subitem2Id,19664,1);//Gift of Ascalon
+            $this->redCraftSubItem4->add($subitem3Id,16982,500);//Ascalonian Tear
 
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24310,100);//Onyx Lodestone
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19685,250);//Orichalcum Ingot
+            $this->redCraftSubItem3->add($subitem2Id,24310,100);//Onyx Lodestone
+            $this->redCraftSubItem3->add($subitem2Id,19685,250);//Orichalcum Ingot
 
             //Gift of Metal
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19621,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19621,1);
 
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19681,250);//Darksteel Ingot
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19684,250);//Mithril Ingot
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19685,250);//Orichalcum Ingot
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19686,250);//Platinum Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19681,250);//Darksteel Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19684,250);//Mithril Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19685,250);//Orichalcum Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19686,250);//Platinum Ingot
 
             //Icy Runestone
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19676,100);
+            $this->redCraftSubItem2->add($subitem1Id,19676,100);
         //Superior Sigil of Blood
-        $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,24570,1);
+        $this->redCraftSubItem2->add($subitem1Id,24570,1);
 
         //Dusk
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,29185,1);
+        $this->redCraftSubItem1->add($craftId,29185,1);
     }
 
     private function addPredator() {
         //The Predator
-        $craftId = RedFactory::GetRedCrafting()->add(30694);
+        $craftId = $this->redCrafting->add(30694);
 
         //Gift of Fortune
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19626,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19626,1);
 
             //Gift of Magic
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19673,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19673,1);
 
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24300,250);//Elaborate totem
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24277,250);//Pile of crystalline dust
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24283,250);//Powerful venom sac
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24295,250);//Vial of powerful blood
+            $this->redCraftSubItem3->add($subitem2Id,24300,250);//Elaborate totem
+            $this->redCraftSubItem3->add($subitem2Id,24277,250);//Pile of crystalline dust
+            $this->redCraftSubItem3->add($subitem2Id,24283,250);//Powerful venom sac
+            $this->redCraftSubItem3->add($subitem2Id,24295,250);//Vial of powerful blood
 
             //Gift of Might
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19672,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19672,1);
 
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24358,250);//Ancient Bone
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24289,250);//Armored Scale
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24351,250);//Vicious Claw
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24357,250);//Vicious Fang
+            $this->redCraftSubItem3->add($subitem2Id,24358,250);//Ancient Bone
+            $this->redCraftSubItem3->add($subitem2Id,24289,250);//Armored Scale
+            $this->redCraftSubItem3->add($subitem2Id,24351,250);//Vicious Claw
+            $this->redCraftSubItem3->add($subitem2Id,24357,250);//Vicious Fang
 
             //Glob of Ectoplasm
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19721,250);
+            $this->redCraftSubItem2->add($subitem1Id,19721,250);
             //Mystic Clover
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19675,77);
+            $this->redCraftSubItem2->add($subitem1Id,19675,77);
 
         //Gift of Mastery
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19674,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19674,1);
 
             //Bloodstone Shard
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,20797,1);
+            $this->redCraftSubItem2->add($subitem1Id,20797,1);
 
             //Gift of Battle
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19678,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19678,1);
 
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,35510,500);//Badge of Honor
+            $this->redCraftSubItem3->add($subitem2Id,35510,500);//Badge of Honor
 
             //Gift of Exploration
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19677,1);
+            $this->redCraftSubItem2->add($subitem1Id,19677,1);
 
             //Obsidian Shard
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19925,250);
+            $this->redCraftSubItem2->add($subitem1Id,19925,250);
 
         //Gift of The Predator
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19661,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19661,1);
 
             //Gift of Stealth
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19636,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19636,1);
 
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24310,100);//Onyx Lodestone
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19671,1);//Gift of Knowledge
-            $subitem4Id = RedFactory::GetRedCraftSubItem4()->add($subitem3Id,17276,500);//Knowledge Crystal
+            $this->redCraftSubItem3->add($subitem2Id,24310,100);//Onyx Lodestone
+            $subitem3Id = $this->redCraftSubItem3->add($subitem2Id,19671,1);//Gift of Knowledge
+            $this->redCraftSubItem4->add($subitem3Id,17276,500);//Knowledge Crystal
 
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,12545,250);//Orrian Truffle
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19685,250);//Orichalcum Ingot
+            $this->redCraftSubItem3->add($subitem2Id,12545,250);//Orrian Truffle
+            $this->redCraftSubItem3->add($subitem2Id,19685,250);//Orichalcum Ingot
 
             //Gift of Wood
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19622,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19622,1);
 
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19712,250);//Ancient Wood Plank
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19709,250);//Elder Wood Plank
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19711,250);//Hard Wood Plank
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19714,250);//Seasoned Wood Plank
+            $this->redCraftSubItem3->add($subitem2Id,19712,250);//Ancient Wood Plank
+            $this->redCraftSubItem3->add($subitem2Id,19709,250);//Elder Wood Plank
+            $this->redCraftSubItem3->add($subitem2Id,19711,250);//Hard Wood Plank
+            $this->redCraftSubItem3->add($subitem2Id,19714,250);//Seasoned Wood Plank
 
             //Icy Runestone
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19676,100);
+            $this->redCraftSubItem2->add($subitem1Id,19676,100);
         //Superior Sigil of Force
-        $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,24615,1);
+        $this->redCraftSubItem2->add($subitem1Id,24615,1);
 
         //The Hunter
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,29175,1);
+        $this->redCraftSubItem1->add($craftId,29175,1);
     }
 
     private function addMinstrel() {
         //The Minstrel
-        $craftId = RedFactory::GetRedCrafting()->add(30688);
+        $craftId = $this->redCrafting->add(30688);
 
         //Gift of Fortune
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19626,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19626,1);
 
             //Gift of Magic
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19673,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19673,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24300,250);//Elaborate totem
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24277,250);//Pile of crystalline dust
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24283,250);//Powerful venom sac
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24295,250);//Vial of powerful blood
+            $this->redCraftSubItem3->add($subitem2Id,24300,250);//Elaborate totem
+            $this->redCraftSubItem3->add($subitem2Id,24277,250);//Pile of crystalline dust
+            $this->redCraftSubItem3->add($subitem2Id,24283,250);//Powerful venom sac
+            $this->redCraftSubItem3->add($subitem2Id,24295,250);//Vial of powerful blood
 
             //Gift of Might
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19672,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19672,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24358,250);//Ancient Bone
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24289,250);//Armored Scale
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24351,250);//Vicious Claw
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24357,250);//Vicious Fang
+            $this->redCraftSubItem3->add($subitem2Id,24358,250);//Ancient Bone
+            $this->redCraftSubItem3->add($subitem2Id,24289,250);//Armored Scale
+            $this->redCraftSubItem3->add($subitem2Id,24351,250);//Vicious Claw
+            $this->redCraftSubItem3->add($subitem2Id,24357,250);//Vicious Fang
 
             //Glob of Ectoplasm
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19721,250);
+            $this->redCraftSubItem2->add($subitem1Id,19721,250);
             //Mystic Clover
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19675,77);
+            $this->redCraftSubItem2->add($subitem1Id,19675,77);
 
         //Gift of Mastery
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19674,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19674,1);
 
             //Bloodstone Shard
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,20797,1);
+            $this->redCraftSubItem2->add($subitem1Id,20797,1);
 
             //Gift of Battle
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19678,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19678,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,35510,500);//Badge of Honor
+            $this->redCraftSubItem3->add($subitem2Id,35510,500);//Badge of Honor
 
             //Gift of Exploration
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19677,1);
+            $this->redCraftSubItem2->add($subitem1Id,19677,1);
 
             //Obsidian Shard
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19925,250);
+            $this->redCraftSubItem2->add($subitem1Id,19925,250);
 
         //Gift of The Minstrel
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19646,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19646,1);
 
             //Gift of Music
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19630,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19630,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19746,250);//Bolt of Gossamer
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19665,1);//Gift of the Nobleman
-            RedFactory::GetRedCraftSubItem4()->add($subitem3Id,17274,500);//Seal of Beetletun
+            $this->redCraftSubItem3->add($subitem2Id,19746,250);//Bolt of Gossamer
+            $subitem3Id = $this->redCraftSubItem3->add($subitem2Id,19665,1);//Gift of the Nobleman
+            $this->redCraftSubItem4->add($subitem3Id,17274,500);//Seal of Beetletun
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24522,100);//Opal Orb
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19685,250);//Orichalcum Ingot
+            $this->redCraftSubItem3->add($subitem2Id,24522,100);//Opal Orb
+            $this->redCraftSubItem3->add($subitem2Id,19685,250);//Orichalcum Ingot
 
             //Gift of Energy
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19623,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19623,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24277,250);//Pile of Crystalline Dust
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24276,250);//Pile of Incandescent Dust
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24275,250);//Pile of Luminous Dust
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24274,250);//Pile of Radiant Dust
+            $this->redCraftSubItem3->add($subitem2Id,24277,250);//Pile of Crystalline Dust
+            $this->redCraftSubItem3->add($subitem2Id,24276,250);//Pile of Incandescent Dust
+            $this->redCraftSubItem3->add($subitem2Id,24275,250);//Pile of Luminous Dust
+            $this->redCraftSubItem3->add($subitem2Id,24274,250);//Pile of Radiant Dust
 
             //Icy Runestone
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19676,100);
+            $this->redCraftSubItem2->add($subitem1Id,19676,100);
             //Superior Sigil of Energy
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,24607,1);
+            $this->redCraftSubItem2->add($subitem1Id,24607,1);
 
         //The Bard
-        RedFactory::GetRedCraftSubItem1()->add($craftId,29168,1);
+        $this->redCraftSubItem1->add($craftId,29168,1);
     }
 
     private function addDreamer() {
         //The Dreamer
-        $craftId = RedFactory::GetRedCrafting()->add(30686);
+        $craftId = $this->redCrafting->add(30686);
 
         //Gift of Fortune
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19626,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19626,1);
 
             //Gift of Magic
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19673,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19673,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24300,250);//Elaborate totem
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24277,250);//Pile of crystalline dust
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24283,250);//Powerful venom sac
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24295,250);//Vial of powerful blood
+            $this->redCraftSubItem3->add($subitem2Id,24300,250);//Elaborate totem
+            $this->redCraftSubItem3->add($subitem2Id,24277,250);//Pile of crystalline dust
+            $this->redCraftSubItem3->add($subitem2Id,24283,250);//Powerful venom sac
+            $this->redCraftSubItem3->add($subitem2Id,24295,250);//Vial of powerful blood
 
             //Gift of Might
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19672,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19672,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24358,250);//Ancient Bone
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24289,250);//Armored Scale
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24351,250);//Vicious Claw
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24357,250);//Vicious Fang
+            $this->redCraftSubItem3->add($subitem2Id,24358,250);//Ancient Bone
+            $this->redCraftSubItem3->add($subitem2Id,24289,250);//Armored Scale
+            $this->redCraftSubItem3->add($subitem2Id,24351,250);//Vicious Claw
+            $this->redCraftSubItem3->add($subitem2Id,24357,250);//Vicious Fang
 
             //Glob of Ectoplasm
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19721,250);
+            $this->redCraftSubItem2->add($subitem1Id,19721,250);
             //Mystic Clover
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19675,77);
+            $this->redCraftSubItem2->add($subitem1Id,19675,77);
 
         //Gift of Mastery
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19674,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19674,1);
 
             //Bloodstone Shard
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,20797,1);
+            $this->redCraftSubItem2->add($subitem1Id,20797,1);
 
             //Gift of Battle
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19678,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19678,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,35510,500);//Badge of Honor
+            $this->redCraftSubItem3->add($subitem2Id,35510,500);//Badge of Honor
 
             //Gift of Exploration
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19677,1);
+            $this->redCraftSubItem2->add($subitem1Id,19677,1);
 
             //Obsidian Shard
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19925,250);
+            $this->redCraftSubItem2->add($subitem1Id,19925,250);
 
         //Gift of The Dreamer
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19660,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19660,1);
 
             //Unicorn Statue
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19628,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19628,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24512,100);//Chrysocola Orb
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19667,1);//Gift of Thorns
-            RedFactory::GetRedCraftSubItem4()->add($subitem3Id,17273,500);//Deadly Bloom
+            $this->redCraftSubItem3->add($subitem2Id,24512,100);//Chrysocola Orb
+            $subitem3Id = $this->redCraftSubItem3->add($subitem2Id,19667,1);//Gift of Thorns
+            $this->redCraftSubItem4->add($subitem3Id,17273,500);//Deadly Bloom
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24522,100);//Opal Orb
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19685,250);//Orichalcum Ingot
+            $this->redCraftSubItem3->add($subitem2Id,24522,100);//Opal Orb
+            $this->redCraftSubItem3->add($subitem2Id,19685,250);//Orichalcum Ingot
 
             //Gift of Wood
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19622,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19622,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19712,250);//Ancient Wood Plank
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19709,250);//Elder Wood Plank
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19711,250);//Hard Wood Plank
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19714,250);//Seasoned Wood Plank
+            $this->redCraftSubItem3->add($subitem2Id,19712,250);//Ancient Wood Plank
+            $this->redCraftSubItem3->add($subitem2Id,19709,250);//Elder Wood Plank
+            $this->redCraftSubItem3->add($subitem2Id,19711,250);//Hard Wood Plank
+            $this->redCraftSubItem3->add($subitem2Id,19714,250);//Seasoned Wood Plank
 
             //Icy Runestone
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19676,100);
+            $this->redCraftSubItem2->add($subitem1Id,19676,100);
             //Superior Sigil of Purity
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,24571,1);
+            $this->redCraftSubItem2->add($subitem1Id,24571,1);
 
         //The Lover
-        RedFactory::GetRedCraftSubItem1()->add($craftId,29178,1);
+        $this->redCraftSubItem1->add($craftId,29178,1);
     }
 
     private function addSunrise() {
         //Sunrise
-        $craftId = RedFactory::GetRedCrafting()->add(30703);
+        $craftId = $this->redCrafting->add(30703);
 
         //Gift of Fortune
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19626,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19626,1);
 
             //Gift of Magic
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19673,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19673,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24300,250);//Elaborate totem
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24277,250);//Pile of crystalline dust
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24283,250);//Powerful venom sac
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24295,250);//Vial of powerful blood
+            $this->redCraftSubItem3->add($subitem2Id,24300,250);//Elaborate totem
+            $this->redCraftSubItem3->add($subitem2Id,24277,250);//Pile of crystalline dust
+            $this->redCraftSubItem3->add($subitem2Id,24283,250);//Powerful venom sac
+            $this->redCraftSubItem3->add($subitem2Id,24295,250);//Vial of powerful blood
 
             //Gift of Might
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19672,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19672,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24358,250);//Ancient Bone
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24289,250);//Armored Scale
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24351,250);//Vicious Claw
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24357,250);//Vicious Fang
+            $this->redCraftSubItem3->add($subitem2Id,24358,250);//Ancient Bone
+            $this->redCraftSubItem3->add($subitem2Id,24289,250);//Armored Scale
+            $this->redCraftSubItem3->add($subitem2Id,24351,250);//Vicious Claw
+            $this->redCraftSubItem3->add($subitem2Id,24357,250);//Vicious Fang
 
             //Glob of Ectoplasm
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19721,250);
+            $this->redCraftSubItem2->add($subitem1Id,19721,250);
             //Mystic Clover
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19675,77);
+            $this->redCraftSubItem2->add($subitem1Id,19675,77);
 
         //Gift of Mastery
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19674,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19674,1);
 
             //Bloodstone Shard
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,20797,1);
+            $this->redCraftSubItem2->add($subitem1Id,20797,1);
 
             //Gift of Battle
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19678,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19678,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,35510,500);//Badge of Honor
+            $this->redCraftSubItem3->add($subitem2Id,35510,500);//Badge of Honor
 
             //Gift of Exploration
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19677,1);
+            $this->redCraftSubItem2->add($subitem1Id,19677,1);
 
             //Obsidian Shard
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19925,250);
+            $this->redCraftSubItem2->add($subitem1Id,19925,250);
 
         //Gift of Sunrise
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19647,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19647,1);
 
             //Gift of Light
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19632,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19632,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24305,100);//Charged Lodestone
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19664,1);//Gift of Ascalon
-            RedFactory::GetRedCraftSubItem4()->add($subitem3Id,16982,500);//Ascalonian Tear
+            $this->redCraftSubItem3->add($subitem2Id,24305,100);//Charged Lodestone
+            $subitem3Id = $this->redCraftSubItem3->add($subitem2Id,19664,1);//Gift of Ascalon
+            $this->redCraftSubItem4->add($subitem3Id,16982,500);//Ascalonian Tear
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19737,250);//Cured Hardened Leather Square
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19685,250);//Orichalcum Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19737,250);//Cured Hardened Leather Square
+            $this->redCraftSubItem3->add($subitem2Id,19685,250);//Orichalcum Ingot
 
             //Gift of Metal
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19621,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19621,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19681,250);//Darksteel Ingot
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19684,250);//Mithril Ingot
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19685,250);//Orichalcum Ingot
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19686,250);//Platinum Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19681,250);//Darksteel Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19684,250);//Mithril Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19685,250);//Orichalcum Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19686,250);//Platinum Ingot
 
             //Icy Runestone
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19676,100);
+            $this->redCraftSubItem2->add($subitem1Id,19676,100);
             //Superior Sigil of Strength
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,24562,1);
+            $this->redCraftSubItem2->add($subitem1Id,24562,1);
 
         //Dawn
-         RedFactory::GetRedCraftSubItem1()->add($craftId,29169,1);
+         $this->redCraftSubItem1->add($craftId,29169,1);
     }
 
     private function addRodgort() {
         //Rodgort
-        $craftId = RedFactory::GetRedCrafting()->add(30700);
+        $craftId = $this->redCrafting->add(30700);
 
         //Gift of Fortune
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19626,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19626,1);
 
             //Gift of Magic
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19673,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19673,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24300,250);//Elaborate totem
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24277,250);//Pile of crystalline dust
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24283,250);//Powerful venom sac
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24295,250);//Vial of powerful blood
+            $this->redCraftSubItem3->add($subitem2Id,24300,250);//Elaborate totem
+            $this->redCraftSubItem3->add($subitem2Id,24277,250);//Pile of crystalline dust
+            $this->redCraftSubItem3->add($subitem2Id,24283,250);//Powerful venom sac
+            $this->redCraftSubItem3->add($subitem2Id,24295,250);//Vial of powerful blood
 
             //Gift of Might
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19672,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19672,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24358,250);//Ancient Bone
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24289,250);//Armored Scale
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24351,250);//Vicious Claw
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24357,250);//Vicious Fang
+            $this->redCraftSubItem3->add($subitem2Id,24358,250);//Ancient Bone
+            $this->redCraftSubItem3->add($subitem2Id,24289,250);//Armored Scale
+            $this->redCraftSubItem3->add($subitem2Id,24351,250);//Vicious Claw
+            $this->redCraftSubItem3->add($subitem2Id,24357,250);//Vicious Fang
 
             //Glob of Ectoplasm
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19721,250);
+            $this->redCraftSubItem2->add($subitem1Id,19721,250);
             //Mystic Clover
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19675,77);
+            $this->redCraftSubItem2->add($subitem1Id,19675,77);
 
         //Gift of Mastery
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19674,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19674,1);
 
             //Bloodstone Shard
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,20797,1);
+            $this->redCraftSubItem2->add($subitem1Id,20797,1);
 
             //Gift of Battle
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19678,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19678,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,35510,500);//Badge of Honor
+            $this->redCraftSubItem3->add($subitem2Id,35510,500);//Badge of Honor
 
             //Gift of Exploration
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19677,1);
+            $this->redCraftSubItem2->add($subitem1Id,19677,1);
 
             //Obsidian Shard
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19925,250);
+            $this->redCraftSubItem2->add($subitem1Id,19925,250);
 
         //Gift of Rodgort
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19656,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19656,1);
 
             //Vial of Liquid Flame
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19634,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19634,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24325,100);//Destroyer Lodestone
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19668,1);//Gift of Baelfire
-            RedFactory::GetRedCraftSubItem4()->add($subitem3Id,17275,500);//Flame Legion Charr Carving
+            $this->redCraftSubItem3->add($subitem2Id,24325,100);//Destroyer Lodestone
+            $subitem3Id = $this->redCraftSubItem3->add($subitem2Id,19668,1);//Gift of Baelfire
+            $this->redCraftSubItem4->add($subitem3Id,17275,500);//Flame Legion Charr Carving
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,12479,250);//Ghost Pepper
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24315,100);//Molten Lodestone
+            $this->redCraftSubItem3->add($subitem2Id,12479,250);//Ghost Pepper
+            $this->redCraftSubItem3->add($subitem2Id,24315,100);//Molten Lodestone
 
             //Gift of Wood
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19622,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19622,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19712,250);//Ancient Wood Plank
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19709,250);//Elder Wood Plank
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19711,250);//Hard Wood Plank
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19714,250);//Seasoned Wood Plank
+            $this->redCraftSubItem3->add($subitem2Id,19712,250);//Ancient Wood Plank
+            $this->redCraftSubItem3->add($subitem2Id,19709,250);//Elder Wood Plank
+            $this->redCraftSubItem3->add($subitem2Id,19711,250);//Hard Wood Plank
+            $this->redCraftSubItem3->add($subitem2Id,19714,250);//Seasoned Wood Plank
 
             //Icy Runestone
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19676,100);
+            $this->redCraftSubItem2->add($subitem1Id,19676,100);
             //Superior Sigil of Fire
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,24548,1);
+            $this->redCraftSubItem2->add($subitem1Id,24548,1);
 
         //Rodgort's Flame
-        RedFactory::GetRedCraftSubItem1()->add($craftId,29182,1);
+        $this->redCraftSubItem1->add($craftId,29182,1);
     }
 
     private function addQuip() {
         //Quip
-        $craftId = RedFactory::GetRedCrafting()->add(30693);
+        $craftId = $this->redCrafting->add(30693);
 
         //Gift of Fortune
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19626,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19626,1);
 
             //Gift of Magic
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19673,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19673,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24300,250);//Elaborate totem
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24277,250);//Pile of crystalline dust
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24283,250);//Powerful venom sac
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24295,250);//Vial of powerful blood
+            $this->redCraftSubItem3->add($subitem2Id,24300,250);//Elaborate totem
+            $this->redCraftSubItem3->add($subitem2Id,24277,250);//Pile of crystalline dust
+            $this->redCraftSubItem3->add($subitem2Id,24283,250);//Powerful venom sac
+            $this->redCraftSubItem3->add($subitem2Id,24295,250);//Vial of powerful blood
 
             //Gift of Might
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19672,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19672,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24358,250);//Ancient Bone
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24289,250);//Armored Scale
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24351,250);//Vicious Claw
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24357,250);//Vicious Fang
+            $this->redCraftSubItem3->add($subitem2Id,24358,250);//Ancient Bone
+            $this->redCraftSubItem3->add($subitem2Id,24289,250);//Armored Scale
+            $this->redCraftSubItem3->add($subitem2Id,24351,250);//Vicious Claw
+            $this->redCraftSubItem3->add($subitem2Id,24357,250);//Vicious Fang
 
             //Glob of Ectoplasm
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19721,250);
+            $this->redCraftSubItem2->add($subitem1Id,19721,250);
             //Mystic Clover
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19675,77);
+            $this->redCraftSubItem2->add($subitem1Id,19675,77);
 
         //Gift of Mastery
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19674,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19674,1);
 
             //Bloodstone Shard
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,20797,1);
+            $this->redCraftSubItem2->add($subitem1Id,20797,1);
 
             //Gift of Battle
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19678,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19678,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,35510,500);//Badge of Honor
+            $this->redCraftSubItem3->add($subitem2Id,35510,500);//Badge of Honor
 
             //Gift of Exploration
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19677,1);
+            $this->redCraftSubItem2->add($subitem1Id,19677,1);
 
             //Obsidian Shard
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19925,250);
+            $this->redCraftSubItem2->add($subitem1Id,19925,250);
 
         //Gift of Quip
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19651,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19651,1);
 
             //Gift of Entertainment
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19635,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19635,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19746,250);//Bolt of Gossamer
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19665,1);//Gift of the Nobleman
-            RedFactory::GetRedCraftSubItem4()->add($subitem3Id,17274,500);//Seal of Beetletun
+            $this->redCraftSubItem3->add($subitem2Id,19746,250);//Bolt of Gossamer
+            $subitem3Id = $this->redCraftSubItem3->add($subitem2Id,19665,1);//Gift of the Nobleman
+            $this->redCraftSubItem4->add($subitem3Id,17274,500);//Seal of Beetletun
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,20000,5);//Evon Gnashblade's Box o' Fun
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19685,250);//Orichalcum Ingot
+            $this->redCraftSubItem3->add($subitem2Id,20000,5);//Evon Gnashblade's Box o' Fun
+            $this->redCraftSubItem3->add($subitem2Id,19685,250);//Orichalcum Ingot
 
             //Gift of Wood
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19622,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19622,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19712,250);//Ancient Wood Plank
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19709,250);//Elder Wood Plank
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19711,250);//Hard Wood Plank
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19714,250);//Seasoned Wood Plank
+            $this->redCraftSubItem3->add($subitem2Id,19712,250);//Ancient Wood Plank
+            $this->redCraftSubItem3->add($subitem2Id,19709,250);//Elder Wood Plank
+            $this->redCraftSubItem3->add($subitem2Id,19711,250);//Hard Wood Plank
+            $this->redCraftSubItem3->add($subitem2Id,19714,250);//Seasoned Wood Plank
 
             //Icy Runestone
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19676,100);
+            $this->redCraftSubItem2->add($subitem1Id,19676,100);
             //Superior Sigil of Stamina
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,24592,1);
+            $this->redCraftSubItem2->add($subitem1Id,24592,1);
 
         //Chaos Gun
-        RedFactory::GetRedCraftSubItem1()->add($craftId,29174,1);
+        $this->redCraftSubItem1->add($craftId,29174,1);
     }
 
     private function addMoot() {
         //Moot
-        $craftId = RedFactory::GetRedCrafting()->add(30692);
+        $craftId = $this->redCrafting->add(30692);
 
         //Gift of Fortune
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19626,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19626,1);
 
             //Gift of Magic
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19673,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19673,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24300,250);//Elaborate totem
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24277,250);//Pile of crystalline dust
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24283,250);//Powerful venom sac
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24295,250);//Vial of powerful blood
+            $this->redCraftSubItem3->add($subitem2Id,24300,250);//Elaborate totem
+            $this->redCraftSubItem3->add($subitem2Id,24277,250);//Pile of crystalline dust
+            $this->redCraftSubItem3->add($subitem2Id,24283,250);//Powerful venom sac
+            $this->redCraftSubItem3->add($subitem2Id,24295,250);//Vial of powerful blood
 
             //Gift of Might
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19672,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19672,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24358,250);//Ancient Bone
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24289,250);//Armored Scale
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24351,250);//Vicious Claw
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24357,250);//Vicious Fang
+            $this->redCraftSubItem3->add($subitem2Id,24358,250);//Ancient Bone
+            $this->redCraftSubItem3->add($subitem2Id,24289,250);//Armored Scale
+            $this->redCraftSubItem3->add($subitem2Id,24351,250);//Vicious Claw
+            $this->redCraftSubItem3->add($subitem2Id,24357,250);//Vicious Fang
 
             //Glob of Ectoplasm
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19721,250);
+            $this->redCraftSubItem2->add($subitem1Id,19721,250);
             //Mystic Clover
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19675,77);
+            $this->redCraftSubItem2->add($subitem1Id,19675,77);
 
         //Gift of Mastery
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19674,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19674,1);
 
             //Bloodstone Shard
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,20797,1);
+            $this->redCraftSubItem2->add($subitem1Id,20797,1);
 
             //Gift of Battle
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19678,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19678,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,35510,500);//Badge of Honor
+            $this->redCraftSubItem3->add($subitem2Id,35510,500);//Badge of Honor
 
             //Gift of Exploration
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19677,1);
+            $this->redCraftSubItem2->add($subitem1Id,19677,1);
 
             //Obsidian Shard
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19925,250);
+            $this->redCraftSubItem2->add($subitem1Id,19925,250);
 
         //Gift of The Moot
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19650,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19650,1);
 
         //Gift of Entertainment
-        $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19635,1);
+        $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19635,1);
 
-        RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19746,250);//Bolt of Gossamer
-        $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19665,1);//Gift of the Nobleman
-        RedFactory::GetRedCraftSubItem4()->add($subitem3Id,17274,500);//Seal of Beetletun
+        $this->redCraftSubItem3->add($subitem2Id,19746,250);//Bolt of Gossamer
+        $subitem3Id = $this->redCraftSubItem3->add($subitem2Id,19665,1);//Gift of the Nobleman
+        $this->redCraftSubItem4->add($subitem3Id,17274,500);//Seal of Beetletun
 
-        RedFactory::GetRedCraftSubItem3()->add($subitem2Id,20000,5);//Evon Gnashblade's Box o' Fun
-        RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19685,250);//Orichalcum Ingot
+        $this->redCraftSubItem3->add($subitem2Id,20000,5);//Evon Gnashblade's Box o' Fun
+        $this->redCraftSubItem3->add($subitem2Id,19685,250);//Orichalcum Ingot
 
             //Gift of Metal
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19621,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19621,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19681,250);//Darksteel Ingot
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19684,250);//Mithril Ingot
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19685,250);//Orichalcum Ingot
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19686,250);//Platinum Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19681,250);//Darksteel Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19684,250);//Mithril Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19685,250);//Orichalcum Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19686,250);//Platinum Ingot
 
             //Icy Runestone
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19676,100);
+            $this->redCraftSubItem2->add($subitem1Id,19676,100);
             //Superior Sigil of Energy
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,24607,1);
+            $this->redCraftSubItem2->add($subitem1Id,24607,1);
 
         //The Energizer
-        RedFactory::GetRedCraftSubItem1()->add($craftId,29173,1);
+        $this->redCraftSubItem1->add($craftId,29173,1);
     }
 
     private function addMeteorlogicus() {
         //Meteorlogicus
-        $craftId = RedFactory::GetRedCrafting()->add(30695);
+        $craftId = $this->redCrafting->add(30695);
 
         //Gift of Fortune
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19626,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19626,1);
 
             //Gift of Magic
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19673,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19673,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24300,250);//Elaborate totem
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24277,250);//Pile of crystalline dust
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24283,250);//Powerful venom sac
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24295,250);//Vial of powerful blood
+            $this->redCraftSubItem3->add($subitem2Id,24300,250);//Elaborate totem
+            $this->redCraftSubItem3->add($subitem2Id,24277,250);//Pile of crystalline dust
+            $this->redCraftSubItem3->add($subitem2Id,24283,250);//Powerful venom sac
+            $this->redCraftSubItem3->add($subitem2Id,24295,250);//Vial of powerful blood
 
             //Gift of Might
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19672,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19672,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24358,250);//Ancient Bone
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24289,250);//Armored Scale
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24351,250);//Vicious Claw
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24357,250);//Vicious Fang
+            $this->redCraftSubItem3->add($subitem2Id,24358,250);//Ancient Bone
+            $this->redCraftSubItem3->add($subitem2Id,24289,250);//Armored Scale
+            $this->redCraftSubItem3->add($subitem2Id,24351,250);//Vicious Claw
+            $this->redCraftSubItem3->add($subitem2Id,24357,250);//Vicious Fang
 
             //Glob of Ectoplasm
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19721,250);
+            $this->redCraftSubItem2->add($subitem1Id,19721,250);
             //Mystic Clover
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19675,77);
+            $this->redCraftSubItem2->add($subitem1Id,19675,77);
 
         //Gift of Mastery
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19674,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19674,1);
 
             //Bloodstone Shard
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,20797,1);
+            $this->redCraftSubItem2->add($subitem1Id,20797,1);
 
             //Gift of Battle
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19678,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19678,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,35510,500);//Badge of Honor
+            $this->redCraftSubItem3->add($subitem2Id,35510,500);//Badge of Honor
 
             //Gift of Exploration
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19677,1);
+            $this->redCraftSubItem2->add($subitem1Id,19677,1);
 
             //Obsidian Shard
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19925,250);
+            $this->redCraftSubItem2->add($subitem1Id,19925,250);
 
         //Gift of Meteorlogicus
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19652,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19652,1);
 
             //Gift of Weather
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19637,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19637,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24305,100);//Charged Lodestone
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19671,1);//Gift of Knowledge
-            RedFactory::GetRedCraftSubItem4()->add($subitem3Id,17276,500);//Knowledge Crystal
+            $this->redCraftSubItem3->add($subitem2Id,24305,100);//Charged Lodestone
+            $subitem3Id = $this->redCraftSubItem3->add($subitem2Id,19671,1);//Gift of Knowledge
+            $this->redCraftSubItem4->add($subitem3Id,17276,500);//Knowledge Crystal
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19732,250);//Hardened Leather Section
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19685,250);//Orichalcum Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19732,250);//Hardened Leather Section
+            $this->redCraftSubItem3->add($subitem2Id,19685,250);//Orichalcum Ingot
 
             //Gift of Energy
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19623,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19623,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24277,250);//Pile of Crystalline Dust
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24276,250);//Pile of Incandescent Dust
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24275,250);//Pile of Luminous Dust
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24274,250);//Pile of Radiant Dust
+            $this->redCraftSubItem3->add($subitem2Id,24277,250);//Pile of Crystalline Dust
+            $this->redCraftSubItem3->add($subitem2Id,24276,250);//Pile of Incandescent Dust
+            $this->redCraftSubItem3->add($subitem2Id,24275,250);//Pile of Luminous Dust
+            $this->redCraftSubItem3->add($subitem2Id,24274,250);//Pile of Radiant Dust
 
             //Icy Runestone
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19676,100);
+            $this->redCraftSubItem2->add($subitem1Id,19676,100);
             //Superior Sigil of Air
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,24554,1);
+            $this->redCraftSubItem2->add($subitem1Id,24554,1);
 
         //Storm
-        RedFactory::GetRedCraftSubItem1()->add($craftId,29176,1);
+        $this->redCraftSubItem1->add($craftId,29176,1);
     }
 
     private function addKudzu() {
         //
-        $craftId = RedFactory::GetRedCrafting()->add(30685);
+        $craftId = $this->redCrafting->add(30685);
 
         //Gift of Fortune
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19626,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19626,1);
 
             //Gift of Magic
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19673,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19673,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24300,250);//Elaborate totem
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24277,250);//Pile of crystalline dust
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24283,250);//Powerful venom sac
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24295,250);//Vial of powerful blood
+            $this->redCraftSubItem3->add($subitem2Id,24300,250);//Elaborate totem
+            $this->redCraftSubItem3->add($subitem2Id,24277,250);//Pile of crystalline dust
+            $this->redCraftSubItem3->add($subitem2Id,24283,250);//Powerful venom sac
+            $this->redCraftSubItem3->add($subitem2Id,24295,250);//Vial of powerful blood
 
             //Gift of Might
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19672,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19672,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24358,250);//Ancient Bone
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24289,250);//Armored Scale
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24351,250);//Vicious Claw
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24357,250);//Vicious Fang
+            $this->redCraftSubItem3->add($subitem2Id,24358,250);//Ancient Bone
+            $this->redCraftSubItem3->add($subitem2Id,24289,250);//Armored Scale
+            $this->redCraftSubItem3->add($subitem2Id,24351,250);//Vicious Claw
+            $this->redCraftSubItem3->add($subitem2Id,24357,250);//Vicious Fang
 
             //Glob of Ectoplasm
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19721,250);
+            $this->redCraftSubItem2->add($subitem1Id,19721,250);
             //Mystic Clover
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19675,77);
+            $this->redCraftSubItem2->add($subitem1Id,19675,77);
 
         //Gift of Mastery
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19674,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19674,1);
 
             //Bloodstone Shard
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,20797,1);
+            $this->redCraftSubItem2->add($subitem1Id,20797,1);
 
             //Gift of Battle
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19678,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19678,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,35510,500);//Badge of Honor
+            $this->redCraftSubItem3->add($subitem2Id,35510,500);//Badge of Honor
 
             //Gift of Exploration
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19677,1);
+            $this->redCraftSubItem2->add($subitem1Id,19677,1);
 
             //Obsidian Shard
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19925,250);
+            $this->redCraftSubItem2->add($subitem1Id,19925,250);
 
         //Gift of Kudzu
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19644,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19644,1);
 
             //Gift of Nature
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19642,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19642,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19712,250);//Ancient Wood Plank
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19667,1);//Gift of Thorns
-            RedFactory::GetRedCraftSubItem4()->add($subitem3Id,17273,500);//Deadly Bloom
+            $this->redCraftSubItem3->add($subitem2Id,19712,250);//Ancient Wood Plank
+            $subitem3Id = $this->redCraftSubItem3->add($subitem2Id,19667,1);//Gift of Thorns
+            $this->redCraftSubItem4->add($subitem3Id,17273,500);//Deadly Bloom
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19737,250);//Cured Hardened Leather Square
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,12128,250);//Omnomberry
+            $this->redCraftSubItem3->add($subitem2Id,19737,250);//Cured Hardened Leather Square
+            $this->redCraftSubItem3->add($subitem2Id,12128,250);//Omnomberry
 
             //Gift of Wood
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19622,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19622,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19712,250);//Ancient Wood Plank
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19709,250);//Elder Wood Plank
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19711,250);//Hard Wood Plank
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19714,250);//Seasoned Wood Plank
+            $this->redCraftSubItem3->add($subitem2Id,19712,250);//Ancient Wood Plank
+            $this->redCraftSubItem3->add($subitem2Id,19709,250);//Elder Wood Plank
+            $this->redCraftSubItem3->add($subitem2Id,19711,250);//Hard Wood Plank
+            $this->redCraftSubItem3->add($subitem2Id,19714,250);//Seasoned Wood Plank
 
             //Icy Runestone
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19676,100);
+            $this->redCraftSubItem2->add($subitem1Id,19676,100);
             //Superior Sigil of Celerity
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,24865,1);
+            $this->redCraftSubItem2->add($subitem1Id,24865,1);
 
         //Leaf of Kudzu
-        RedFactory::GetRedCraftSubItem1()->add($craftId,29172,1);
+        $this->redCraftSubItem1->add($craftId,29172,1);
     }
 
     private function addKraitkin() {
         //Kraitkin
-        $craftId = RedFactory::GetRedCrafting()->add(49203);
+        $craftId = $this->redCrafting->add(49203);
 
         //Gift of Fortune
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19626,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19626,1);
 
             //Gift of Magic
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19673,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19673,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24300,250);//Elaborate totem
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24277,250);//Pile of crystalline dust
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24283,250);//Powerful venom sac
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24295,250);//Vial of powerful blood
+            $this->redCraftSubItem3->add($subitem2Id,24300,250);//Elaborate totem
+            $this->redCraftSubItem3->add($subitem2Id,24277,250);//Pile of crystalline dust
+            $this->redCraftSubItem3->add($subitem2Id,24283,250);//Powerful venom sac
+            $this->redCraftSubItem3->add($subitem2Id,24295,250);//Vial of powerful blood
 
             //Gift of Might
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19672,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19672,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24358,250);//Ancient Bone
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24289,250);//Armored Scale
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24351,250);//Vicious Claw
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24357,250);//Vicious Fang
+            $this->redCraftSubItem3->add($subitem2Id,24358,250);//Ancient Bone
+            $this->redCraftSubItem3->add($subitem2Id,24289,250);//Armored Scale
+            $this->redCraftSubItem3->add($subitem2Id,24351,250);//Vicious Claw
+            $this->redCraftSubItem3->add($subitem2Id,24357,250);//Vicious Fang
 
             //Glob of Ectoplasm
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19721,250);
+            $this->redCraftSubItem2->add($subitem1Id,19721,250);
             //Mystic Clover
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19675,77);
+            $this->redCraftSubItem2->add($subitem1Id,19675,77);
 
         //Gift of Mastery
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19674,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19674,1);
 
             //Bloodstone Shard
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,20797,1);
+            $this->redCraftSubItem2->add($subitem1Id,20797,1);
 
             //Gift of Battle
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19678,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19678,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,35510,500);//Badge of Honor
+            $this->redCraftSubItem3->add($subitem2Id,35510,500);//Badge of Honor
 
             //Gift of Exploration
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19677,1);
+            $this->redCraftSubItem2->add($subitem1Id,19677,1);
 
             //Obsidian Shard
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19925,250);
+            $this->redCraftSubItem2->add($subitem1Id,19925,250);
 
         //Gift of Kraitkin
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19658,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19658,1);
 
             //Eel Statue
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19642,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19642,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24289,250);//Armored Scale
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19666,1);//Gift of the Forgeman
-            RedFactory::GetRedCraftSubItem4()->add($subitem3Id,17270,500);//Manifesto of the Moletariate
+            $this->redCraftSubItem3->add($subitem2Id,24289,250);//Armored Scale
+            $subitem3Id = $this->redCraftSubItem3->add($subitem2Id,19666,1);//Gift of the Forgeman
+            $this->redCraftSubItem4->add($subitem3Id,17270,500);//Manifesto of the Moletariate
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19737,250);//Cured Hardened Leather Square
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19685,150);//Orichalcum Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19737,250);//Cured Hardened Leather Square
+            $this->redCraftSubItem3->add($subitem2Id,19685,150);//Orichalcum Ingot
 
             //Gift of Energy
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19623,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19623,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24277,250);//Pile of Crystalline Dust
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24276,250);//Pile of Incandescent Dust
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24275,250);//Pile of Luminous Dust
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24274,250);//Pile of Radiant Dust
+            $this->redCraftSubItem3->add($subitem2Id,24277,250);//Pile of Crystalline Dust
+            $this->redCraftSubItem3->add($subitem2Id,24276,250);//Pile of Incandescent Dust
+            $this->redCraftSubItem3->add($subitem2Id,24275,250);//Pile of Luminous Dust
+            $this->redCraftSubItem3->add($subitem2Id,24274,250);//Pile of Radiant Dust
 
             //Icy Runestone
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19676,100);
+            $this->redCraftSubItem2->add($subitem1Id,19676,100);
             //Superior Sigil of Venom
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,24632,1);
+            $this->redCraftSubItem2->add($subitem1Id,24632,1);
 
         //Venom
-        RedFactory::GetRedCraftSubItem1()->add($craftId,29183,1);
+        $this->redCraftSubItem1->add($craftId,29183,1);
     }
 
     private function addKamohoali() {
         //Kamohoali
-        $craftId = RedFactory::GetRedCrafting()->add(30691);
+        $craftId = $this->redCrafting->add(30691);
 
         //Gift of Fortune
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19626,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19626,1);
 
             //Gift of Magic
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19673,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19673,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24300,250);//Elaborate totem
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24277,250);//Pile of crystalline dust
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24283,250);//Powerful venom sac
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24295,250);//Vial of powerful blood
+            $this->redCraftSubItem3->add($subitem2Id,24300,250);//Elaborate totem
+            $this->redCraftSubItem3->add($subitem2Id,24277,250);//Pile of crystalline dust
+            $this->redCraftSubItem3->add($subitem2Id,24283,250);//Powerful venom sac
+            $this->redCraftSubItem3->add($subitem2Id,24295,250);//Vial of powerful blood
 
             //Gift of Might
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19672,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19672,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24358,250);//Ancient Bone
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24289,250);//Armored Scale
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24351,250);//Vicious Claw
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24357,250);//Vicious Fang
+            $this->redCraftSubItem3->add($subitem2Id,24358,250);//Ancient Bone
+            $this->redCraftSubItem3->add($subitem2Id,24289,250);//Armored Scale
+            $this->redCraftSubItem3->add($subitem2Id,24351,250);//Vicious Claw
+            $this->redCraftSubItem3->add($subitem2Id,24357,250);//Vicious Fang
 
             //Glob of Ectoplasm
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19721,250);
+            $this->redCraftSubItem2->add($subitem1Id,19721,250);
             //Mystic Clover
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19675,77);
+            $this->redCraftSubItem2->add($subitem1Id,19675,77);
 
         //Gift of Mastery
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19674,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19674,1);
 
             //Bloodstone Shard
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,20797,1);
+            $this->redCraftSubItem2->add($subitem1Id,20797,1);
 
             //Gift of Battle
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19678,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19678,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,35510,500);//Badge of Honor
+            $this->redCraftSubItem3->add($subitem2Id,35510,500);//Badge of Honor
 
             //Gift of Exploration
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19677,1);
+            $this->redCraftSubItem2->add($subitem1Id,19677,1);
 
             //Obsidian Shard
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19925,250);
+            $this->redCraftSubItem2->add($subitem1Id,19925,250);
 
         //Gift of Kamohoali
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19657,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19657,1);
 
             //Shark Statue
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19641,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19641,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24289,250);//Armored Scale
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19669,1);//Gift of Zhaitan
-            RedFactory::GetRedCraftSubItem4()->add($subitem3Id,17272,500);//Shard of Zhaitan
+            $this->redCraftSubItem3->add($subitem2Id,24289,250);//Armored Scale
+            $subitem3Id = $this->redCraftSubItem3->add($subitem2Id,19669,1);//Gift of Zhaitan
+            $this->redCraftSubItem4->add($subitem3Id,17272,500);//Shard of Zhaitan
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19685,250);//Orichalcum Ingot
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24295,150);//Vial of Powerful Blood
+            $this->redCraftSubItem3->add($subitem2Id,19685,250);//Orichalcum Ingot
+            $this->redCraftSubItem3->add($subitem2Id,24295,150);//Vial of Powerful Blood
 
             //Gift of Metal
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19621,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19621,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19681,250);//Darksteel Ingot
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19684,250);//Mithril Ingot
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19685,250);//Orichalcum Ingot
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19686,250);//Platinum Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19681,250);//Darksteel Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19684,250);//Mithril Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19685,250);//Orichalcum Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19686,250);//Platinum Ingot
 
             //Icy Runestone
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19676,100);
+            $this->redCraftSubItem2->add($subitem1Id,19676,100);
             //Superior Sigil of Agony
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,24612,1);
+            $this->redCraftSubItem2->add($subitem1Id,24612,1);
 
         //Carcharias
-        RedFactory::GetRedCraftSubItem1()->add($craftId,29171,1);
+        $this->redCraftSubItem1->add($craftId,29171,1);
     }
 
     private function addJuggernaught() {
         //Juggernaught
-        $craftId = RedFactory::GetRedCrafting()->add(49192);
+        $craftId = $this->redCrafting->add(49192);
 
         //Gift of Fortune
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19626,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19626,1);
 
             //Gift of Magic
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19673,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19673,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24300,250);//Elaborate totem
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24277,250);//Pile of crystalline dust
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24283,250);//Powerful venom sac
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24295,250);//Vial of powerful blood
+            $this->redCraftSubItem3->add($subitem2Id,24300,250);//Elaborate totem
+            $this->redCraftSubItem3->add($subitem2Id,24277,250);//Pile of crystalline dust
+            $this->redCraftSubItem3->add($subitem2Id,24283,250);//Powerful venom sac
+            $this->redCraftSubItem3->add($subitem2Id,24295,250);//Vial of powerful blood
 
             //Gift of Might
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19672,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19672,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24358,250);//Ancient Bone
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24289,250);//Armored Scale
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24351,250);//Vicious Claw
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24357,250);//Vicious Fang
+            $this->redCraftSubItem3->add($subitem2Id,24358,250);//Ancient Bone
+            $this->redCraftSubItem3->add($subitem2Id,24289,250);//Armored Scale
+            $this->redCraftSubItem3->add($subitem2Id,24351,250);//Vicious Claw
+            $this->redCraftSubItem3->add($subitem2Id,24357,250);//Vicious Fang
 
             //Glob of Ectoplasm
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19721,250);
+            $this->redCraftSubItem2->add($subitem1Id,19721,250);
             //Mystic Clover
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19675,77);
+            $this->redCraftSubItem2->add($subitem1Id,19675,77);
 
         //Gift of Mastery
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19674,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19674,1);
 
             //Bloodstone Shard
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,20797,1);
+            $this->redCraftSubItem2->add($subitem1Id,20797,1);
 
             //Gift of Battle
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19678,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19678,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,35510,500);//Badge of Honor
+            $this->redCraftSubItem3->add($subitem2Id,35510,500);//Badge of Honor
 
             //Gift of Exploration
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19677,1);
+            $this->redCraftSubItem2->add($subitem1Id,19677,1);
 
             //Obsidian Shard
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19925,250);
+            $this->redCraftSubItem2->add($subitem1Id,19925,250);
 
         //Gift of The Juggernaut
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19649,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19649,1);
 
             //Vial of Quicksilver
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19633,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19633,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19688,250);//Steel Ingot
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19666,1);//Gift of the Forgeman
-            RedFactory::GetRedCraftSubItem4()->add($subitem3Id,17270,500);//Manifesto of the Moletariate
+            $this->redCraftSubItem3->add($subitem2Id,19688,250);//Steel Ingot
+            $subitem3Id = $this->redCraftSubItem3->add($subitem2Id,19666,1);//Gift of the Forgeman
+            $this->redCraftSubItem4->add($subitem3Id,17270,500);//Manifesto of the Moletariate
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24502,250);//Silver Doubloon
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24315,150);//Molten Lodestone
+            $this->redCraftSubItem3->add($subitem2Id,24502,250);//Silver Doubloon
+            $this->redCraftSubItem3->add($subitem2Id,24315,150);//Molten Lodestone
 
             //Gift of Metal
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19621,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19621,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19681,250);//Darksteel Ingot
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19684,250);//Mithril Ingot
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19685,250);//Orichalcum Ingot
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19686,250);//Platinum Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19681,250);//Darksteel Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19684,250);//Mithril Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19685,250);//Orichalcum Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19686,250);//Platinum Ingot
 
             //Icy Runestone
-        RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19676,100);
+        $this->redCraftSubItem2->add($subitem1Id,19676,100);
         //Superior Sigil of Sanctuary
-        RedFactory::GetRedCraftSubItem2()->add($subitem1Id,24857,1);
+        $this->redCraftSubItem2->add($subitem1Id,24857,1);
 
         //The Colossus
-        RedFactory::GetRedCraftSubItem1()->add($craftId,29170,1);
+        $this->redCraftSubItem1->add($craftId,29170,1);
     }
 
     private function addIncinerator() {
         //Incinerator
-        $craftId = RedFactory::GetRedCrafting()->add(30687);
+        $craftId = $this->redCrafting->add(30687);
 
             //Gift of Fortune
-            $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19626,1);
+            $subitem1Id = $this->redCraftSubItem1->add($craftId,19626,1);
 
             //Gift of Magic
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19673,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19673,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24300,250);//Elaborate totem
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24277,250);//Pile of crystalline dust
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24283,250);//Powerful venom sac
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24295,250);//Vial of powerful blood
+            $this->redCraftSubItem3->add($subitem2Id,24300,250);//Elaborate totem
+            $this->redCraftSubItem3->add($subitem2Id,24277,250);//Pile of crystalline dust
+            $this->redCraftSubItem3->add($subitem2Id,24283,250);//Powerful venom sac
+            $this->redCraftSubItem3->add($subitem2Id,24295,250);//Vial of powerful blood
 
             //Gift of Might
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19672,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19672,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24358,250);//Ancient Bone
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24289,250);//Armored Scale
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24351,250);//Vicious Claw
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24357,250);//Vicious Fang
+            $this->redCraftSubItem3->add($subitem2Id,24358,250);//Ancient Bone
+            $this->redCraftSubItem3->add($subitem2Id,24289,250);//Armored Scale
+            $this->redCraftSubItem3->add($subitem2Id,24351,250);//Vicious Claw
+            $this->redCraftSubItem3->add($subitem2Id,24357,250);//Vicious Fang
 
             //Glob of Ectoplasm
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19721,250);
+            $this->redCraftSubItem2->add($subitem1Id,19721,250);
             //Mystic Clover
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19675,77);
+            $this->redCraftSubItem2->add($subitem1Id,19675,77);
 
         //Gift of Mastery
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19674,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19674,1);
 
             //Bloodstone Shard
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,20797,1);
+            $this->redCraftSubItem2->add($subitem1Id,20797,1);
 
             //Gift of Battle
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19678,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19678,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,35510,500);//Badge of Honor
+            $this->redCraftSubItem3->add($subitem2Id,35510,500);//Badge of Honor
 
             //Gift of Exploration
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19677,1);
+            $this->redCraftSubItem2->add($subitem1Id,19677,1);
 
             //Obsidian Shard
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19925,250);
+            $this->redCraftSubItem2->add($subitem1Id,19925,250);
 
         //Gift of The Incinerator
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19645,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19645,1);
 
             //Vial of Liquid Flame
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19634,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19634,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24325,100);//Destroyer Lodestone
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19668,1);//Gift of Baelfire
-            RedFactory::GetRedCraftSubItem4()->add($subitem3Id,17275,500);//Flame Legion Charr Carving
+            $this->redCraftSubItem3->add($subitem2Id,24325,100);//Destroyer Lodestone
+            $subitem3Id = $this->redCraftSubItem3->add($subitem2Id,19668,1);//Gift of Baelfire
+            $this->redCraftSubItem4->add($subitem3Id,17275,500);//Flame Legion Charr Carving
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,12479,250);//Ghost Pepper
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24315,100);//Molten Lodestone
+            $this->redCraftSubItem3->add($subitem2Id,12479,250);//Ghost Pepper
+            $this->redCraftSubItem3->add($subitem2Id,24315,100);//Molten Lodestone
 
             //Gift of Metal
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19621,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19621,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19681,250);//Darksteel Ingot
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19684,250);//Mithril Ingot
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19685,250);//Orichalcum Ingot
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19686,250);//Platinum Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19681,250);//Darksteel Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19684,250);//Mithril Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19685,250);//Orichalcum Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19686,250);//Platinum Ingot
 
             //Icy Runestone
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19676,100);
+            $this->redCraftSubItem2->add($subitem1Id,19676,100);
             //Superior Sigil of Fire
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,24548,1);
+            $this->redCraftSubItem2->add($subitem1Id,24548,1);
 
         //Spark
-        RedFactory::GetRedCraftSubItem1()->add($craftId,29167,1);
+        $this->redCraftSubItem1->add($craftId,29167,1);
     }
 
     private function addHowler() {
         //Howler
-        $craftId = RedFactory::GetRedCrafting()->add(30702);
+        $craftId = $this->redCrafting->add(30702);
 
         //Gift of Fortune
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19626,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19626,1);
 
             //Gift of Magic
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19673,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19673,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24300,250);//Elaborate totem
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24277,250);//Pile of crystalline dust
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24283,250);//Powerful venom sac
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24295,250);//Vial of powerful blood
+            $this->redCraftSubItem3->add($subitem2Id,24300,250);//Elaborate totem
+            $this->redCraftSubItem3->add($subitem2Id,24277,250);//Pile of crystalline dust
+            $this->redCraftSubItem3->add($subitem2Id,24283,250);//Powerful venom sac
+            $this->redCraftSubItem3->add($subitem2Id,24295,250);//Vial of powerful blood
 
             //Gift of Might
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19672,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19672,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24358,250);//Ancient Bone
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24289,250);//Armored Scale
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24351,250);//Vicious Claw
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24357,250);//Vicious Fang
+            $this->redCraftSubItem3->add($subitem2Id,24358,250);//Ancient Bone
+            $this->redCraftSubItem3->add($subitem2Id,24289,250);//Armored Scale
+            $this->redCraftSubItem3->add($subitem2Id,24351,250);//Vicious Claw
+            $this->redCraftSubItem3->add($subitem2Id,24357,250);//Vicious Fang
 
             //Glob of Ectoplasm
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19721,250);
+            $this->redCraftSubItem2->add($subitem1Id,19721,250);
             //Mystic Clover
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19675,77);
+            $this->redCraftSubItem2->add($subitem1Id,19675,77);
 
         //Gift of Mastery
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19674,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19674,1);
 
             //Bloodstone Shard
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,20797,1);
+            $this->redCraftSubItem2->add($subitem1Id,20797,1);
 
             //Gift of Battle
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19678,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19678,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,35510,500);//Badge of Honor
+            $this->redCraftSubItem3->add($subitem2Id,35510,500);//Badge of Honor
 
             //Gift of Exploration
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19677,1);
+            $this->redCraftSubItem2->add($subitem1Id,19677,1);
 
             //Obsidian Shard
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19925,250);
+            $this->redCraftSubItem2->add($subitem1Id,19925,250);
 
         //Gift of Howler
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19662,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19662,1);
 
             //Wolf Statue
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19640,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19640,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19737,250);//Cured Hardened Leather Square
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19667,1);//Gift of Thorns
-            RedFactory::GetRedCraftSubItem4()->add($subitem3Id,17273,500);//Deadly Bloom
+            $this->redCraftSubItem3->add($subitem2Id,19737,250);//Cured Hardened Leather Square
+            $subitem3Id = $this->redCraftSubItem3->add($subitem2Id,19667,1);//Gift of Thorns
+            $this->redCraftSubItem4->add($subitem3Id,17273,500);//Deadly Bloom
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24357,250);//Vicious Fang
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19685,250);//Orichalcum Ingot
+            $this->redCraftSubItem3->add($subitem2Id,24357,250);//Vicious Fang
+            $this->redCraftSubItem3->add($subitem2Id,19685,250);//Orichalcum Ingot
 
             //Gift of Wood
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19622,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19622,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19712,250);//Ancient Wood Plank
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19709,250);//Elder Wood Plank
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19711,250);//Hard Wood Plank
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19714,250);//Seasoned Wood Plank
+            $this->redCraftSubItem3->add($subitem2Id,19712,250);//Ancient Wood Plank
+            $this->redCraftSubItem3->add($subitem2Id,19709,250);//Elder Wood Plank
+            $this->redCraftSubItem3->add($subitem2Id,19711,250);//Hard Wood Plank
+            $this->redCraftSubItem3->add($subitem2Id,19714,250);//Seasoned Wood Plank
 
             //Icy Runestone
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19676,100);
+            $this->redCraftSubItem2->add($subitem1Id,19676,100);
             //Superior Sigil of Accuracy
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,24618,1);
+            $this->redCraftSubItem2->add($subitem1Id,24618,1);
 
         //Howl
-        RedFactory::GetRedCraftSubItem1()->add($craftId,29184,1);
+        $this->redCraftSubItem1->add($craftId,29184,1);
     }
 
     private function addFrostfang() {
         //Frostfang
-        $craftId = RedFactory::GetRedCrafting()->add(30684);
+        $craftId = $this->redCrafting->add(30684);
 
         //Gift of Fortune
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19626,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19626,1);
 
             //Gift of Magic
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19673,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19673,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24300,250);//Elaborate totem
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24277,250);//Pile of crystalline dust
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24283,250);//Powerful venom sac
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24295,250);//Vial of powerful blood
+            $this->redCraftSubItem3->add($subitem2Id,24300,250);//Elaborate totem
+            $this->redCraftSubItem3->add($subitem2Id,24277,250);//Pile of crystalline dust
+            $this->redCraftSubItem3->add($subitem2Id,24283,250);//Powerful venom sac
+            $this->redCraftSubItem3->add($subitem2Id,24295,250);//Vial of powerful blood
 
             //Gift of Might
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19672,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19672,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24358,250);//Ancient Bone
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24289,250);//Armored Scale
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24351,250);//Vicious Claw
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24357,250);//Vicious Fang
+            $this->redCraftSubItem3->add($subitem2Id,24358,250);//Ancient Bone
+            $this->redCraftSubItem3->add($subitem2Id,24289,250);//Armored Scale
+            $this->redCraftSubItem3->add($subitem2Id,24351,250);//Vicious Claw
+            $this->redCraftSubItem3->add($subitem2Id,24357,250);//Vicious Fang
 
             //Glob of Ectoplasm
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19721,250);
+            $this->redCraftSubItem2->add($subitem1Id,19721,250);
             //Mystic Clover
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19675,77);
+            $this->redCraftSubItem2->add($subitem1Id,19675,77);
 
         //Gift of Mastery
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19674,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19674,1);
 
             //Bloodstone Shard
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,20797,1);
+            $this->redCraftSubItem2->add($subitem1Id,20797,1);
 
             //Gift of Battle
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19678,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19678,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,35510,500);//Badge of Honor
+            $this->redCraftSubItem3->add($subitem2Id,35510,500);//Badge of Honor
 
             //Gift of Exploration
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19677,1);
+            $this->redCraftSubItem2->add($subitem1Id,19677,1);
 
             //Obsidian Shard
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19925,250);
+            $this->redCraftSubItem2->add($subitem1Id,19925,250);
 
         //Gift of Frostfang
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19625,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19625,1);
 
             //Gift of Ice
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19624,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19624,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24340,1);//Corrupted Lodestone
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19670,1);//Gift of Sanctuary
-            RedFactory::GetRedCraftSubItem4()->add($subitem3Id,17277,500);//Symbol of Koda
+            $this->redCraftSubItem3->add($subitem2Id,24340,1);//Corrupted Lodestone
+            $subitem3Id = $this->redCraftSubItem3->add($subitem2Id,19670,1);//Gift of Sanctuary
+            $this->redCraftSubItem4->add($subitem3Id,17277,500);//Symbol of Koda
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24320,100);//Glacial Lonestone
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19685,250);//Orichalcum Ingot
+            $this->redCraftSubItem3->add($subitem2Id,24320,100);//Glacial Lonestone
+            $this->redCraftSubItem3->add($subitem2Id,19685,250);//Orichalcum Ingot
 
             //Gift of Metal
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19621,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19621,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19681,250);//Darksteel Ingot
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19684,250);//Mithril Ingot
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19685,250);//Orichalcum Ingot
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19686,250);//Platinum Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19681,250);//Darksteel Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19684,250);//Mithril Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19685,250);//Orichalcum Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19686,250);//Platinum Ingot
 
             //Icy Runestone
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19676,100);
+            $this->redCraftSubItem2->add($subitem1Id,19676,100);
             //Superior Sigil of Ice
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,24555,1);
+            $this->redCraftSubItem2->add($subitem1Id,24555,1);
 
         //Tooth of Frostfang
-        RedFactory::GetRedCraftSubItem1()->add($craftId,29166,1);
+        $this->redCraftSubItem1->add($craftId,29166,1);
     }
 
     private function addFrenzy() {
         //Frenzy
-        $craftId = RedFactory::GetRedCrafting()->add(49199);
+        $craftId = $this->redCrafting->add(49199);
 
         //Gift of Fortune
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19626,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19626,1);
 
         //Gift of Magic
-        $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19673,1);
+        $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19673,1);
 
-        RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24300,250);//Elaborate totem
-        RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24277,250);//Pile of crystalline dust
-        RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24283,250);//Powerful venom sac
-        RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24295,250);//Vial of powerful blood
+        $this->redCraftSubItem3->add($subitem2Id,24300,250);//Elaborate totem
+        $this->redCraftSubItem3->add($subitem2Id,24277,250);//Pile of crystalline dust
+        $this->redCraftSubItem3->add($subitem2Id,24283,250);//Powerful venom sac
+        $this->redCraftSubItem3->add($subitem2Id,24295,250);//Vial of powerful blood
 
         //Gift of Might
-        $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19672,1);
+        $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19672,1);
 
-        RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24358,250);//Ancient Bone
-        RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24289,250);//Armored Scale
-        RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24351,250);//Vicious Claw
-        RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24357,250);//Vicious Fang
+        $this->redCraftSubItem3->add($subitem2Id,24358,250);//Ancient Bone
+        $this->redCraftSubItem3->add($subitem2Id,24289,250);//Armored Scale
+        $this->redCraftSubItem3->add($subitem2Id,24351,250);//Vicious Claw
+        $this->redCraftSubItem3->add($subitem2Id,24357,250);//Vicious Fang
 
         //Glob of Ectoplasm
-        RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19721,250);
+        $this->redCraftSubItem2->add($subitem1Id,19721,250);
         //Mystic Clover
-        RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19675,77);
+        $this->redCraftSubItem2->add($subitem1Id,19675,77);
 
         //Gift of Mastery
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19674,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19674,1);
 
         //Bloodstone Shard
-        RedFactory::GetRedCraftSubItem2()->add($subitem1Id,20797,1);
+        $this->redCraftSubItem2->add($subitem1Id,20797,1);
 
         //Gift of Battle
-        $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19678,1);
+        $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19678,1);
 
-        RedFactory::GetRedCraftSubItem3()->add($subitem2Id,35510,500);//Badge of Honor
+        $this->redCraftSubItem3->add($subitem2Id,35510,500);//Badge of Honor
 
         //Gift of Exploration
-        RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19677,1);
+        $this->redCraftSubItem2->add($subitem1Id,19677,1);
 
         //Obsidian Shard
-        RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19925,250);
+        $this->redCraftSubItem2->add($subitem1Id,19925,250);
 
         //Gift of Frenzy
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19659,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19659,1);
 
         //Gift of Water
-        $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19643,1);
+        $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19643,1);
 
-        $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19670,1);//Gift of Sanctuary
-        RedFactory::GetRedCraftSubItem4()->add($subitem3Id,17277,500);//Symbol of Koda
+        $subitem3Id = $this->redCraftSubItem3->add($subitem2Id,19670,1);//Gift of Sanctuary
+        $this->redCraftSubItem4->add($subitem3Id,17277,500);//Symbol of Koda
 
-        RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24320,100);//Glacial Lonestone
-        RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24315,100);//Molten Lodestone
-        RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19685,250);//Orichalcum Ingot
+        $this->redCraftSubItem3->add($subitem2Id,24320,100);//Glacial Lonestone
+        $this->redCraftSubItem3->add($subitem2Id,24315,100);//Molten Lodestone
+        $this->redCraftSubItem3->add($subitem2Id,19685,250);//Orichalcum Ingot
 
         //Gift of Wood
-        $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19622,1);
+        $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19622,1);
 
-        RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19712,250);//Ancient Wood Plank
-        RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19709,250);//Elder Wood Plank
-        RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19711,250);//Hard Wood Plank
-        RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19714,250);//Seasoned Wood Plank
+        $this->redCraftSubItem3->add($subitem2Id,19712,250);//Ancient Wood Plank
+        $this->redCraftSubItem3->add($subitem2Id,19709,250);//Elder Wood Plank
+        $this->redCraftSubItem3->add($subitem2Id,19711,250);//Hard Wood Plank
+        $this->redCraftSubItem3->add($subitem2Id,19714,250);//Seasoned Wood Plank
 
         //Icy Runestone
-        RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19676,100);
+        $this->redCraftSubItem2->add($subitem1Id,19676,100);
         //Superior Sigil of Rage
-        RedFactory::GetRedCraftSubItem2()->add($subitem1Id,24561,1);
+        $this->redCraftSubItem2->add($subitem1Id,24561,1);
 
         //Rage
-        RedFactory::GetRedCraftSubItem1()->add($craftId,29179,1);
+        $this->redCraftSubItem1->add($craftId,29179,1);
     }
 
     private function addFlameseeker() {
         //The Flameseeker Prophecies
-        $craftId = RedFactory::GetRedCrafting()->add(30696);
+        $craftId = $this->redCrafting->add(30696);
 
         //Gift of Fortune
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19626,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19626,1);
 
             //Gift of Magic
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19673,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19673,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24300,250);//Elaborate totem
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24277,250);//Pile of crystalline dust
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24283,250);//Powerful venom sac
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24295,250);//Vial of powerful blood
+            $this->redCraftSubItem3->add($subitem2Id,24300,250);//Elaborate totem
+            $this->redCraftSubItem3->add($subitem2Id,24277,250);//Pile of crystalline dust
+            $this->redCraftSubItem3->add($subitem2Id,24283,250);//Powerful venom sac
+            $this->redCraftSubItem3->add($subitem2Id,24295,250);//Vial of powerful blood
 
             //Gift of Might
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19672,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19672,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24358,250);//Ancient Bone
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24289,250);//Armored Scale
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24351,250);//Vicious Claw
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24357,250);//Vicious Fang
+            $this->redCraftSubItem3->add($subitem2Id,24358,250);//Ancient Bone
+            $this->redCraftSubItem3->add($subitem2Id,24289,250);//Armored Scale
+            $this->redCraftSubItem3->add($subitem2Id,24351,250);//Vicious Claw
+            $this->redCraftSubItem3->add($subitem2Id,24357,250);//Vicious Fang
 
             //Glob of Ectoplasm
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19721,250);
+            $this->redCraftSubItem2->add($subitem1Id,19721,250);
             //Mystic Clover
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19675,77);
+            $this->redCraftSubItem2->add($subitem1Id,19675,77);
 
 
         //Gift of Mastery
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19674,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19674,1);
 
             //Bloodstone Shard
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,20797,1);
+            $this->redCraftSubItem2->add($subitem1Id,20797,1);
 
             //Gift of Battle
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19678,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19678,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,35510,500);//Badge of Honor
+            $this->redCraftSubItem3->add($subitem2Id,35510,500);//Badge of Honor
 
             //Gift of Exploration
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19677,1);
+            $this->redCraftSubItem2->add($subitem1Id,19677,1);
 
             //Obsidian Shard
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19925,250);
+            $this->redCraftSubItem2->add($subitem1Id,19925,250);
 
         //Gift of The Flame Seeker Prophices
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19653,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19653,1);
 
             //Gift of History
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19629,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19629,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19737,250);//Cured Hardened Leather Square
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19664,1);//Gift of Ascalon
-            RedFactory::GetRedCraftSubItem4()->add($subitem3Id,16982,500);//Ascalonian Tear
+            $this->redCraftSubItem3->add($subitem2Id,19737,250);//Cured Hardened Leather Square
+            $subitem3Id = $this->redCraftSubItem3->add($subitem2Id,19664,1);//Gift of Ascalon
+            $this->redCraftSubItem4->add($subitem3Id,16982,500);//Ascalonian Tear
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24310,100);//Onyx Lodestone
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24277,250);//Pile of Crystalline Dust
+            $this->redCraftSubItem3->add($subitem2Id,24310,100);//Onyx Lodestone
+            $this->redCraftSubItem3->add($subitem2Id,24277,250);//Pile of Crystalline Dust
 
             //Gift of Metal
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19621,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19621,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19681,250);//Darksteel Ingot
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19684,250);//Mithril Ingot
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19685,250);//Orichalcum Ingot
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19686,250);//Platinum Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19681,250);//Darksteel Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19684,250);//Mithril Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19685,250);//Orichalcum Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19686,250);//Platinum Ingot
 
             //Icy Runestone
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19676,100);
+            $this->redCraftSubItem2->add($subitem1Id,19676,100);
             //Superior Sigil of Battle
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,24601,1);
+            $this->redCraftSubItem2->add($subitem1Id,24601,1);
 
         //The Chosen
-        RedFactory::GetRedCraftSubItem1()->add($craftId,29177,1);
+        $this->redCraftSubItem1->add($craftId,29177,1);
     }
 
     private function addBifrost() {
         //Bifrost
-        $craftId = RedFactory::GetRedCrafting()->add(30698);
+        $craftId = $this->redCrafting->add(30698);
 
         //Gift of Fortune
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19626,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19626,1);
 
         //Gift of Magic
-        $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19673,1);
+        $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19673,1);
 
-        RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24300,250);//Elaborate totem
-        RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24277,250);//Pile of crystalline dust
-        RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24283,250);//Powerful venom sac
-        RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24295,250);//Vial of powerful blood
+        $this->redCraftSubItem3->add($subitem2Id,24300,250);//Elaborate totem
+        $this->redCraftSubItem3->add($subitem2Id,24277,250);//Pile of crystalline dust
+        $this->redCraftSubItem3->add($subitem2Id,24283,250);//Powerful venom sac
+        $this->redCraftSubItem3->add($subitem2Id,24295,250);//Vial of powerful blood
 
         //Gift of Might
-        $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19672,1);
+        $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19672,1);
 
-        RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24358,250);//Ancient Bone
-        RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24289,250);//Armored Scale
-        RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24351,250);//Vicious Claw
-        RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24357,250);//Vicious Fang
+        $this->redCraftSubItem3->add($subitem2Id,24358,250);//Ancient Bone
+        $this->redCraftSubItem3->add($subitem2Id,24289,250);//Armored Scale
+        $this->redCraftSubItem3->add($subitem2Id,24351,250);//Vicious Claw
+        $this->redCraftSubItem3->add($subitem2Id,24357,250);//Vicious Fang
 
         //Glob of Ectoplasm
-        RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19721,250);
+        $this->redCraftSubItem2->add($subitem1Id,19721,250);
         //Mystic Clover
-        RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19675,77);
+        $this->redCraftSubItem2->add($subitem1Id,19675,77);
 
 
         //Gift of Mastery
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19674,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19674,1);
 
             //Bloodstone Shard
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,20797,1);
+            $this->redCraftSubItem2->add($subitem1Id,20797,1);
 
             //Gift of Battle
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19678,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19678,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,35510,500);//Badge of Honor
+            $this->redCraftSubItem3->add($subitem2Id,35510,500);//Badge of Honor
 
             //Gift of Exploration
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19677,1);
+            $this->redCraftSubItem2->add($subitem1Id,19677,1);
 
             //Obsidian Shard
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19925,250);
+            $this->redCraftSubItem2->add($subitem1Id,19925,250);
 
         //Gift of The Bifrost
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19654,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19654,1);
 
         //Gift of Color
-        $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19638,1);
+        $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19638,1);
 
-        $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19669,1);//Gift of Zhaitan
-        RedFactory::GetRedCraftSubItem4()->add($subitem3Id,17272,500);//Shard of Zhaitan
+        $subitem3Id = $this->redCraftSubItem3->add($subitem2Id,19669,1);//Gift of Zhaitan
+        $this->redCraftSubItem4->add($subitem3Id,17272,500);//Shard of Zhaitan
 
-        RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24522,100);//Opal Orb
-        RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24277,250);//Pile of Crystalline Dust
-        RedFactory::GetRedCraftSubItem3()->add($subitem2Id,20323,250);//Unidentified Dye
+        $this->redCraftSubItem3->add($subitem2Id,24522,100);//Opal Orb
+        $this->redCraftSubItem3->add($subitem2Id,24277,250);//Pile of Crystalline Dust
+        $this->redCraftSubItem3->add($subitem2Id,20323,250);//Unidentified Dye
 
         //Gift of Energy
-        $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19623,1);
+        $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19623,1);
 
-        RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24277,250);//Pile of Crystalline Dust
-        RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24276,250);//Pile of Incandescent Dust
-        RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24275,250);//Pile of Luminous Dust
-        RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24274,250);//Pile of Radiant Dust
+        $this->redCraftSubItem3->add($subitem2Id,24277,250);//Pile of Crystalline Dust
+        $this->redCraftSubItem3->add($subitem2Id,24276,250);//Pile of Incandescent Dust
+        $this->redCraftSubItem3->add($subitem2Id,24275,250);//Pile of Luminous Dust
+        $this->redCraftSubItem3->add($subitem2Id,24274,250);//Pile of Radiant Dust
 
         //Icy Runestone
-        RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19676,100);
+        $this->redCraftSubItem2->add($subitem1Id,19676,100);
         //Superior Sigil of Nullification
-        RedFactory::GetRedCraftSubItem2()->add($subitem1Id,24572,1);
+        $this->redCraftSubItem2->add($subitem1Id,24572,1);
 
         //Gift of The Bifrost
-        RedFactory::GetRedCraftSubItem1()->add($craftId,29180,1);
+        $this->redCraftSubItem1->add($craftId,29180,1);
     }
 
     private function addBolt() {
         //Bolt
-        $craftId = RedFactory::GetRedCrafting()->add(30699);
+        $craftId = $this->redCrafting->add(30699);
 
         //Gift of Bolt
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19655,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19655,1);
 
             //Gift of Lightning
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19639,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19639,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19746,250);//Bolt of Gossamer
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24305,100);//Charged Lodestone
-            $subitem3Id = RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19664,1);//Gift of Ascalon
-            RedFactory::GetRedCraftSubItem4()->add($subitem3Id,16982,500);//Ascalonian Tear
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19685,250);//Orichalcum Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19746,250);//Bolt of Gossamer
+            $this->redCraftSubItem3->add($subitem2Id,24305,100);//Charged Lodestone
+            $subitem3Id = $this->redCraftSubItem3->add($subitem2Id,19664,1);//Gift of Ascalon
+            $this->redCraftSubItem4->add($subitem3Id,16982,500);//Ascalonian Tear
+            $this->redCraftSubItem3->add($subitem2Id,19685,250);//Orichalcum Ingot
 
             //Gift of Metal
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19621,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19621,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19681,250);//Darksteel Ingot
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19684,250);//Mithril Ingot
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19685,250);//Orichalcum Ingot
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,19686,250);//Platinum Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19681,250);//Darksteel Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19684,250);//Mithril Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19685,250);//Orichalcum Ingot
+            $this->redCraftSubItem3->add($subitem2Id,19686,250);//Platinum Ingot
 
             //Icy Runestone
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19676,100);
+            $this->redCraftSubItem2->add($subitem1Id,19676,100);
             //Superior Sigil of Air
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,24554,1);
+            $this->redCraftSubItem2->add($subitem1Id,24554,1);
 
         //Gift of Fortune
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19626,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19626,1);
 
             //Gift of Magic
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19673,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19673,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24300,250);//Elaborate totem
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24277,250);//Pile of crystalline dust
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24283,250);//Powerful venom sac
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24295,250);//Vial of powerful blood
+            $this->redCraftSubItem3->add($subitem2Id,24300,250);//Elaborate totem
+            $this->redCraftSubItem3->add($subitem2Id,24277,250);//Pile of crystalline dust
+            $this->redCraftSubItem3->add($subitem2Id,24283,250);//Powerful venom sac
+            $this->redCraftSubItem3->add($subitem2Id,24295,250);//Vial of powerful blood
 
             //Gift of Might
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19672,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19672,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24358,250);//Ancient Bone
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24289,250);//Armored Scale
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24351,250);//Vicious Claw
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,24357,250);//Vicious Fang
+            $this->redCraftSubItem3->add($subitem2Id,24358,250);//Ancient Bone
+            $this->redCraftSubItem3->add($subitem2Id,24289,250);//Armored Scale
+            $this->redCraftSubItem3->add($subitem2Id,24351,250);//Vicious Claw
+            $this->redCraftSubItem3->add($subitem2Id,24357,250);//Vicious Fang
 
             //Glob of Ectoplasm
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19721,250);
+            $this->redCraftSubItem2->add($subitem1Id,19721,250);
             //Mystic Clover
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19675,77);
+            $this->redCraftSubItem2->add($subitem1Id,19675,77);
 
         //Gift of Mastery
-        $subitem1Id = RedFactory::GetRedCraftSubItem1()->add($craftId,19674,1);
+        $subitem1Id = $this->redCraftSubItem1->add($craftId,19674,1);
 
             //Bloodstone Shard
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,20797,1);
+            $this->redCraftSubItem2->add($subitem1Id,20797,1);
 
             //Gift of Battle
-            $subitem2Id = RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19678,1);
+            $subitem2Id = $this->redCraftSubItem2->add($subitem1Id,19678,1);
 
-            RedFactory::GetRedCraftSubItem3()->add($subitem2Id,35510,500);//Badge of Honor
+            $this->redCraftSubItem3->add($subitem2Id,35510,500);//Badge of Honor
 
             //Gift of Exploration
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19677,1);
+            $this->redCraftSubItem2->add($subitem1Id,19677,1);
 
             //Obsidian Shard
-            RedFactory::GetRedCraftSubItem2()->add($subitem1Id,19925,250);
+            $this->redCraftSubItem2->add($subitem1Id,19925,250);
 
 
         //Zap
-        RedFactory::GetRedCraftSubItem1()->add($craftId,29181,1);
+        $this->redCraftSubItem1->add($craftId,29181,1);
     }
 
     private function addEternity()
     {
         //Eternity
-        $craftId = RedFactory::GetRedCrafting()->add(30689);
+        $craftId = $this->redCrafting->add(30689);
 
         //Philosopher's stone
-        RedFactory::GetRedCraftSubItem1()->add($craftId, 20796, 10);
+        $this->redCraftSubItem1->add($craftId, 20796, 10);
         //Pile of Crystalline Dust
-        RedFactory::GetRedCraftSubItem1()->add($craftId, 24277, 5);
+        $this->redCraftSubItem1->add($craftId, 24277, 5);
         //Sunrise
-        RedFactory::GetRedCraftSubItem1()->add($craftId, 30703, 1);
+        $this->redCraftSubItem1->add($craftId, 30703, 1);
         //Twilight
-        RedFactory::GetRedCraftSubItem1()->add($craftId, 30704, 1);
+        $this->redCraftSubItem1->add($craftId, 30704, 1);
     }
 
 }
