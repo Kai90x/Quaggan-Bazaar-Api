@@ -8,6 +8,7 @@
 $app->get('/legendaries','\KaiApp\Controller\CraftingController:all');
 $app->get('/legendaries/{id}','\KaiApp\Controller\CraftingController:get');
 $app->put('/legendaries','\KaiApp\Controller\CraftingController:reset');
+$app->get('/events','\KaiApp\Controller\EventController:get');
 
 $app->get('/', function ($request, $response, $args) {
     $args["routes"] = array();

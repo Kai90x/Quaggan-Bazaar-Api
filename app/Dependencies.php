@@ -6,6 +6,12 @@
  * Time: 2:34 PM
  */
 // Define your controllers
+use Jgut\Slim\Controller\Resolver;
+
+$controllers = [
+    '\KaiApp\Controller\EventController'
+];
+
 $container = $app->getContainer();
 
 $container['RedCrafting'] = function ($c) {
@@ -34,6 +40,10 @@ $container['view'] = function ($container) {
 
     return $view;
 };
+
+foreach (Resolver::resolve($controllers) as $controller => $callback) {
+    $container[$controller] = $callback;
+}
 
 $container['\KaiApp\Controller\CraftingController'] = function ($container) {
     $controller = new KaiApp\Controller\CraftingController($container->get("RedCrafting"),$container->get("RedCraftingSubItem1"),$container->get("RedCraftingSubItem2"),

@@ -12,6 +12,7 @@ return array(
     'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-message/src'),
     'PhpDocReader\\' => array($vendorDir . '/php-di/phpdoc-reader/src/PhpDocReader'),
     'League\\Fractal\\' => array($vendorDir . '/league/fractal/src'),
+    'KaiApp\\Serialization\\' => array($baseDir . '/app/src/Serialization'),
     'KaiApp\\' => array($baseDir . '/app/src'),
     'Jgut\\Slim\\Controller\\' => array($vendorDir . '/juliangut/slim-controller/src'),
     'Invoker\\' => array($vendorDir . '/php-di/invoker/src'),

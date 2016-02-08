@@ -7,15 +7,28 @@
  */
 namespace KaiApp\Controller;
 
-use Utils\Common;
+use JsonMapper;
+use KaiApp\JsonTransformers\EventTransformer;
+use KaiApp\Serialization\Event\RootObject;
+use KaiApp\Utils;
+use League\Fractal\Resource\Collection;
 
-class event extends BaseController
+class EventController extends BaseController
 {
 
-    public function GetEventTimerAction()
+    public function get($request, $response, array $args)
     {
-        $eventJson =  (file_get_contents( Common::GetEventTimerUrl()));
-        echo str_replace("/_","_",$eventJson);
+        try {
+            $eventJson = (file_get_contents(Utils\ImportioUtils::getEventTimeUrl()));
+            $eventJson = str_replace("/_", "_", $eventJson);
+            $mapper = new JsonMapper();
+
+            $eventJsonObj = $mapper->map(json_decode($eventJson), new RootObject());
+
+            return $this->complexResponse(new Collection($eventJsonObj->results, new EventTransformer()),$response);
+        } catch(\Exception $e) {
+            return $this->simpleResponse("An error has occurred",$response,500);
+        }
     }
 
 }

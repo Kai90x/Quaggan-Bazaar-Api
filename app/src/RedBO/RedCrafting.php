@@ -14,7 +14,7 @@ class RedCrafting extends RedQuery {
 
     public function __construct()
     {
-        parent::__construct('craftings');
+        parent::__construct(SELF::CRAFTING);
     }
 
 	public function add($itemid) {

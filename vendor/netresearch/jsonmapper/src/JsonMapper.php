@@ -48,6 +48,16 @@ class JsonMapper
     public $bExceptionOnMissingData = false;
 
     /**
+     * If the types of map() parameters shall be checked.
+     * You have to disable it if you're using the json_decode "assoc" parameter.
+     *
+     *     json_decode($str, false)
+     *
+     * @var boolean
+     */
+    public $bEnforceMapType = true;
+
+    /**
      * Runtime cache for inspected classes. This is particularly effective if
      * mapArray() is called with a large number of objects
      *
@@ -66,6 +76,19 @@ class JsonMapper
      */
     public function map($json, $object)
     {
+        if ($this->bEnforceMapType && !is_object($json)) {
+            throw new InvalidArgumentException(
+                'JsonMapper::map() requires first argument to be an object'
+                . ', ' . gettype($json) . ' given.'
+            );
+        }
+        if (!is_object($object)) {
+            throw new InvalidArgumentException(
+                'JsonMapper::map() requires second argument to be an object'
+                . ', ' . gettype($object) . ' given.'
+            );
+        }
+
         $strClassName = get_class($object);
         $rc = new ReflectionClass($object);
         $strNs = $rc->getNamespaceName();
@@ -80,7 +103,7 @@ class JsonMapper
                     = $this->inspectProperty($rc, $key);
             }
 
-            list($hasProperty, $isSettable, $type, $setter)
+            list($hasProperty, $accessor, $type)
                 = $this->arInspectedClasses[$strClassName][$key];
 
             if (!$hasProperty) {
@@ -98,7 +121,7 @@ class JsonMapper
                 continue;
             }
 
-            if (!$isSettable) {
+            if ($accessor === null) {
                 if ($this->bExceptionOnUndefinedProperty) {
                     throw new JsonMapper_Exception(
                         'JSON property "' . $key . '" has no public setter method'
@@ -115,19 +138,22 @@ class JsonMapper
 
             if ($this->isNullable($type)) {
                 if ($jvalue === null) {
-                    $this->setProperty($object, $key, null, $setter);
+                    $this->setProperty($object, $accessor, null);
                     continue;
                 }
                 $type = $this->removeNullable($type);
             }
 
-            if ($type === null) {
+            if ($type === null || $type === 'mixed') {
                 //no given type - simply set the json data
-                $this->setProperty($object, $key, $jvalue, $setter);
+                $this->setProperty($object, $accessor, $jvalue);
+                continue;
+            } else if ($this->isObjectOfSameType($type, $jvalue)) {
+                $this->setProperty($object, $accessor, $jvalue);
                 continue;
             } else if ($this->isSimpleType($type)) {
                 settype($jvalue, $type);
-                $this->setProperty($object, $key, $jvalue, $setter);
+                $this->setProperty($object, $accessor, $jvalue);
                 continue;
             }
 
@@ -150,11 +176,11 @@ class JsonMapper
                 if (!$this->isSimpleType($proptype)) {
                     $proptype = $this->getFullNamespace($proptype, $strNs);
                 }
-                $array = new $proptype();
+                $array = $this->createInstance($proptype);
             } else if ($type == 'ArrayObject'
                 || is_subclass_of($type, 'ArrayObject')
             ) {
-                $array = new $type();
+                $array = $this->createInstance($type);
             }
 
             if ($array !== null) {
@@ -173,14 +199,14 @@ class JsonMapper
                     $child = null;
                 } else {
                     $type = $this->getFullNamespace($type, $strNs);
-                    $child = new $type($jvalue);
+                    $child = $this->createInstance($type, true, $jvalue);
                 }
             } else {
                 $type = $this->getFullNamespace($type, $strNs);
-                $child = new $type();
+                $child = $this->createInstance($type);
                 $this->map($jvalue, $child);
             }
-            $this->setProperty($object, $key, $child, $setter);
+            $this->setProperty($object, $accessor, $child);
         }
 
         if ($this->bExceptionOnMissingData) {
@@ -262,13 +288,18 @@ class JsonMapper
                     $array[$key] = null;
                 } else {
                     if ($this->isSimpleType($class)) {
+                        settype($jvalue, $class);
                         $array[$key] = $jvalue;
                     } else {
-                        $array[$key] = new $class($jvalue);
+                        $array[$key] = $this->createInstance(
+                            $class, true, $jvalue
+                        );
                     }
                 }
             } else {
-                $array[$key] = $this->map($jvalue, new $class());
+                $array[$key] = $this->map(
+                    $jvalue, $this->createInstance($class)
+                );
             }
         }
         return $array;
@@ -282,9 +313,9 @@ class JsonMapper
      * @param string $name Property name
      *
      * @return array First value: if the property exists
-     *               Second value: is the property settable
+     *               Second value: the accessor to use (
+     *                 ReflectionMethod or ReflectionProperty, or null)
      *               Third value: type of the property
-     *               Fourth value: the setter to use, otherwise null
      */
     protected function inspectProperty(ReflectionClass $rc, $name)
     {
@@ -300,7 +331,7 @@ class JsonMapper
                     $pclass = $rparams[0]->getClass();
                     if ($pclass !== null) {
                         return array(
-                            true, true, '\\' . $pclass->getName(), $rmeth
+                            true, $rmeth, '\\' . $pclass->getName()
                         );
                     }
                 }
@@ -309,37 +340,47 @@ class JsonMapper
                 $annotations = $this->parseAnnotations($docblock);
 
                 if (!isset($annotations['param'][0])) {
-                    return array(true, true, null, $rmeth);
+                    return array(true, $rmeth, null);
                 }
                 list($type) = explode(' ', trim($annotations['param'][0]));
-                return array(true, true, $type, $rmeth);
+                return array(true, $rmeth, $type);
             }
         }
 
         //now try to set the property directly
         if ($rc->hasProperty($name)) {
             $rprop = $rc->getProperty($name);
-
+        } else {
+            //case-insensitive property matching
+            $rprop = null;
+            foreach ($rc->getProperties(ReflectionProperty::IS_PUBLIC) as $p) {
+                if ((strcasecmp($p->name, $name) === 0)) {
+                    $rprop = $p;
+                    break;
+                }
+            }
+        }
+        if ($rprop !== null) {
             if ($rprop->isPublic()) {
                 $docblock    = $rprop->getDocComment();
                 $annotations = $this->parseAnnotations($docblock);
 
                 if (!isset($annotations['var'][0])) {
-                    return array(true, true, null, null);
+                    return array(true, $rprop, null);
                 }
 
                 //support "@var type description"
                 list($type) = explode(' ', $annotations['var'][0]);
 
-                return array(true, true, $type, null);
+                return array(true, $rprop, $type);
             } else {
                 //no setter, private property
-                return array(true, false, null, null);
+                return array(true, null, null);
             }
         }
 
         //no setter, no property
-        return array(false, false, null, null);
+        return array(false, null, null);
     }
 
     /**
@@ -348,21 +389,41 @@ class JsonMapper
      * Checks if the setter or the property are public are made before
      * calling this method.
      *
-     * @param object $object Object to set property on
-     * @param string $name   Property name
-     * @param mixed  $value  Value of property
-     * @param object $setter The setter to use, null if no setter
-     *                       should be used
+     * @param object $object   Object to set property on
+     * @param object $accessor ReflectionMethod or ReflectionProperty
+     * @param mixed  $value    Value of property
      *
      * @return void
      */
     protected function setProperty(
-        $object, $name, $value, ReflectionMethod $setter = null
+        $object, $accessor, $value
     ) {
-        if ($setter === null) {
-            $object->$name = $value;
+        if ($accessor instanceof ReflectionProperty) {
+            $object->{$accessor->getName()} = $value;
         } else {
-            $object->{$setter->getName()}($value);
+            $object->{$accessor->getName()}($value);
+        }
+    }
+
+    /**
+     * Create a new object of the given type.
+     *
+     * This method exists to be overwritten in child classes,
+     * so you can do dependency injection or so.
+     *
+     * @param string  $class        Class name to instantiate
+     * @param boolean $useParameter Pass $parameter to the constructor or not
+     * @param mixed   $parameter    Constructor parameter
+     *
+     * @return object Freshly created object
+     */
+    public function createInstance(
+        $class, $useParameter = false, $parameter = null
+    ) {
+        if ($useParameter) {
+            return new $class($parameter);
+        } else {
+            return new $class();
         }
     }
 
@@ -379,6 +440,23 @@ class JsonMapper
             || $type == 'boolean' || $type == 'bool'
             || $type == 'integer' || $type == 'int'
             || $type == 'float' || $type == 'array' || $type == 'object';
+    }
+
+    /**
+     * Checks if the object is of this type or has this type as one of its parents
+     *
+     * @param string $type  class name of type being required
+     * @param mixed  $value Some PHP value to be tested
+     *
+     * @return boolean True if $object has type of $type
+     */
+    protected function isObjectOfSameType($type, $value)
+    {
+        if (false === is_object($value)) {
+            return false;
+        }
+
+        return is_a($value, $type);
     }
 
     /**

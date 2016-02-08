@@ -187,6 +187,11 @@ a property:
 
    If no type could be detected, the property gets the plain JSON value.
 
+   If a property can not be found, JsonMapper tries to find the property
+   in a case-insensitive manner.
+   A JSON property ``isempty`` would then be mapped to a PHP property
+   ``isEmpty``.
+
 Supported type names:
 
 - Simple types:
@@ -212,6 +217,9 @@ Supported type names:
     ``null``, otherwise it will be an integer
 
 ArrayObjects and extending classes are treated as arrays.
+
+Variables without a type or with type ``mixed`` will get the
+JSON value set directly without any conversion.
 
 See `phpdoc's type documentation`__ for more information.
 
@@ -300,22 +308,46 @@ an exception when ``$bExceptionOnMissingData`` is activated:
     $jm->map(...);
 
 
+Passing arrays to ``map()``
+---------------------------
+You may wish to pass array data into ``map()`` that you got by calling
+
+.. code:: php
+
+    json_decode($jsonString, true)
+
+By default, JsonMapper will throw an exception because ``map()`` requires
+an object as first parameter.
+You can circumvent that by setting ``$bEnforceMapType`` to ``false``:
+
+.. code:: php
+
+    $jm = new JsonMapper();
+    $jm->bEnforceMapType = false;
+    $jm->map(...);
+
+
 ============
 Installation
 ============
 
 via PEAR
 ========
-::
+From our `PEAR channel`__::
 
     $ pear channel-discover pear.nrdev.de
     $ pear install nr/jsonmapper-alpha
 
+__ http://pear.nrdev.de/
+
+
 via Composer
 ============
-::
+From Packagist__::
 
     $ composer require netresearch/jsonmapper
+
+__ https://packagist.org/packages/netresearch/jsonmapper
 
 
 ================

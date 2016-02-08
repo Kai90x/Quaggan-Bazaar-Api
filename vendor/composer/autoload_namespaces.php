@@ -7,7 +7,6 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Twig_' => array($vendorDir . '/twig/twig/lib'),
-    'RedBO\\' => array($baseDir . '/app/src'),
     'Pimple' => array($vendorDir . '/pimple/pimple/src'),
     'Httpful' => array($vendorDir . '/nategood/httpful/src'),
     '' => array($vendorDir . '/netresearch/jsonmapper/src'),

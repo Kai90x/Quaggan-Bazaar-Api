@@ -7,27 +7,38 @@ require_once("RedConnection.php");
  * Date: 4/26/2015
  * Time: 7:41 PM
  */
+use KaiApp\Utils\SanitizationUtils;
 use Utils\Common;
 use RedBeanPHP;
 use RedBeanPHP\Facade;
 
-class RedNews {
+class RedNews extends RedBase {
 
-	const NEWS = 'news';
+    const NEWS = 'news';
 
-    public function AddNews($title,$link,$publishDate,$description,$content,$creator) {
-        $news = Facade::dispense(SELF::NEWS);
-        $news->title = Common::StripHTMLCharacter($title);
-        $news->link = $link;
-        $news->creator = $creator;
-        $news->publishDate = $publishDate;
-        $news->description = Common::StripHTMLCharacter($description);
-        $news->content = Common::StripHTMLCharacter($content);
-        $news->creation_date = Facade::isoDateTime();
-
-        return Facade::store($news);
+    public function __construct()
+    {
+        parent::__construct(SELF::NEWS);
     }
 
+    public function add($title,$link,$publishDate,$description,$content,$creator) {
+        $news = array("title" => SanitizationUtils::StripHTMLCharacter($title),
+            "link" => $link,
+            "creator" => $creator,
+            "publishDate" => $publishDate,
+            "description" => SanitizationUtils::StripHTMLCharacter($description),
+            "content" => SanitizationUtils::StripHTMLCharacter($content));
+        return parent::add($news);
+    }
+
+    public function getByTitle($gw_item_id)
+    {
+        return parent::getOne(parent::toBeanColumn("gwItemId"),$gw_item_id);
+    }
+
+    public function delete($id) {
+        return parent::delete("id",$id);
+    }
 
     public function FindNewsByTitle($title) {
         $news = Facade::findOne(SELF::NEWS,"title = ?",array(Common::StripHTMLCharacter($title)));
@@ -59,21 +70,4 @@ class RedNews {
     }
 
 
-    public function DeleteNews($id) {
-        $news = Facade::find(SELF::NEWS,' id = ? ', array( $id ));
-		
-		if (empty($news)) {
-			return false;
-		} else {
-            foreach($news as $new)
-                Facade::trash($new);
-			return true;
-		}
-	}
-	
-	public function DeleteAll() {
-		  Facade::wipe( SELF::NEWS );
-		  return true;
-	}
-	
 }

@@ -53,9 +53,9 @@ class JsonMapperTest_Simple
     public $fl;
 
     /**
-     * @var float[]
+     * @var mixed
      */
-    public $flArray;
+    public $mixed;
 
     /**
      * @var string
@@ -76,34 +76,10 @@ class JsonMapperTest_Simple
      * @var string A protected property without a setter method
      */
     protected $protectedStrNoSetter;
-
-    /**
-     * @var JsonMapperTest_Simple[]
-     * @see http://phpdoc.org/docs/latest/references/phpdoc/types.html#arrays
-     */
-    public $typedArray;
-
-    /**
-     * @var DateTime[]
-     */
-    public $typedSimpleArray;
-
     /**
      * @var JsonMapperTest_Simple
      */
     public $simple;
-
-    /**
-     * This generates an array object with original json values
-     * @var ArrayObject
-     */
-    public $pArrayObject;
-
-    /**
-     * This generates an array object with JsonMapperTest_Simple instances
-     * @var ArrayObject[JsonMapperTest_Simple]
-     */
-    public $pTypedArrayObject;
 
     public $internalData;
 
@@ -122,6 +98,12 @@ class JsonMapperTest_Simple
      * @var string
      */
     public $setterPreferredOverProperty;
+
+    /**
+     * Value object which needs to be set as an instance (without mapping)
+     * @var JsonMapperTest_ValueObject
+     */
+    public $valueObject;
 
     public function setSimpleSetterOnlyTypeHint(JsonMapperTest_Simple $s)
     {
@@ -154,6 +136,22 @@ class JsonMapperTest_Simple
     public function setSetterPreferredOverProperty($v)
     {
         $this->setterPreferredOverProperty = 'set via setter: ' . $v;
+    }
+
+    /**
+     * @return JsonMapperTest_ValueObject
+     */
+    public function getValueObject()
+    {
+        return $this->valueObject;
+    }
+
+    /**
+     * @param JsonMapperTest_ValueObject $valueObject
+     */
+    public function setValueObject(JsonMapperTest_ValueObject $valueObject)
+    {
+        $this->valueObject = $valueObject;
     }
 }
 ?>

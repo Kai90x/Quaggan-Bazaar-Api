@@ -15,7 +15,6 @@ use KaiApp\RedBO\RedCraftSubItem1;
 use KaiApp\RedBO\RedCraftSubItem2;
 use KaiApp\RedBO\RedCraftSubItem3;
 use KaiApp\RedBO\RedCraftSubItem4;
-use KaiApp\Utils\BeanUtils;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 

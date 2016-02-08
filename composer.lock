@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "cc2a089b9b80c648f0ac06bd626fc029",
-    "content-hash": "db86b3a8d537971c983f412eeb8a7925",
+    "hash": "8161b0c5eb72628fc9a9a042b6d4a69d",
+    "content-hash": "e0c44aae3cc5b28c7a790d0a54a477b0",
     "packages": [
         {
             "name": "athari/yalinqo",
@@ -298,16 +298,16 @@
         },
         {
             "name": "netresearch/jsonmapper",
-            "version": "v0.6.1",
+            "version": "v0.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/netresearch/jsonmapper.git",
-                "reference": "08e7e07383d2aac9443fa838e6a6e77aa3f54690"
+                "reference": "a58388bdda93424363de20bc20fe0e349ec735ee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/netresearch/jsonmapper/zipball/08e7e07383d2aac9443fa838e6a6e77aa3f54690",
-                "reference": "08e7e07383d2aac9443fa838e6a6e77aa3f54690",
+                "url": "https://api.github.com/repos/netresearch/jsonmapper/zipball/a58388bdda93424363de20bc20fe0e349ec735ee",
+                "reference": "a58388bdda93424363de20bc20fe0e349ec735ee",
                 "shasum": ""
             },
             "require-dev": {
@@ -333,7 +333,7 @@
                 }
             ],
             "description": "Map nested JSON structures onto PHP classes",
-            "time": "2015-05-28 09:50:04"
+            "time": "2015-09-24 12:43:26"
         },
         {
             "name": "nikic/fast-route",
@@ -620,7 +620,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/slimphp/Slim/zipball/15bf89cc6a00a59a88499608a9c4e193cfcc78aa",
+                "url": "https://api.github.com/repos/slimphp/Slim/zipball/9cc105d628f9cf85434225db41e092107f69ad15",
                 "reference": "15bf89cc6a00a59a88499608a9c4e193cfcc78aa",
                 "shasum": ""
             },

@@ -55,47 +55,6 @@
         ]
     },
     {
-        "name": "netresearch/jsonmapper",
-        "version": "v0.6.1",
-        "version_normalized": "0.6.1.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/netresearch/jsonmapper.git",
-            "reference": "08e7e07383d2aac9443fa838e6a6e77aa3f54690"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/netresearch/jsonmapper/zipball/08e7e07383d2aac9443fa838e6a6e77aa3f54690",
-            "reference": "08e7e07383d2aac9443fa838e6a6e77aa3f54690",
-            "shasum": ""
-        },
-        "require-dev": {
-            "phpunit/phpunit": "4.2.*",
-            "squizlabs/php_codesniffer": "~1.5"
-        },
-        "time": "2015-05-28 09:50:04",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-0": {
-                "": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "OSL-3.0"
-        ],
-        "authors": [
-            {
-                "name": "Christian Weiske",
-                "email": "christian.weiske@netresearch.de",
-                "homepage": "http://www.netresearch.de/",
-                "role": "Developer"
-            }
-        ],
-        "description": "Map nested JSON structures onto PHP classes"
-    },
-    {
         "name": "athari/yalinqo",
         "version": "v2.4.0",
         "version_normalized": "2.4.0.0",
@@ -642,7 +601,7 @@
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/slimphp/Slim/zipball/15bf89cc6a00a59a88499608a9c4e193cfcc78aa",
+            "url": "https://api.github.com/repos/slimphp/Slim/zipball/9cc105d628f9cf85434225db41e092107f69ad15",
             "reference": "15bf89cc6a00a59a88499608a9c4e193cfcc78aa",
             "shasum": ""
         },
@@ -866,5 +825,46 @@
             "twig",
             "view"
         ]
+    },
+    {
+        "name": "netresearch/jsonmapper",
+        "version": "v0.10.0",
+        "version_normalized": "0.10.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/netresearch/jsonmapper.git",
+            "reference": "a58388bdda93424363de20bc20fe0e349ec735ee"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/netresearch/jsonmapper/zipball/a58388bdda93424363de20bc20fe0e349ec735ee",
+            "reference": "a58388bdda93424363de20bc20fe0e349ec735ee",
+            "shasum": ""
+        },
+        "require-dev": {
+            "phpunit/phpunit": "4.2.*",
+            "squizlabs/php_codesniffer": "~1.5"
+        },
+        "time": "2015-09-24 12:43:26",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "OSL-3.0"
+        ],
+        "authors": [
+            {
+                "name": "Christian Weiske",
+                "email": "christian.weiske@netresearch.de",
+                "homepage": "http://www.netresearch.de/",
+                "role": "Developer"
+            }
+        ],
+        "description": "Map nested JSON structures onto PHP classes"
     }
 ]
