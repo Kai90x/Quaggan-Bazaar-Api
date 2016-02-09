@@ -25,12 +25,16 @@ abstract class RedBase
     }
 
     protected function add($beanArr) {
-        $bean = Facade::dispense($this->type);
-
-        foreach ($beanArr as $key => $value)
-            $bean[$key] = $value;
-
+        $bean = $this->createBean($beanArr);
         $bean["dateCreated"] = Facade::isoDateTime();
+        $bean["dateModified"] = Facade::isoDateTime();
+        return Facade::store($bean);
+    }
+
+    protected function update($id,$beanArr) {
+        $bean = $this->createBean($beanArr);
+        $bean["id"] = $id;
+        $bean["dateModified"] = Facade::isoDateTime();
         return Facade::store($bean);
     }
 
@@ -57,6 +61,11 @@ abstract class RedBase
     }
 
     public function wipe() {
+        Facade::wipe( $this->type );
+        return true;
+    }
+
+    public function trashAll() {
         $items = Facade::findAll($this->type);
         Facade::trashAll( $items );
         return true;
@@ -76,5 +85,13 @@ abstract class RedBase
         return strtolower(preg_replace_callback('/[A-Z]/', function($matches){
             return $matches[0] = '_' . ucfirst($matches[0]);
         }, $column)) ;
+    }
+
+    private function createBean($beanArr) {
+        $bean = Facade::dispense($this->type);
+        foreach ($beanArr as $key => $value)
+            $bean[$key] = $value;
+
+        return $bean;
     }
 }

@@ -6,6 +6,7 @@
  * Time: 10:48 PM
  */
 namespace KaiApp\Controller;
+
 use KaiApp\JsonTransformers\BatchTransformer;
 use KaiApp\JsonTransformers\NewsTransformer;
 use KaiApp\RedBO\RedNews;

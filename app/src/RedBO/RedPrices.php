@@ -10,104 +10,61 @@ require_once("RedConnection.php");
 use RedBeanPHP;
 use RedBeanPHP\Facade;
 
-class RedGuildPrices {
+class RedGuildPrices extends RedBase {
 
 	const GUILDPRICE = 'guildprices';
-	
-	public function AddPrice($itemId,$buyprice,$buyquantity,$sellprice,$sellquantity) {
-        $price = Facade::dispense(SELF::GUILDPRICE);
 
-        $price->gwItemId = $itemId;
-		$price->buyprice = $buyprice;
-        $price->buyquantity = $buyquantity;
-		$price->sellprice = $sellprice;
-        $price->sellquantity = $sellquantity;
-        $price->date_updated = Facade::isoDateTime();
-        return Facade::store($price);
+    public function __construct()
+    {
+        parent::__construct(SELF::GUILDPRICE);
+    }
+
+	public function add($itemId,$buyprice,$buyquantity,$sellprice,$sellquantity) {
+        parent::add(array(
+            "gwItemId" => $itemId,
+            "buyprice" => $itemId,
+            "buyquantity" => $itemId,
+            "sellprice" => $itemId,
+            "sellquantity" => $itemId
+        ));
     }
 	
-	public function UpdatePrices($id,$itemId,$buyprice,$buyquantity,$sellprice,$sellquantity) {
-        $price = Facade::dispense(SELF::GUILDPRICE);
-
-		$price->id = $id;
-        $price->gwItemId = $itemId;
-		$price->buyprice = $buyprice;
-        $price->buyquantity = $buyquantity;
-		$price->sellprice = $sellprice;
-        $price->sellquantity = $sellquantity;
-        $price->date_updated = Facade::isoDateTime();
-        return Facade::store($price);
+	public function update($id,$itemId,$buyprice,$buyquantity,$sellprice,$sellquantity) {
+          parent::update($id,array(
+            "gwItemId" => $itemId,
+            "buyprice" => $itemId,
+            "buyquantity" => $itemId,
+            "sellprice" => $itemId,
+            "sellquantity" => $itemId
+        ));
     }
 
-    public function FindByItemId($id) {
-        $price = Facade::findOne(SELF::GUILDPRICE, ' gw_item_id = ? ',array($id));
-
-        if(empty($price)) {
-            return null;
-        } else {
-            return $price;
-        }
+    public function getByItemId($id) {
+        return parent::getOne(parent::toBeanColumn("gw_item_id"),$id);
     }
 
-	public function FindByItemIds($ids) {
-        $price = Facade::find(SELF::GUILDPRICE, ' gw_item_id IN ( '.Facade::genSlots($ids).') ',$ids);
-
-        if(empty($price)) {
-            return null;
-        } else {
-            return $price;
-        }
+	public function getByItemIds($ids) {
+        $prices = Facade::find(SELF::GUILDPRICE, ' gw_item_id IN ( '.Facade::genSlots($ids).') ',$ids);
+        return empty($prices) ? null : $prices;
     }
 
-    public function FindAllUnsyncedPrices() {
-        $price = Facade::find(SELF::GUILDPRICE,"WHERE DATE_ADD(date_updated, INTERVAL 15 MINUTE) < UTC_TIMESTAMP()");
-
-        if(empty($price)) {
-            return null;
-        } else {
-            return $price;
-        }
+    public function getUnsyncedPrices() {
+        $prices = Facade::find(SELF::GUILDPRICE,"DATE_ADD(date_updated, INTERVAL 15 MINUTE) < UTC_TIMESTAMP()");
+        return empty($prices) ? null : $prices;
     }
 
-    public function FindAllUnsyncedPricesByIds($ids) {
-        $price = Facade::find(SELF::GUILDPRICE,'WHERE DATE_ADD(date_updated, INTERVAL 15 MINUTE) < UTC_TIMESTAMP() AND gw_item_id IN ( '.Facade::genSlots($ids).') ',$ids);
-
-        if(empty($price)) {
-            return null;
-        } else {
-            return $price;
-        }
+    public function getAllUnsyncedPricesByIds($ids) {
+        $prices = Facade::find(SELF::GUILDPRICE,'DATE_ADD(date_updated, INTERVAL 15 MINUTE) < UTC_TIMESTAMP() AND gw_item_id IN ( '.Facade::genSlots($ids).') ',$ids);
+        return empty($prices) ? null : $prices;
     }
 
-    public function FindPricesByDays($days) {
-        $price = Facade::find(SELF::GUILDPRICE," DATE_ADD(date_updated, INTERVAL ? DAY) < UTC_TIMESTAMP()", array($days));
-
-        if(empty($price)) {
-            return null;
-        } else {
-            return $price;
-        }
+    public function getByDays($days) {
+        $price = Facade::find(SELF::GUILDPRICE,"DATE_ADD(date_updated, INTERVAL ? DAY) < UTC_TIMESTAMP()", array($days));
+        return empty($price) ? null : $price;
     }
 	
-	public function DeletePrice($gw_item_id) {
-        $prices = Facade::find(SELF::GUILDPRICE,' gw_item_id = ? ', array( $gw_item_id ));
-		
-		if (empty($prices)) {
-			return false;
-		} else {
-            if (is_array($prices)) {
-                foreach ($prices as $price)
-                    Facade::trash($price);
-            } else {
-                Facade::trash($prices);
-            }
-			return true;
-		}
+	public function delete($gw_item_id) {
+        return parent::delete($this->toBeanColumn("gwItemId"),$gw_item_id);
 	}
-	
-	public function DeleteAll() {
-		  Facade::wipe( SELF::GUILDPRICE );
-		  return true;
-	}
-	
+
 }

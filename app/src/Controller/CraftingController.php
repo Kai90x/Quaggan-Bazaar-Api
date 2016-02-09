@@ -125,11 +125,11 @@ class CraftingController extends BaseController
     }
 
     public function reset($request, $response, array $args) {
-        $this->redCraftSubItem4->wipe();
-        $this->redCraftSubItem3->wipe();
-        $this->redCraftSubItem2->wipe();
-        $this->redCraftSubItem1->wipe();
-        $this->redCrafting->wipe();
+        $this->redCraftSubItem4->trashAll();
+        $this->redCraftSubItem3->trashAll();
+        $this->redCraftSubItem2->trashAll();
+        $this->redCraftSubItem1->trashAll();
+        $this->redCrafting->trashAll();
         $this->addAll();
 
         $this->simpleResponse("Legendaries have been reset",$response);
