@@ -11,34 +11,17 @@ namespace KaiApp\Controller;
 use Utils\Common;
 use RedBO\RedFactory;
 
-class dailyachievements extends BaseController
+class DailyController extends BaseController
 {
 
-    public function AddDailyAchievementAction()
+    public function add()
     {
         //TO-DO: Re-implement
     }
 
-    public function GetAllAchievementsAction()
+    public function get()
     {
-        $achievements = RedFactory::GetRedDailyAchivements()->GetAllAchivements();
-
-        if (!empty($achievements) ) {
-            echo json_encode(Common::GenerateResponse(Common::STATUS_SUCCESS,Common::ConvertBeanToArray($achievements, "achievements")));
-        } else {
-            echo json_encode(Common::GenerateResponse(Common::STATUS_NOTFOUND,"No achievements found"));
-        }
-    }
-
-    public function GetAllAchievementsAfterTodayAction()
-    {
-        $achievements = RedFactory::GetRedDailyAchivements()->FindAchivementsAfterToday();
-
-        if (!empty($achievements) ) {
-            echo json_encode(Common::GenerateResponse(Common::STATUS_SUCCESS,Common::ConvertBeanToArray($achievements, "achievements")));
-        } else {
-            echo json_encode(Common::GenerateResponse(Common::STATUS_NOTFOUND,"No achievements found"));
-        }
+        //TO-DO: Re-implement
     }
 
 }

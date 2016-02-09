@@ -6,7 +6,10 @@
  * Time: 10:48 PM
  */
 namespace KaiApp\Controller;
+use KaiApp\JsonTransformers\BatchTransformer;
+use KaiApp\JsonTransformers\NewsTransformer;
 use KaiApp\RedBO\RedNews;
+use League\Fractal\Resource\Item;
 use Slim\Http\Request;
 
 class NewsController extends BaseController
@@ -20,45 +23,40 @@ class NewsController extends BaseController
     }
 
     public function sync($request, $response, array $args) {
+        try {
+            $xml = simplexml_load_string(file_get_contents($this::GUILDWAR2_NEWS));
+            $channels = $xml->channel;
 
-        $xml = simplexml_load_string(file_get_contents($this::GUILDWAR2_NEWS));
-        $channels = $xml->channel;
-        foreach($channels as $channel) {
+            foreach($channels as $channel) {
+                $items = $channel->item;
+                foreach($items as $item) {
+                    $news = $this->redNews->getByTitle($item->title);
+                    if (empty($news)) {
+                        $date = new \DateTime($item->pubDate);
+                        $dc = $item->children("http://purl.org/dc/elements/1.1/");
 
-            $items = $channel->item;
-
-            foreach($items as $item) {
-                $news = $this->redNews->FindNewsByTitle($item->title);
-                if (empty($news)) {
-                    $date = new \DateTime($item->pubDate);
-                    $dc = $item->children("http://purl.org/dc/elements/1.1/");
-
-                    $this->redNews->add((string)$item->title, (string)$item->link, $date, (string)$item->description, (string)$item->content, (string)$dc->creator);
+                        $this->redNews->add((string)$item->title, (string)$item->link, $date, (string)$item->description, (string)$item->content, (string)$dc->creator);
+                    }
                 }
+
             }
 
+            return $this->simpleResponse("News has been synced",$response);
+        } catch(\Exception $e) {
+            return $this->simpleResponse("An error has occurred",$response,500);
         }
-
-        return $this->simpleResponse("News sync completed",$response);
 	}
 
     public function get(Request $request, $response, array $args)
     {
-        $batch_size = $request->getParam('batch_size',100);
-        $batch_num = $request->getParam('batch_num',0);
+        $batchSize = $request->getParam('batchSize',100);
+        $currentBatch = $request->getParam('currentBatch',1);
 
-        $totalBatches = $this->redNews->GetTotalNewsBatches($batch_size);
+        $totalBatches = $this->redNews->getBatchTotal($batchSize);
+        $news = $this->redNews->getByBatch($currentBatch,$batchSize);
 
-        $news = $this->redNews->GetNewsByBatch($batch_num,$batch_size);
-        if (empty($news)) {
-            echo json_encode(Common::GenerateResponse(Common::STATUS_NOTFOUND,"No news found"));
-        }
-
-        $reponse = Common::GenerateResponse(Common::STATUS_SUCCESS,Common::ConvertBeanToArray($news,"News"));
-        $reponse["BatchTotalNum"] = $totalBatches;
-        $reponse["CurrentBatch"] = $batch_num;
-
-        echo json_encode($reponse);
+        return empty($news) ? $this->simpleResponse("No news found",$response,404)
+            : $this->complexResponse(new Item($news,new BatchTransformer(new NewsTransformer(),$batchSize,$currentBatch,$totalBatches)),$response);
     }
 
 }

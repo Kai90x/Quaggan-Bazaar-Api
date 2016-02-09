@@ -62,6 +62,16 @@ abstract class RedBase
         return true;
     }
 
+    public function getBatchTotal($batch_size) {
+        $items = Facade::count($this->type);
+        return ceil($items / $batch_size);
+    }
+
+    protected function getByBatch($batchNum,$batchSize,$columnName) {
+        $items = Facade::findAll($this->type,"ORDER BY ".$columnName." DESC LIMIT ? , ? ",array((int)(($batchNum-1)*$batchSize),(int)$batchSize));
+        return (empty($items)) ? null : $items;
+    }
+
     protected function toBeanColumn($column) {
         return strtolower(preg_replace_callback('/[A-Z]/', function($matches){
             return $matches[0] = '_' . ucfirst($matches[0]);

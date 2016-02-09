@@ -8,9 +8,7 @@ require_once("RedConnection.php");
  * Time: 7:41 PM
  */
 use KaiApp\Utils\SanitizationUtils;
-use Utils\Common;
 use RedBeanPHP;
-use RedBeanPHP\Facade;
 
 class RedNews extends RedBase {
 
@@ -31,43 +29,21 @@ class RedNews extends RedBase {
         return parent::add($news);
     }
 
-    public function getByTitle($gw_item_id)
+    public function getByTitle($title)
     {
-        return parent::getOne(parent::toBeanColumn("gwItemId"),$gw_item_id);
+        return parent::getOne(parent::toBeanColumn("title"), SanitizationUtils::StripHTMLCharacter($title));
     }
 
     public function delete($id) {
         return parent::delete("id",$id);
     }
 
-    public function FindNewsByTitle($title) {
-        $news = Facade::findOne(SELF::NEWS,"title = ?",array(Common::StripHTMLCharacter($title)));
-
-        if(empty($news)) {
-            return null;
-        } else {
-            return $news;
-        }
+    public function getBatchTotal($batchSize) {
+        return parent::getBatchTotal($batchSize);
     }
 
-    public function GetTotalNewsBatches($batch_size) {
-        $news_num = Facade::count(SELF::NEWS,"Order by publish_date DESC");
-        $batches = ceil($news_num / $batch_size);
-
-        if(empty($batches)) {
-            return null;
-        } else {
-            return $batches;
-        }
+    public function getByBatch($batchNum,$batchSize) {
+       return parent::getByBatch($batchNum,$batchSize,parent::toBeanColumn("publishDate"));
     }
-
-    public function GetNewsByBatch($batch_num,$batch_size) {
-        $news = Facade::find(SELF::NEWS,"Order by publish_date DESC LIMIT ? , ? ",array((int)(($batch_num-1)*$batch_size),(int)$batch_size));
-        if (empty($news))
-            return null;
-
-        return $news;
-    }
-
 
 }

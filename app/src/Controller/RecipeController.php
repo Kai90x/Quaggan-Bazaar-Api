@@ -14,7 +14,7 @@ use RedBO\RedFactory;
 
 class recipe extends BaseController
 {
-	public function SyncRecipesAction() {
+	public function sync() {
         $mapper = new JsonMapper();
 		$recipeIds = (file_get_contents(Common::GUILDWAR2_BASE_URL.Common::GUILDWAR2_RECIPE));
 
@@ -70,7 +70,7 @@ class recipe extends BaseController
 
                 foreach ($jsonArr as $json) {
                     $recipe = $mapper->map($json, new \Serialization\Recipe());
-                    $this->UpdateRecipe($recipe);
+                    $this->updateRecipe($recipe);
                 }
 
                 $concat_ids = "";
@@ -87,7 +87,7 @@ class recipe extends BaseController
 
                 $recipe = $mapper->map($json, new \Serialization\Recipe());
 
-                $this->UpdateRecipe($recipe);
+                $this->updateRecipe($recipe);
 
             }
         }
@@ -95,7 +95,7 @@ class recipe extends BaseController
         echo json_encode(Common::GenerateResponse(Common::STATUS_SUCCESS,"All recipes have been synced"));;
 	}
 
-    public function GetRecipeByItemIdAction($itemId) {
+    public function getByItemId($itemId) {
         $recipes = RedFactory::GetRedRecipe()->FindByOutputItemId($itemId);
         $this->ReturnRecipeDetails($recipes);
     }
@@ -123,24 +123,7 @@ class recipe extends BaseController
         return $recipe;
     }
 
-    private function SaveRecipe($recipe) {
-        if ($recipe != null) {
-
-            //AddRecipe($recipeId, $type , $output_item_id, $output_item_count, $time_to_craft_ms, $disciples,$min_rating, $flags ) {
-            $recipe_id = RedFactory::GetRedRecipe()->add($recipe->id, $recipe->type,$recipe->output_item_id,$recipe->output_item_count,
-                $recipe->time_to_craft_ms,serialize($recipe->disciples),$recipe->min_rating,serialize($recipe->flags));
-
-
-            if (!empty($recipe->ingredients)) {
-                foreach($recipe->ingredients as $ingredient) {
-                    RedFactory::GetRedIngredients()->AddIngredients($recipe_id,$ingredient->itemId,$ingredient->count);
-                }
-            }
-
-        }
-    }
-
-    private function UpdateRecipe($recipe) {
+    private function updateRecipe($recipe) {
         if ($recipe != null) {
             $redRecipe = RedFactory::GetRedRecipe()->FindByRecipeId($recipe->id);
 
@@ -158,11 +141,6 @@ class recipe extends BaseController
             }
 
         }
-    }
-
-    private function WipeRecipes(){
-        RedFactory::GetRedIngredients()->DeleteAll();
-        RedFactory::GetRedRecipe()->DeleteAll();
     }
 
 }

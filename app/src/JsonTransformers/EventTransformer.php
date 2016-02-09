@@ -16,10 +16,10 @@ class EventTransformer extends TransformerAbstract
     public function transform($events)
     {
         return [
-            'Area' => $events->area_title,
-            'Boss' => $events->boss,
-            'Zone' => str_replace(" UTC","",$events->zone_title),
-            'SpawnTimeUtc' => $events->spawn_time_utc,
+            'area' => $events->area_title,
+            'boss' => $events->boss,
+            'zone' => $events->zone_title,
+            'spawn_time_utc' => str_replace(" UTC","",$events->spawn_time_utc),
         ];
     }
 

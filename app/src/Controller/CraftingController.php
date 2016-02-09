@@ -8,7 +8,7 @@
 
 namespace KaiApp\Controller;
 
-use KaiApp\JsonTransformers\LegendaryIdsTransformer;
+use KaiApp\JsonTransformers\LegendariesTransformer;
 use KaiApp\JsonTransformers\LegendaryTransformer;
 use KaiApp\RedBO\RedCrafting;
 use KaiApp\RedBO\RedCraftSubItem1;
@@ -117,11 +117,11 @@ class CraftingController extends BaseController
     }
 
     public function all($request, $response, array $args) {
-        $crafts = $this->redCrafting->getAll();
+        $crafts = $this->redCrafting->getAllWithDetails();
         if (empty($crafts))
             return $this->simpleResponse("No crafts found",$response, 404);
 
-        return $this->complexResponse(new Collection($crafts, new LegendaryIdsTransformer()),$response);
+        return $this->complexResponse(new Collection($crafts, new LegendariesTransformer()),$response);
     }
 
     public function reset($request, $response, array $args) {

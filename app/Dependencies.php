@@ -30,6 +30,10 @@ $container['RedCraftingSubItem4'] = function ($c) {
     return new KaiApp\RedBO\RedCraftSubItem4();
 };
 
+$container['RedNews'] = function ($c) {
+    return new KaiApp\RedBO\RedNews();
+};
+
 // Register component on container
 $container['view'] = function ($container) {
     $view = new \Slim\Views\Twig('Views');
@@ -47,7 +51,13 @@ foreach (Resolver::resolve($controllers) as $controller => $callback) {
 
 $container['\KaiApp\Controller\CraftingController'] = function ($container) {
     $controller = new KaiApp\Controller\CraftingController($container->get("RedCrafting"),$container->get("RedCraftingSubItem1"),$container->get("RedCraftingSubItem2"),
-    $container->get("RedCraftingSubItem3"),$container->get("RedCraftingSubItem4"));
+        $container->get("RedCraftingSubItem3"),$container->get("RedCraftingSubItem4"));
+    $controller->setContainer($container);
+    return $controller;
+};
+
+$container['\KaiApp\Controller\NewsController'] = function ($container) {
+    $controller = new KaiApp\Controller\NewsController($container->get("RedNews"));
     $controller->setContainer($container);
     return $controller;
 };

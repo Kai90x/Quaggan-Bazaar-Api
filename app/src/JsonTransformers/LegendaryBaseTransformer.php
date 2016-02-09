@@ -16,13 +16,12 @@ class LegendaryBaseTransformer extends TransformerAbstract
     public function transform($legendary)
     {
         return [
-            'id' => $legendary['id'],
-            'Name' => $legendary['name'],
-            'GuildItemId' => $legendary['gw_item_id'],
-            'DateCreated' => $legendary['date_created'],
-            'Icon' => $legendary['icon'],
-            'Rarity' => $legendary['rarity'],
-            'Type' => $legendary['type']
+            'name' => $legendary['name'],
+            'id' => $legendary['gw_item_id'],
+            'date_created' => $legendary['date_created'],
+            'icon' => $legendary['icon'],
+            'rarity' => $legendary['rarity'],
+            'type' => $legendary['type']
         ];
     }
 

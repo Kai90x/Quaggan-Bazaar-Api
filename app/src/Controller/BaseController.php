@@ -25,14 +25,16 @@ class BaseController extends JGutBaseController
     }
 
     protected function complexResponse($object,Response $response,$status = 200) {
-        $response = $response->withJson($this->fractal->createData($object)->toJson())
-            ->withStatus($status);
+        $response = $response->write($this->fractal->createData($object)->toJson())
+            ->withStatus($status)
+            ->withHeader("Content-Type","application/json;charset=utf-8");
         return $response;
     }
 
     protected function simpleResponse($arr,Response $response,$status = 200) {
-        $response = $response->withJson(json_encode($arr))
-                             ->withStatus($status);
+        $response = $response->write(json_encode($arr))
+                             ->withStatus($status)
+                             ->withHeader("Content-Type","application/json;charset=utf-8");
         return $response;
     }
 

@@ -7,17 +7,15 @@
  */
 namespace KaiApp\Controller;
 
-use Serialization\InfixUpgrade;
-use Utils\Common;
 use JsonMapper;
-use RedBO\RedFactory;
+use KaiApp\Utils\GuildWars2Util;
 
 class items extends BaseController
 {
-    public function SyncItemsAction() {
+    public function sync() {
         $mapper = new JsonMapper();
 
-        $itemIds = (file_get_contents(Common::GUILDWAR2_BASE_URL.Common::GUILDWAR2_ITEM));
+        $itemIds = (file_get_contents(GuildWars2Util::getItemsUrl()));
         $itemIds = substr($itemIds,1);
         $itemIds = substr($itemIds,0,-1);
 
@@ -362,7 +360,6 @@ class items extends BaseController
         return $items;
     }
 
-
     private function PutItemDetails($item)
     {
         $item->flags = unserialize($item->flags);
@@ -424,7 +421,6 @@ class items extends BaseController
 
         return $item;
     }
-
 
     private function UpdateItem($item,$id) {
         if ($item != null) {
