@@ -19,11 +19,11 @@ class EventController extends BaseController
     public function get($request, $response, array $args)
     {
         try {
-            $eventJson = (file_get_contents(Utils\ImportioUtils::getEventTimeUrl()));
-            $eventJson = str_replace("/_", "_", $eventJson);
+            $jsonResponse = \Httpful\Request::get(Utils\ImportioUtils::getEventTimeUrl())->send();;
+            $jsonResponse = str_replace("/_", "_", $jsonResponse);
             $mapper = new JsonMapper();
 
-            $eventJsonObj = $mapper->map(json_decode($eventJson), new RootObject());
+            $eventJsonObj = $mapper->map(json_decode($jsonResponse), new RootObject());
 
             return $this->complexResponse(new Collection($eventJsonObj->results, new EventTransformer()),$response);
         } catch(\Exception $e) {

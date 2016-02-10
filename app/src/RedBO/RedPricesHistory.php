@@ -12,7 +12,7 @@ use RedBeanPHP\Facade;
 
 class RedGuildPricesHistory {
 
-	const GUILDPRICEHISTORY = 'guildpriceshistory';
+	const GUILDPRICEHISTORY = 'priceshistory';
 	
 	public function AddPrice($itemId,$buyprice,$buyquantity,$sellprice,$sellquantity) {
         $price = Facade::dispense(SELF::GUILDPRICEHISTORY);

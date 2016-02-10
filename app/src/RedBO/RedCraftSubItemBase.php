@@ -30,13 +30,11 @@ class RedCraftSubItemBase extends RedQuery
 
     public function getAllByCraftId($id)
     {
-        $craft = Facade::findAll($this->type, $this::toBeanColumn($this->foreignColumn).' = ? ', array($id));
-        return empty($craft) ? null : $craft;
+        return parent::getByAll($this->foreignColumn.' = ? ',$id);
     }
 
     public function getAllByCraftIds($ids) {
-        $crafts = Facade::findAll($this->type,$this::toBeanColumn($this->foreignColumn) ." IN ( ".Facade::genSlots($ids)." ) ",$ids);
-        return empty($crafts) ? null : $crafts;
+        return parent::getByIn($this->foreignColumn,$ids);
     }
 
     public function getAllWithDetails($ids) {

@@ -1,6 +1,5 @@
 <?php
 namespace KaiApp\RedBO;
-require_once("RedConnection.php");
 /**
  * Created by PhpStorm.
  * User: Kai
@@ -10,55 +9,32 @@ require_once("RedConnection.php");
 use RedBeanPHP;
 use RedBeanPHP\Facade;
 
-class RedInfixBuff {
+class RedInfixBuff extends RedBase{
 
 	const INFIXBUFF = 'infixbuff';
-	
-	public function AddInfixBuff($infuxId, $skill_id , $description ) {
-        $infixBuff = Facade::dispense(SELF::INFIXBUFF);
-
-        $infixBuff->itemdetailsinfixupgradeId = $infuxId;
-		$infixBuff->skill_id = $skill_id;
-		$infixBuff->description = $description;
-
-        Facade::store($infixBuff);
+    public function __construct()
+    {
+        parent::__construct(SELF::INFIXBUFF);
     }
 
-    public function FindByInfixUpgradeId($id) {
-        $infixBuff = Facade::findOne(SELF::INFIXBUFF, 'itemdetailsinfixupgrade_id = ? ',array($id));
-
-        if(empty($infixBuff)) {
-            return null;
-        } else {
-            return $infixBuff;
-        }
+	public function add($infuxId, $skill_id , $description ) {
+        return parent::add(array(
+            "itemdetailsinfixupgradeId" => $infuxId,
+            "skillId" => $skill_id,
+            "description" => $description
+        ));
     }
 
-    public function FindByInfixUpgradeIds($idArr) {
-        $infixBuff = Facade::find(SELF::INFIXBUFF, 'itemdetailsinfixupgrade_id IN ('.Facade::genSlots($idArr).') ',($idArr));
+    public function getByInfixId($id) {
+        return parent::getByOne(parent::toBeanColumn("itemdetailsinfixupgradeId"),$id);
+    }
 
-        if(empty($infixBuff)) {
-            return null;
-        } else {
-            return $infixBuff;
-        }
+    public function getByInfixIds($idArr) {
+        return parent::getByIn("itemdetailsinfixupgradeId",$idArr);
     }
 	
-	public function DeleteInfixBuffByInfuxId($infuxId) {
-		$infixBuffs = Facade::find(SELF::INFIXBUFF,' itemdetailsinfixupgrade_id = ? ', array( $infuxId ));
-		
-		if (empty($infixBuffs)) {
-			return false;
-		} else {
-            foreach($infixBuffs as $infixBuff)
-                Facade::trash($infixBuff);
-			return true;
-		}
-	}
-	
-	public function DeleteAll() {
-		  Facade::exec( 'DELETE FROM '.SELF::INFIXBUFF );
-		  return true;
+	public function deleteByInfuxId($infuxId) {
+		return parent::delete("itemdetailsinfixupgradeId", $infuxId );
 	}
 
 }

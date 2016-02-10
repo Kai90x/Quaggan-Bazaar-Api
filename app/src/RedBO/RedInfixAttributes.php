@@ -10,57 +10,32 @@ require_once("RedConnection.php");
 use RedBeanPHP;
 use RedBeanPHP\Facade;
 
-class RedInfixAttributes {
+class RedInfixAttributes extends RedBase{
 
     const INFIXATTRIBUTE = 'infixattribute';
-	
-	public function AddInfixAttribute($infuxId, $attribute, $modifier) {
-        $infixAttribute = Facade::dispense(SELF::INFIXATTRIBUTE);
-
-        $infixAttribute->itemdetailsinfixupgradeId = $infuxId;
-		$infixAttribute->attribute = $attribute;
-		$infixAttribute->modifier = $modifier;
-
-        Facade::store($infixAttribute);
+    public function __construct()
+    {
+        parent::__construct(SELF::INFIXATTRIBUTE);
     }
 
-    public function FindByInfixUpgradeId($id) {
-        $infixAttribute = Facade::find(SELF::INFIXATTRIBUTE, 'itemdetailsinfixupgrade_id = ? ',array($id));
-
-        if(empty($infixAttribute)) {
-            return null;
-        } else {
-            return $infixAttribute;
-        }
+	public function add($infuxId, $attribute, $modifier) {
+        return parent::add(array(
+            "itemdetailsinfixupgradeId" => $infuxId,
+            "attribute" => $attribute,
+            "modifier" => $modifier
+        ));
     }
 
-
-    public function FindByInfixUpgradeIds($idArr) {
-        $infixAttribute = Facade::find(SELF::INFIXATTRIBUTE, 'itemdetailsinfixupgrade_id IN ('.Facade::genSlots($idArr).') ', ($idArr));
-
-        if(empty($infixAttribute)) {
-            return null;
-        } else {
-            return $infixAttribute;
-        }
+    public function getByInfixId($id) {
+        return parent::getByAll("itemdetailsinfixupgradeId",$id);
     }
 
-    public function DeleteInfixAttributeByInfuxId($infuxId) {
-		$infixAttributes = Facade::find(SELF::INFIXATTRIBUTE,' itemdetailsinfixupgrade_id = ? ', array( $infuxId ));
-		
-		if (empty($infixAttributes)) {
-			return false;
-		} else {
-            foreach($infixAttributes as $infixAttribute)
-			    Facade::trash($infixAttribute);
+    public function getByInfixIds($idArr) {
+        return parent::getByIn("itemdetailsinfixupgradeId", $idArr);
+    }
 
-			return true;
-		}
-	}
-
-	public function DeleteAll() {
-		  Facade::exec('DELETE FROM '. SELF::INFIXATTRIBUTE );
-		  return true;
+    public function deleteByInfuxId($infuxId) {
+        return parent::delete(parent::toBeanColumn("itemdetailsinfixupgradeId"),$infuxId);
 	}
 	
 }

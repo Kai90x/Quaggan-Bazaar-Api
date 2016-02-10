@@ -24,11 +24,11 @@ class RedCrafting extends RedQuery {
 
     public function getById($gw_item_id)
     {
-        return parent::getOne(parent::toBeanColumn("gwItemId"),$gw_item_id);
+        return parent::getByOne("gwItemId",$gw_item_id);
     }
 
 	public function delete($gw_item_id) {
-        return parent::delete(parent::toBeanColumn("gwItemId"),$gw_item_id);
+        return parent::delete("gwItemId",$gw_item_id);
 	}
 
     public function getAllWithDetails() {

@@ -15,6 +15,15 @@ class GuildWars2Util {
     const GUILDWAR2_PRICES = "commerce/prices";
     const GUILDWAR2_DAILIES = "achievements/daily";
 
+    const ORDERBY_DEFAULT = 1;
+    const ORDERBY_BUYPRICE = 2;
+    const ORDERBY_SELLPRICE = 3;
+    const ORDERBY_NAME = 4;
+    const ORDERBY_DATEUPDATED = 5;
+
+    const ORDER_ASC = 0;
+    const ORDER_DESC = 1;
+
     public static function getItemsUrl() {
         return  SELF::GUILDWAR2_BASE_URL.SELF::GUILDWAR2_ITEM;
     }

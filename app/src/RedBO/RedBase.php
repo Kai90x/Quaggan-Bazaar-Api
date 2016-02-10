@@ -18,6 +18,8 @@ abstract class RedBase
      * @property  type
      */
     protected $type;
+    protected $dateCreated = "dateCreated";
+    protected $dateModified = "dateModified";
 
     public function __construct($type)
     {
@@ -26,31 +28,43 @@ abstract class RedBase
 
     protected function add($beanArr) {
         $bean = $this->createBean($beanArr);
-        $bean["dateCreated"] = Facade::isoDateTime();
-        $bean["dateModified"] = Facade::isoDateTime();
+        $bean[$this->dateCreated] = Facade::isoDateTime();
+        $bean[$this->dateModified] = Facade::isoDateTime();
         return Facade::store($bean);
     }
 
     protected function update($id,$beanArr) {
         $bean = $this->createBean($beanArr);
         $bean["id"] = $id;
-        $bean["dateModified"] = Facade::isoDateTime();
+        $bean[$this->dateModified] = Facade::isoDateTime();
         return Facade::store($bean);
     }
 
-    protected function getOne($attribute, $id)
+    protected function getByOne($attribute, $value)
     {
-        $item = Facade::findOne($this->type, $attribute.' = ? ', array($id));
-        return empty($item) ? null : $item;
+        return Facade::findOne($this->type, $this->toBeanColumn($attribute).' = ? ', array($value));
     }
 
-    public function getAll() {
-        $items = Facade::findAll($this->type);
-        return empty($items) ? null : $items;
+    public function getByIn($attribute,$valueArr) {
+        return Facade::findAll($this->type, $this->toBeanColumn($attribute).' IN ('.Facade::genSlots($valueArr).') ',($valueArr));
     }
 
-    protected function delete( $attribute, $id) {
-        $items = Facade::find($this->type,$attribute.' = ? ', array( $id ));
+    public function getByAll($attribute, $value) {
+        return Facade::findAll($this->type,$this->toBeanColumn($attribute).' = ? ', array($value));
+    }
+
+    public function getAll($orderby = null,$asc = true) {
+        if ($orderby != null) {
+            $order = "Order by ".$this->toBeanColumn($orderby)." " . ($asc ? "ASC" : "DESC");
+            $items = Facade::findAll($this->type,$order);
+        } else
+            $items = Facade::findAll($this->type);
+
+        return $items;
+    }
+
+    protected function delete( $attribute, $value) {
+        $items = Facade::find($this->type,$this->toBeanColumn($attribute).' = ? ', array( $value ));
 
         if (empty($items))
             return false;
@@ -61,7 +75,7 @@ abstract class RedBase
     }
 
     public function wipe() {
-        Facade::wipe( $this->type );
+        Facade::exec('DELETE FROM '. $this->type );
         return true;
     }
 
@@ -77,8 +91,7 @@ abstract class RedBase
     }
 
     protected function getByBatch($batchNum,$batchSize,$columnName) {
-        $items = Facade::findAll($this->type,"ORDER BY ".$columnName." DESC LIMIT ? , ? ",array((int)(($batchNum-1)*$batchSize),(int)$batchSize));
-        return (empty($items)) ? null : $items;
+        return Facade::findAll($this->type,"ORDER BY ".$columnName." DESC LIMIT ? , ? ",array((int)(($batchNum-1)*$batchSize),(int)$batchSize));
     }
 
     protected function toBeanColumn($column) {

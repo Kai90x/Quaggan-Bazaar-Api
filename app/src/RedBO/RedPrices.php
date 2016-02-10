@@ -1,6 +1,5 @@
 <?php
 namespace KaiApp\RedBO;
-require_once("RedConnection.php");
 /**
  * Created by PhpStorm.
  * User: Kai
@@ -12,7 +11,7 @@ use RedBeanPHP\Facade;
 
 class RedGuildPrices extends RedBase {
 
-	const GUILDPRICE = 'guildprices';
+	const GUILDPRICE = 'prices';
 
     public function __construct()
     {
@@ -20,7 +19,7 @@ class RedGuildPrices extends RedBase {
     }
 
 	public function add($itemId,$buyprice,$buyquantity,$sellprice,$sellquantity) {
-        parent::add(array(
+        return parent::add(array(
             "gwItemId" => $itemId,
             "buyprice" => $itemId,
             "buyquantity" => $itemId,
@@ -30,7 +29,7 @@ class RedGuildPrices extends RedBase {
     }
 	
 	public function update($id,$itemId,$buyprice,$buyquantity,$sellprice,$sellquantity) {
-          parent::update($id,array(
+        return parent::update($id,array(
             "gwItemId" => $itemId,
             "buyprice" => $itemId,
             "buyquantity" => $itemId,
@@ -40,27 +39,23 @@ class RedGuildPrices extends RedBase {
     }
 
     public function getByItemId($id) {
-        return parent::getOne(parent::toBeanColumn("gw_item_id"),$id);
+        return parent::getByOne(parent::toBeanColumn("gwItemId"),$id);
     }
 
 	public function getByItemIds($ids) {
-        $prices = Facade::find(SELF::GUILDPRICE, ' gw_item_id IN ( '.Facade::genSlots($ids).') ',$ids);
-        return empty($prices) ? null : $prices;
+        return Facade::find(SELF::GUILDPRICE, parent::toBeanColumn("gwItemId").' IN ( '.Facade::genSlots($ids).') ',$ids);
     }
 
     public function getUnsyncedPrices() {
-        $prices = Facade::find(SELF::GUILDPRICE,"DATE_ADD(date_updated, INTERVAL 15 MINUTE) < UTC_TIMESTAMP()");
-        return empty($prices) ? null : $prices;
+        return Facade::find(SELF::GUILDPRICE,"DATE_ADD(".parent::toBeanColumn($this->dateModified).", INTERVAL 15 MINUTE) < UTC_TIMESTAMP()");
     }
 
     public function getAllUnsyncedPricesByIds($ids) {
-        $prices = Facade::find(SELF::GUILDPRICE,'DATE_ADD(date_updated, INTERVAL 15 MINUTE) < UTC_TIMESTAMP() AND gw_item_id IN ( '.Facade::genSlots($ids).') ',$ids);
-        return empty($prices) ? null : $prices;
+        return Facade::find(SELF::GUILDPRICE,'DATE_ADD('.parent::toBeanColumn($this->dateModified).', INTERVAL 15 MINUTE) < UTC_TIMESTAMP() AND gw_item_id IN ( '.Facade::genSlots($ids).') ',$ids);
     }
 
     public function getByDays($days) {
-        $price = Facade::find(SELF::GUILDPRICE,"DATE_ADD(date_updated, INTERVAL ? DAY) < UTC_TIMESTAMP()", array($days));
-        return empty($price) ? null : $price;
+        return Facade::find(SELF::GUILDPRICE,"DATE_ADD(".parent::toBeanColumn($this->dateModified).", INTERVAL ? DAY) < UTC_TIMESTAMP()", array($days));
     }
 	
 	public function delete($gw_item_id) {

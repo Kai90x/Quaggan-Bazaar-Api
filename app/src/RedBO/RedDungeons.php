@@ -1,6 +1,5 @@
 <?php
 namespace KaiApp\RedBO;
-require_once("RedConnection.php");
 /**
  * Created by PhpStorm.
  * User: Kai
@@ -10,32 +9,26 @@ require_once("RedConnection.php");
 use RedBeanPHP;
 use RedBeanPHP\Facade;
 
-class RedDungeons {
+class RedDungeons extends RedBase{
 
 	const DUNGEONS = 'dungeons';
 
-    public function AddDungeons($dungeon,$path,$goldreward,$tokenreward) {
-        $dungeons = Facade::dispense(SELF::DUNGEONS);
-        $dungeons->dungeon = $dungeon;
-        $dungeons->path = $path;
-        $dungeons->goldreward = $goldreward;
-        $dungeons->tokenreward = $tokenreward;
-        $dungeons->creation_date = Facade::isoDateTime();
-
-        return Facade::store($dungeons);
+    public function __construct()
+    {
+        parent::__construct(SELF::DUNGEONS);
     }
 
-    public function GetAllDungeons() {
-        $news = Facade::find(SELF::DUNGEONS,"Order by dungeon ASC ");
-        if (empty($news))
-            return null;
-
-        return $news;
+    public function add($dungeon,$path,$goldreward,$tokenreward) {
+        return parent::add(array(
+            "dungeon" => $dungeon,
+            "path" => $path,
+            "goldreward" => $goldreward,
+            "tokenreward" => $tokenreward
+        ));
     }
 
-	public function DeleteAll() {
-		  Facade::wipe( SELF::DUNGEONS );
-		  return true;
-	}
+    public function getAll() {
+        return parent::getAll("dungeon");
+    }
 	
 }

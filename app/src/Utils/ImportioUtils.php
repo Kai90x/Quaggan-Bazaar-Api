@@ -15,6 +15,6 @@ class ImportioUtils
     const EVENT_TIME_API = "https://api.import.io/store/data/00110f42-401a-4c1c-9e5b-fdfc751998f8/_query?input/webpage/url=https%3A%2F%2Fwiki.guildwars2.com%2Fwiki%2FWorld_boss&_user=3f61fb59-2d0d-4f88-8a0e-d9c1bc9f08e1&_apikey=";
 
     public static function getEventTimeUrl() {
-        return  Common::EVENT_TIME_API.Common::IMPORTIO_API;
+        return  SELF::EVENT_TIME_API.SELF::IMPORTIO_API;
     }
 }

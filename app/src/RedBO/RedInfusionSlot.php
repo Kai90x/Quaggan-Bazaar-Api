@@ -1,6 +1,5 @@
 <?php
 namespace KaiApp\RedBO;
-require_once("RedConnection.php");
 /**
  * Created by PhpStorm.
  * User: Kai
@@ -8,57 +7,33 @@ require_once("RedConnection.php");
  * Time: 7:41 PM
  */
 use RedBeanPHP;
-use RedBeanPHP\Facade;
 
-class RedInfusionSlot {
+class RedInfusionSlot extends RedBase {
 
     const ITEMDETAILSINFUSIONSLOT = 'itemdetailsinfusionslots';
-
-    public function AddItemDetailsInfusionSlot($itemDetailsId,$falgs,$item_id) {
-        $infusionSlot = Facade::dispense(SELF::ITEMDETAILSINFUSIONSLOT);
-
-        $infusionSlot->itemdetailsId = $itemDetailsId;
-        $infusionSlot->flags = $falgs;
-        $infusionSlot->item_id = $item_id;
-
-        Facade::store($infusionSlot);
+    public function __construct()
+    {
+        parent::__construct(SELF::ITEMDETAILSINFUSIONSLOT);
     }
 
-    public function FindByItemDetailsId($id) {
-        $infusionSlot = Facade::find(SELF::ITEMDETAILSINFUSIONSLOT, 'itemdetails_id = ? ',array($id));
-
-        if(empty($infusionSlot)) {
-            return null;
-        } else {
-            return $infusionSlot;
-        }
+    public function AddItemDetailsInfusionSlot($itemDetailsId,$flags,$item_id) {
+        return parent::add(array(
+            "itemdetailsId" => $itemDetailsId,
+            "flags" => $flags,
+            "itemId" => $item_id
+        ));
     }
 
-    public function FindByItemDetailsIds($idArr) {
-        $infusionSlot = Facade::find(SELF::ITEMDETAILSINFUSIONSLOT, 'itemdetails_id IN ('.Facade::genSlots($idArr).') ',($idArr));
+    public function getByItemDetailsId($id) {
+        return parent::getByAll("itemdetailsId",$id);
+    }
 
-        if(empty($infusionSlot)) {
-            return null;
-        } else {
-            return $infusionSlot;
-        }
+    public function getByItemDetailsIds($idArr) {
+        return parent::getByIn("itemdetailsId",$idArr);
     }
 
     public function DeleteItemDetailsInfixUpgrade($itemDetailsId) {
-        $infusionSlots = Facade::find(SELF::ITEMDETAILSINFUSIONSLOT,' itemdetails_id = ? ', array( $itemDetailsId ));
-
-        if (empty($infusionSlots)) {
-            return false;
-        } else {
-            foreach($infusionSlots as $infusionSlot)
-                Facade::trash($infusionSlot);
-            return true;
-        }
+        return parent::delete("itemdetailsId",$itemDetailsId);
     }
-
-	public function DeleteAll() {
-		  Facade::exec( 'DELETE FROM '.SELF::ITEMDETAILSINFUSIONSLOT );
-		  return true;
-	}
 	
 }

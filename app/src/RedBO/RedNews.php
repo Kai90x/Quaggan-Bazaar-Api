@@ -31,7 +31,7 @@ class RedNews extends RedBase {
 
     public function getByTitle($title)
     {
-        return parent::getOne(parent::toBeanColumn("title"), SanitizationUtils::StripHTMLCharacter($title));
+        return parent::getByOne(parent::toBeanColumn("title"), SanitizationUtils::StripHTMLCharacter($title));
     }
 
     public function delete($id) {

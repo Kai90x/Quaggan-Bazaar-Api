@@ -1,6 +1,5 @@
 <?php
 namespace KaiApp\RedBO;
-require_once("RedConnection.php");
 /**
  * Created by PhpStorm.
  * User: Kai
@@ -10,45 +9,28 @@ require_once("RedConnection.php");
 use RedBeanPHP;
 use RedBeanPHP\Facade;
 
-class RedIngredients {
+class RedIngredients extends RedBase{
 
 	const INGREDIENTS = 'ingredients';
-	
-	public function AddIngredients($recipeId, $itemId, $count ) {
-        $ingredient = Facade::dispense(SELF::INGREDIENTS);
-
-        $ingredient->recipeId = $recipeId;
-        $ingredient->itemId = $itemId;
-        $ingredient->count = $count;
-
-        Facade::store($ingredient);
+    public function __construct()
+    {
+        parent::__construct(SELF::INGREDIENTS);
     }
 
-    public function FindByRecipeId($id) {
-        $ingredients = Facade::find(SELF::INGREDIENTS, 'recipe_id = ? ',array($id));
+	public function add($recipeId, $itemId, $count ) {
+        return parent::add(array(
+            "recipeId" => $recipeId,
+            "itemId" => $itemId,
+            "count" => $count
+        ));
+    }
 
-        if(empty($ingredients)) {
-            return null;
-        } else {
-            return $ingredients;
-        }
+    public function getByRecipeId($id) {
+        return parent::getByAll("recipeId",$id);
     }
 	
 	public function DeleteIngredientsByRecipeId($id) {
-        $ingredients = Facade::find(SELF::INGREDIENTS,' recipe_id = ? ', array( $id ));
-		
-		if (empty($ingredients)) {
-			return false;
-		} else {
-            foreach($ingredients as $ingredient)
-                Facade::trash($ingredient);
-			return true;
-		}
-	}
-	
-	public function DeleteAll() {
-		  Facade::wipe( SELF::INGREDIENTS );
-		  return true;
+        return parent::delete("recipeId",$id);
 	}
 
 }

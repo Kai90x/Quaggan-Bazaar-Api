@@ -1,6 +1,5 @@
 <?php
 namespace KaiApp\RedBO;
-require_once("RedConnection.php");
 /**
  * Created by PhpStorm.
  * User: Kai
@@ -10,85 +9,56 @@ require_once("RedConnection.php");
 use RedBeanPHP;
 use RedBeanPHP\Facade;
 
-class RedRecipe {
+class RedRecipe extends RedBase{
 
 	const RECIPE = 'recipe';
+    public function __construct()
+    {
+        parent::__construct(SELF::RECIPE);
+    }
 
     public function addId($recipeId) {
-        $recipe = Facade::dispense(SELF::RECIPE);
-
-        $recipe->gwRecipeId = $recipeId;
-
-        return Facade::store($recipe);
+        return parent::add(array(
+            "gwRecipeId" => $recipeId
+        ));
     }
 
     public function add($recipeId, $type , $output_item_id, $output_item_count, $time_to_craft_ms, $disciples,$min_rating, $flags ) {
-        $recipe = Facade::dispense(SELF::RECIPE);
-
-        $recipe->gwRecipeId = $recipeId;
-        $recipe->type = $type;
-        $recipe->output_item_id = $output_item_id;
-        $recipe->output_item_count = $output_item_count;
-        $recipe->time_to_craft_ms = $time_to_craft_ms;
-        $recipe->disciples = $disciples;
-        $recipe->min_rating = $min_rating;
-        $recipe->flags = $flags;
-
-        return Facade::store($recipe);
+        return parent::add(array(
+            "gwRecipeId" => $recipeId,
+            "type" => $type,
+            "output_item_id" => $output_item_id,
+            "output_item_count" => $output_item_count,
+            "time_to_craft_ms" => $time_to_craft_ms,
+            "disciples" => $disciples,
+            "min_rating" => $min_rating,
+            "flags" => $flags,
+        ));
     }
 
     public function update($id,$recipeId, $type , $output_item_id, $output_item_count, $time_to_craft_ms, $disciples,$min_rating, $flags ) {
-        $recipe = Facade::dispense(SELF::RECIPE);
-
-        $recipe->id = $id;
-        $recipe->gwRecipeId = $recipeId;
-        $recipe->type = $type;
-        $recipe->output_item_id = $output_item_id;
-        $recipe->output_item_count = $output_item_count;
-        $recipe->time_to_craft_ms = $time_to_craft_ms;
-        $recipe->disciples = $disciples;
-        $recipe->min_rating = $min_rating;
-        $recipe->flags = $flags;
-        $recipe->sync_date = Facade::isoDateTime();
-
-        return Facade::store($recipe);
+        return parent::update($id,array(
+            "gwRecipeId" => $recipeId,
+            "type" => $type,
+            "output_item_id" => $output_item_id,
+            "output_item_count" => $output_item_count,
+            "time_to_craft_ms" => $time_to_craft_ms,
+            "disciples" => $disciples,
+            "min_rating" => $min_rating,
+            "flags" => $flags,
+        ));
     }
 
-    public function FindByOutputItemId($id) {
-        $recipe = Facade::findOne(SELF::RECIPE, 'output_item_id = ? ',array($id));
-
-        if(empty($recipe)) {
-            return null;
-        } else {
-            return $recipe;
-        }
+    public function getByOutputItemId($id) {
+        return parent::getByOne("output_item_id",$id);
     }
 
-    public function FindByRecipeId($id) {
-        $recipe = Facade::findOne(SELF::RECIPE, 'gw_recipe_id = ? ',array($id));
-
-        if(empty($recipe)) {
-            return null;
-        } else {
-            return $recipe;
-        }
+    public function getByRecipeId($id) {
+        return parent::getByOne("gw_recipe_id",$id);
     }
 	
-	public function DeleteRecipe($id) {
-        $recipes = Facade::find(SELF::RECIPE,' id = ? ', array( $id ));
-		
-		if (empty($recipes)) {
-			return false;
-		} else {
-            foreach($recipes as $recipe)
-                Facade::trash($recipe);
-			return true;
-		}
-	}
-	
-	public function DeleteAll() {
-		  Facade::wipe( SELF::RECIPE );
-		  return true;
+	public function deleteById($id) {
+       return parent::delete("id", $id);
 	}
 	
 }

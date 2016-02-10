@@ -1,6 +1,5 @@
 <?php
 namespace KaiApp\RedBO;
-require_once("RedConnection.php");
 /**
  * Created by PhpStorm.
  * User: Kai
@@ -8,55 +7,31 @@ require_once("RedConnection.php");
  * Time: 7:41 PM
  */
 use RedBeanPHP;
-use RedBeanPHP\Facade;
 
-class RedItemDetailsInfixUpgrade {
+class RedItemDetailsInfixUpgrade extends RedBase{
 	
 	const ITEMDETAILSINFIXUPGRADE = 'itemdetailsinfixupgrade';
-	
-	public function AddItemDetailsInfixUpgrade($itemDetailsId) {
-        $infuxUpgrade = Facade::dispense(SELF::ITEMDETAILSINFIXUPGRADE);
-
-        $infuxUpgrade->itemdetailsId = $itemDetailsId;
-
-        return Facade::store($infuxUpgrade);
+    public function __construct()
+    {
+        parent::__construct(SELF::ITEMDETAILSINFIXUPGRADE);
     }
 
-    public function FindByItemDetailsId($id) {
-        $infixUpgrade = Facade::findOne(SELF::ITEMDETAILSINFIXUPGRADE, 'itemdetails_id = ? ',array($id));
-
-        if(empty($infixUpgrade)) {
-            return null;
-        } else {
-            return $infixUpgrade;
-        }
+	public function add($itemDetailsId) {
+        return parent::add(array(
+            "itemdetailsId" => $itemDetailsId
+        ));
     }
 
-    public function FindByItemDetailsIds($idArr) {
-        $infixUpgrade = Facade::find(SELF::ITEMDETAILSINFIXUPGRADE, 'itemdetails_id IN ('.Facade::genSlots($idArr).') ',($idArr));
-
-        if(empty($infixUpgrade)) {
-            return null;
-        } else {
-            return $infixUpgrade;
-        }
+    public function getByItemDetailsId($id) {
+        return parent::getByOne("itemdetailsId",$id);
     }
 
-	public function DeleteItemDetailsInfixUpgrade($itemDetailsId) {
-		$infuxUpgrades = Facade::find(SELF::ITEMDETAILSINFIXUPGRADE,' itemdetails_id = ? ', array( $itemDetailsId ));
-		
-		if (empty($infuxUpgrades)) {
-			return false;
-		} else {
-            foreach($infuxUpgrades as $infuxUpgrade)
-                Facade::trash($infuxUpgrade);
-			return true;
-		}
+    public function getByItemDetailsIds($idArr) {
+        return parent::getByIn("itemdetailsId",$idArr);
+    }
+
+	public function deleteByItemDetailsId($itemDetailsId) {
+		return parent::delete("itemdetailsId",$itemDetailsId);
 	}
-	
-	public function DeleteAll() {
-		  Facade::exec( 'DELETE FROM '.SELF::ITEMDETAILSINFIXUPGRADE );
-		  return true;
-	}
-	
+
 }

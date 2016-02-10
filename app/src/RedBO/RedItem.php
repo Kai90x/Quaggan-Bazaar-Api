@@ -7,21 +7,18 @@ require_once("RedConnection.php");
  * Date: 4/26/2015
  * Time: 7:41 PM
  */
+use KaiApp\Utils\GuildWars2Util;
 use RedBeanPHP;
 use RedBeanPHP\Facade;
 
-class RedGuildItem {
+class RedGuildItem extends RedQuery{
 
     const ITEM = 'item';
 
-    const ORDERBY_ID = 1;
-    const ORDERBY_BUYPRICE = 2;
-    const ORDERBY_SELLPRICE = 3;
-    const ORDERBY_NAME = 4;
-    const ORDERBY_DATEUPDATED = 5;
-
-    const ORDER_ASC = 0;
-    const ORDER_DESC = 1;
+    public function __construct()
+    {
+        parent::__construct(SELF::ITEM);
+    }
 
     public function AddItemGWIds($id) {
         $item = Facade::dispense(SELF::ITEM);
@@ -31,43 +28,38 @@ class RedGuildItem {
         return Facade::store($item);
     }
 
-    public function AddItem($id, $name, $icon, $description, $type, $rarity, $level, $vendor_value, $default_skin, $flags, $game_types, $restrictions) {
-        $item = Facade::dispense(SELF::ITEM);
-
-        $item->gwItemId = $id;
-        $item->name = $name;
-        $item->icon = $icon;
-        $item->description = $description;
-        $item->type = $type;
-        $item->rarity = $rarity;
-        $item->level = $level;
-        $item->vendor_value = $vendor_value;
-        $item->default_skin = $default_skin;
-        $item->flags = $flags;
-        $item->game_types = $game_types;
-        $item->restrictions = $restrictions;
-
-        return Facade::store($item);
+    public function add($id, $name, $icon, $description, $type, $rarity, $level, $vendor_value, $default_skin, $flags, $game_types, $restrictions) {
+        return parent::add(array(
+            "gwItemId" => $id,
+            "name" => $name,
+            "icon" => $icon,
+            "description" => $description,
+            "type" => $type,
+            "rarity" => $rarity,
+            "level" => $level,
+            "vendor_value" => $vendor_value,
+            "default_skin" => $default_skin,
+            "flags" => $flags,
+            "game_types" => $game_types,
+            "restrictions" => $restrictions
+        ));
     }
 
     public function UpdateItem($updateid,$id, $name, $icon, $description, $type, $rarity, $level, $vendor_value, $default_skin, $flags, $game_types, $restrictions) {
-        $item = Facade::dispense(SELF::ITEM);
-        $item->id = $updateid;
-        $item->gwItemId = $id;
-        $item->name = $name;
-        $item->icon = $icon;
-        $item->description = $description;
-        $item->type = $type;
-        $item->rarity = $rarity;
-        $item->level = $level;
-        $item->vendor_value = $vendor_value;
-        $item->default_skin = $default_skin;
-        $item->flags = $flags;
-        $item->game_types = $game_types;
-        $item->restrictions = $restrictions;
-        $item->synced_time = Facade::isoDateTime();
-
-        return Facade::store($item);
+        return parent::update($updateid,array(
+            "gwItemId" => $id,
+            "name" => $name,
+            "icon" => $icon,
+            "description" => $description,
+            "type" => $type,
+            "rarity" => $rarity,
+            "level" => $level,
+            "vendor_value" => $vendor_value,
+            "default_skin" => $default_skin,
+            "flags" => $flags,
+            "game_types" => $game_types,
+            "restrictions" => $restrictions
+        ));
     }
 
     public function SelectAllItem() {
@@ -303,19 +295,17 @@ class RedGuildItem {
     }
 
     private function OrderBy($order, $DescOrAsc) {
-        $orderClause = "";
-
         switch($order) {
-            case SELF::ORDERBY_ID:
+            case GuildWars2Util::ORDERBY_DEFAULT:
                 $orderClause = " ORDER BY item.id ";
                 break;
-            case SELF::ORDERBY_BUYPRICE:
+            case GuildWars2Util::ORDERBY_BUYPRICE:
                 $orderClause = " ORDER BY guildprices.buyprice ";
                 break;
-            case SELF::ORDERBY_SELLPRICE:
+            case GuildWars2Util::ORDERBY_SELLPRICE:
                 $orderClause = " ORDER BY guildprices.sellprice ";
                 break;
-            case SELF::ORDERBY_DATEUPDATED:
+            case GuildWars2Util::ORDERBY_DATEUPDATED:
                 $orderClause = " ORDER BY guildprices.date_updated ";
                 break;
             default:
@@ -324,11 +314,10 @@ class RedGuildItem {
         }
 
         if (!empty($orderClause)) {
-            if ($DescOrAsc == SELF::ORDER_DESC) {
+            if ($DescOrAsc == GuildWars2Util::ORDER_DESC)
                 $orderClause .= " DESC ";
-            } else if ($DescOrAsc == SELF::ORDER_ASC) {
+            else
                 $orderClause .= " ASC ";
-            }
         }
 
         return $orderClause;
