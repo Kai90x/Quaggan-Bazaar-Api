@@ -33,7 +33,7 @@ class RedQuery extends RedBase{
             if ($where != " WHERE ")
                 $where .= " AND ";
 
-            $where .= $tablename.".".$param['column']." = '".$param['value']."' ";
+            $where .= $tablename.".".parent::toBeanColumn($param['column'])." = '".$param['value']."' ";
         }
 
         return $where;

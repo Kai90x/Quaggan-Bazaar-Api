@@ -40,7 +40,7 @@ class RedCraftSubItemBase extends RedQuery
     public function getAllWithDetails($ids) {
         $table = $this->type;
         $foreignColumn = $this::toBeanColumn($this->foreignColumn);
-        $baseQuery = "SELECT ".$table.".id,".$table.".gw_item_id,".$table.".date_created,".$table.".".$foreignColumn.",item.icon,item.type,
+        $baseQuery = "SELECT ".$table.".id,".$table.".amount,".$table.".gw_item_id,".$table.".date_created,".$table.".".$foreignColumn.",item.icon,item.type,
                       item.rarity,item.level,item.name FROM ".$table." LEFT JOIN item ON item.gw_item_id = ".$table.".gw_item_id
                       WHERE ".$foreignColumn ." IN ( ".Facade::genSlots($ids)." ) ";
         return Facade::getAll($baseQuery,$ids);

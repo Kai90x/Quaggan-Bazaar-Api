@@ -62,34 +62,33 @@ class CraftingController extends BaseController
 
         //Populate object to be encoded
         if (!empty($sub1Items)) {
-            foreach($sub1Items as $sub1Item) {
+            for($i1 = 0; $i1 < sizeof($sub1Items); $i1++) {
                 if(!empty($sub2Items)) {
-                    $sub1Item["sub2Item"] = array();
+                    $sub1Items[$i1]["sub2Item"] = array();
 
-                    foreach($sub2Items as $sub2Item) {
-                        if ($sub1Item["id"] == $sub2Item["craftsubitem1_id"]) {
+                    for($i2 = 0; $i2 < sizeof($sub2Items); $i2++) {
+                        if ($sub1Items[$i1]["id"] == $sub2Items[$i2]["craftsubitem1_id"]) {
                             if(!empty($sub3Items)) {
-                                $sub2Item["sub3Item"] = array();
+                                $sub2Items[$i2]["sub3Item"] = array();
 
-                                foreach($sub3Items as $sub3Item) {
-                                    if ($sub2Item["id"] == $sub3Item["craftsubitem2_id"]) {
+                                for($i3 = 0; $i3 < sizeof($sub3Items); $i3++) {
+                                    if ($sub2Items[$i2]["id"] == $sub3Items[$i3]["craftsubitem2_id"]) {
                                         if(!empty($sub4Items)) {
-                                            $sub3Item["sub4Item"] = array();
+                                            $sub3Items[$i3]["sub4Item"] = array();
 
-                                            foreach($sub4Items as $sub4Item) {
-                                                if ($sub3Item["id"] == $sub4Item["craftsubitem3_id"]) {
+                                            for($i4 = 0; $i4 < sizeof($sub4Items); $i4++) {
+                                                if ($sub3Items[$i3]["id"] == $sub4Items[$i4]["craftsubitem3_id"]) {
 
-                                                    array_push($sub3Item["sub4Item"],$sub4Item);
+                                                    array_push($sub3Items[$i3]["sub4Item"],$sub4Items[$i4]);
                                                 }
                                             }
                                         }
 
-                                        array_push($sub2Item["sub3Item"],$sub3Item);
+                                        array_push($sub2Items[$i2]["sub3Item"],$sub3Items[$i3]);
                                     }
                                 }
                             }
-
-                            array_push($sub1Item["sub2Item"],$sub2Item);
+                            array_push($sub1Items[$i1]["sub2Item"],$sub2Items[$i2]);
                         }
                     }
                 }
@@ -125,11 +124,11 @@ class CraftingController extends BaseController
     }
 
     public function reset($request, $response, array $args) {
-        $this->redCraftSubItem4->trashAll();
-        $this->redCraftSubItem3->trashAll();
-        $this->redCraftSubItem2->trashAll();
-        $this->redCraftSubItem1->trashAll();
-        $this->redCrafting->trashAll();
+        $this->redCraftSubItem4->wipe();
+        $this->redCraftSubItem3->wipe();
+        $this->redCraftSubItem2->wipe();
+        $this->redCraftSubItem1->wipe();
+        $this->redCrafting->wipe();
         $this->addAll();
 
         $this->simpleResponse("Legendaries have been reset",$response);

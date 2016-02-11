@@ -60,5 +60,5 @@ class RedRecipe extends RedBase{
 	public function deleteById($id) {
        return parent::delete("id", $id);
 	}
-	
+
 }

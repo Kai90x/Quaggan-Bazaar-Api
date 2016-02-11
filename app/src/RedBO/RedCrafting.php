@@ -38,7 +38,7 @@ class RedCrafting extends RedQuery {
     }
 
     public function getWithDetails($id) {
-        $where = $this->addWhereClause($this->type,array(parent::getParamArray("id",$id)));
+        $where = $this->addWhereClause($this->type,array(parent::getParamArray("gwItemId",$id)));
         $baseQuery = "SELECT craftings.id,craftings.gw_item_id,craftings.date_created,item.icon,item.type,
                       item.rarity,item.level,item.name FROM craftings LEFT JOIN item ON item.gw_item_id = craftings.gw_item_id";
         return Facade::getAll($baseQuery.$where);

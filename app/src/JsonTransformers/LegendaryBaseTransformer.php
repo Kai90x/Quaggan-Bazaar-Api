@@ -15,7 +15,7 @@ class LegendaryBaseTransformer extends TransformerAbstract
 {
     public function transform($legendary)
     {
-        return [
+        $jsonNodes =  [
             'name' => $legendary['name'],
             'id' => $legendary['gw_item_id'],
             'date_created' => $legendary['date_created'],
@@ -23,6 +23,11 @@ class LegendaryBaseTransformer extends TransformerAbstract
             'rarity' => $legendary['rarity'],
             'type' => $legendary['type']
         ];
+
+        if (array_key_exists("amount",$legendary))
+            $jsonNodes["amount"] = $legendary["amount"];
+
+        return $jsonNodes;
     }
 
 }

@@ -20,12 +20,10 @@ class RedGuildItem extends RedQuery{
         parent::__construct(SELF::ITEM);
     }
 
-    public function AddItemGWIds($id) {
-        $item = Facade::dispense(SELF::ITEM);
-
-        $item->gwItemId = $id;
-
-        return Facade::store($item);
+    public function addGwIds($id) {
+        return parent::add(array(
+            "gwItemId" => $id
+        ));
     }
 
     public function add($id, $name, $icon, $description, $type, $rarity, $level, $vendor_value, $default_skin, $flags, $game_types, $restrictions) {
@@ -45,7 +43,7 @@ class RedGuildItem extends RedQuery{
         ));
     }
 
-    public function UpdateItem($updateid,$id, $name, $icon, $description, $type, $rarity, $level, $vendor_value, $default_skin, $flags, $game_types, $restrictions) {
+    public function update($updateid,$id, $name, $icon, $description, $type, $rarity, $level, $vendor_value, $default_skin, $flags, $game_types, $restrictions) {
         return parent::update($updateid,array(
             "gwItemId" => $id,
             "name" => $name,
@@ -203,20 +201,7 @@ class RedGuildItem extends RedQuery{
     }
 	
 	public function DeleteItem($id) {
-		$item = Facade::load(SELF::ITEM, $id);
-		
-		if (empty($item)) {
-			return false;
-		} else {
-
-			Facade::trash($item);
-			return true;
-		}
-	}
-	
-	public function DeleteAll() {
-		  Facade::exec( 'DELETE FROM '.SELF::ITEM );
-		  return true;
+        return parent::delete("id",$id);
 	}
 
     private function AddWhereClause($name,$levelmin,$levelmax,$type,$subtype,$buyPriceMin,$buyPriceMax,$sellPriceMin,$sellPriceMax,$rarity) {
