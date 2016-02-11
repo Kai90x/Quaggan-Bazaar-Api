@@ -11,10 +11,9 @@ use Swift_Mailer;
 use Swift_Message;
 use Swift_SmtpTransport;
 
-class email extends BaseController
+class EmailController extends BaseController
 {
-
-    public function sendEmailAction()
+    public function send($request, $response, array $args)
     {
         $emailTo = $this->app->request()->post('emailTo');
         $emailBody = $this->app->request()->post('emailBody');

@@ -8,18 +8,18 @@
 
 namespace KaiApp\Controller;
 
-use Utils\Common;
-use RedBO\RedFactory;
+use RedBeanPHP\RedDaily;
 
 class DailyController extends BaseController
 {
+    private $redDailies;
 
-    public function add()
-    {
-        //TO-DO: Re-implement
+    public function __construct(RedDaily $_redDailies) {
+        $this->redDailies = $_redDailies;
+        parent::__construct();
     }
 
-    public function get()
+    public function get($request, $response, array $args)
     {
         //TO-DO: Re-implement
     }
