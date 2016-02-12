@@ -9,6 +9,8 @@
 namespace KaiApp\Controller;
 
 use RedBeanPHP\RedDaily;
+use Slim\Http\Request;
+use Slim\Http\Response;
 
 class DailyController extends BaseController
 {
@@ -19,7 +21,7 @@ class DailyController extends BaseController
         parent::__construct();
     }
 
-    public function get($request, $response, array $args)
+    public function get(Request $request,Response $response, array $args)
     {
         //TO-DO: Re-implement
     }

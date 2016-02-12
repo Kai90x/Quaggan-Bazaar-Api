@@ -10,6 +10,7 @@ namespace KaiApp\Controller;
 
 use KaiApp\JsonTransformers\LegendariesTransformer;
 use KaiApp\JsonTransformers\LegendaryTransformer;
+use KaiApp\JsonTransformers\SimpleTransformer;
 use KaiApp\RedBO\RedCrafting;
 use KaiApp\RedBO\RedCraftSubItem1;
 use KaiApp\RedBO\RedCraftSubItem2;
@@ -17,6 +18,8 @@ use KaiApp\RedBO\RedCraftSubItem3;
 use KaiApp\RedBO\RedCraftSubItem4;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
+use Slim\Http\Request;
+use Slim\Http\Response;
 
 class CraftingController extends BaseController
 {
@@ -37,10 +40,10 @@ class CraftingController extends BaseController
         parent::__construct();
     }
 
-    public function get($request, $response, array $args) {
+    public function get(Request $request,Response $response, array $args) {
         $craft = $this->redCrafting->getWithDetails($args['id']);
         if (empty($craft))
-            return $this->simpleResponse("invalid id passed",$response,500);
+            return $this->response(new Item("invalid id passed",new SimpleTransformer()),$response,500);
 
         $sub1Items = null;
         $sub2Items = null;
@@ -96,12 +99,9 @@ class CraftingController extends BaseController
 
             $craft[0]["sub1Item"] = $sub1Items;
 
-            return $this->complexResponse(new Item($craft[0], new LegendaryTransformer()),$response);
-        } else {
-            return $this->simpleResponse("An error has occurred",$response, 500);
-        }
-
-
+            return $this->response(new Item($craft[0], new LegendaryTransformer()),$response);
+        } else
+            return $this->response(new Item("An error has occurred", new SimpleTransformer()),$response, 500);
     }
 
     private function getIds($items) {
@@ -115,15 +115,15 @@ class CraftingController extends BaseController
         return $ids;
     }
 
-    public function all($request, $response, array $args) {
+    public function all(Request $request,Response $response, array $args) {
         $crafts = $this->redCrafting->getAllWithDetails();
         if (empty($crafts))
-            return $this->simpleResponse("No crafts found",$response, 404);
+            return $this->response(new Item("No crafts found",new SimpleTransformer()),$response, 404);
 
-        return $this->complexResponse(new Collection($crafts, new LegendariesTransformer()),$response);
+        return $this->response(new Collection($crafts, new LegendariesTransformer()),$response);
     }
 
-    public function reset($request, $response, array $args) {
+    public function reset(Request $request,Response $response, array $args) {
         $this->redCraftSubItem4->wipe();
         $this->redCraftSubItem3->wipe();
         $this->redCraftSubItem2->wipe();
@@ -131,7 +131,7 @@ class CraftingController extends BaseController
         $this->redCrafting->wipe();
         $this->addAll();
 
-        $this->simpleResponse("Legendaries have been reset",$response);
+        return $this->response(new Item("Legendaries have been reset",new SimpleTransformer()),$response);
     }
 
     private function addAll()

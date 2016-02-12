@@ -24,26 +24,20 @@ class BaseController extends JGutBaseController
         $this->fractal->setSerializer(new DataArraySerializer());
     }
 
-    protected function complexResponse($object,Response $response,$status = 200) {
+    protected function response($object,Response $response,$status = 200) {
         $response = $response->write($this->fractal->createData($object)->toJson())
             ->withStatus($status)
             ->withHeader("Content-Type","application/json;charset=utf-8");
         return $response;
     }
 
-    protected function simpleResponse($arr,Response $response,$status = 200) {
-        $response = $response->write(json_encode($arr))
-                             ->withStatus($status)
-                             ->withHeader("Content-Type","application/json;charset=utf-8");
-        return $response;
-    }
-
-    public static function checkEmptyParams($params) {
-        foreach($params as $param) {
-            if (empty($param))
-                return true;
+    public function getMissingParams($params) {
+        $missingParams = array();
+        foreach($params as $key => $value) {
+            if (empty($value))
+                array_push($missingParams,$key);
         }
 
-        return false;
+        return $missingParams;
     }
 }

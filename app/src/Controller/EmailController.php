@@ -7,59 +7,52 @@
  */
 namespace KaiApp\Controller;
 
+use Slim\Http\Request;
+use Slim\Http\Response;
 use Swift_Mailer;
 use Swift_Message;
 use Swift_SmtpTransport;
 
 class EmailController extends BaseController
 {
-    public function send($request, $response, array $args)
+    public function send(Request $request,Response $response, array $args)
     {
-        $emailTo = $this->app->request()->post('emailTo');
-        $emailBody = $this->app->request()->post('emailBody');
-        $emailFrom = $this->app->request()->post('emailFrom');
-        $emailSubject = $this->app->request()->post('emailSubject');
-        $items = $this->app->request()->post('emailItems');
-        $notificationid = $this->app->request()->post('notificationid');
+        $to = $request->getParam('to');
+        $body = $request->getParam('body');
+        $from = $request->getParam('from');
+        $subject = $request->getParam('subject');
+        $items = $request->getParam('items');
+        $notificationid = $request->getParam('notificationid');
 
-        if (\Utils\Common::CheckEmptyParams(array($emailTo,$emailBody,$emailFrom,$emailSubject))) {
-            echo json_encode(\Utils\Common::GenerateResponse(\Utils\Common::STATUS_ERROR,"Missing paramters"));
-            return;
-        }
+        $missingParams = $this->getMissingParams(array("to" => $to,"body" => $body,"from" => $from,"subject" => $subject));
+        if (!empty($missingParams))
+            return $this->simpleResponse("Missing required parameters ".implode(",",$missingParams),$response,500);
 
-        // Create the Transport
+
         $transport = Swift_SmtpTransport::newInstance('mail.kai-mx.net', 25)
             ->setUsername('guildwarsv2@kai-mx.net')
-            ->setPassword('OperationN24%')
-        ;
+            ->setPassword('OperationN24%');
 
-        // Create the Mailer using your created Transport
         $mailer = Swift_Mailer::newInstance($transport);
 
-        //Get Email Template
         $emailTemplate = file_get_contents('http://www.kai-mx.net/HTML%20Template/emailTemplateGuildWars.html');
 
-        if (!empty($notificationid))
-            $emailTemplate = str_replace("{title}","Guild Wars Notification",$emailTemplate);
-        else
-            $emailTemplate = str_replace("{title}","Guild Wars Report",$emailTemplate);
+        $emailTemplate = !empty($notificationid) ? str_replace("{title}","Guild Wars Notification",$emailTemplate)
+        : $emailTemplate = str_replace("{title}","Guild Wars Report",$emailTemplate);
 
-        if (!empty($items)) {
-            $emailTemplate = str_replace("{Items}",$items,$emailTemplate);
-        } else {
-            $emailTemplate = str_replace("{Items}","",$emailTemplate);
-        }
+        $emailTemplate = (!empty($items)) ? $emailTemplate = str_replace("{Items}",$items,$emailTemplate)
+            : $emailTemplate = str_replace("{Items}","",$emailTemplate);
 
-        $emailTemplate = str_replace("{Body}",$emailBody,$emailTemplate);
+
+        $emailTemplate = str_replace("{Body}",$body,$emailTemplate);
 
         // Create a message
-        $message = Swift_Message::newInstance($emailSubject)
+        $message = Swift_Message::newInstance($subject)
             ->setFrom("guildwarsv2@kai-mx.net")
-            ->setTo($emailTo)
-            ->setBody($emailTemplate,"text/html")
-        ;
+            ->setTo($to)
+            ->setBody($emailTemplate,"text/html");
 
-        $message->setFrom($emailFrom);
+        $message->setFrom($from);
 
         // Send the message
         $result = $mailer->send($message,$failures);

@@ -9,6 +9,7 @@ namespace KaiApp\Controller;
 
 use KaiApp\JsonTransformers\BatchTransformer;
 use KaiApp\JsonTransformers\NewsTransformer;
+use KaiApp\JsonTransformers\SimpleTransformer;
 use KaiApp\RedBO\RedNews;
 use League\Fractal\Resource\Item;
 use Slim\Http\Request;
@@ -42,9 +43,9 @@ class NewsController extends BaseController
 
             }
 
-            return $this->simpleResponse("News has been synced",$response);
+            return $this->response(new Item("News has been synced", new SimpleTransformer()),$response);
         } catch(\Exception $e) {
-            return $this->simpleResponse("An error has occurred",$response,500);
+            return $this->response(new Item("An error has occurred", new SimpleTransformer()),$response,500);
         }
 	}
 
@@ -56,8 +57,8 @@ class NewsController extends BaseController
         $totalBatches = $this->redNews->getBatchTotal($batchSize);
         $news = $this->redNews->getByBatch($currentBatch,$batchSize);
 
-        return empty($news) ? $this->simpleResponse("No news found",$response,404)
-            : $this->complexResponse(new Item($news,new BatchTransformer(new NewsTransformer(),$batchSize,$currentBatch,$totalBatches)),$response);
+        return empty($news) ? $this->response("No news found",$response,404)
+            : $this->response(new Item($news,new BatchTransformer(new NewsTransformer(),$batchSize,$currentBatch,$totalBatches)),$response);
     }
 
 }
