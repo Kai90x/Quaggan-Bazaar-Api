@@ -1,6 +1,5 @@
 <?php
 namespace KaiApp\RedBO;
-require_once("RedConnection.php");
 /**
  * Created by PhpStorm.
  * User: Kai

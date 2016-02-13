@@ -1,6 +1,5 @@
 <?php
 namespace KaiApp\RedBO;
-require_once("RedConnection.php");
 /**
  * Created by PhpStorm.
  * User: Kai
@@ -10,7 +9,7 @@ require_once("RedConnection.php");
 use RedBeanPHP;
 use RedBeanPHP\Facade;
 
-class RedGuildPricesHistory {
+class RedGuildPricesHistory extends RedQuery {
 
 	const GUILDPRICEHISTORY = 'priceshistory';
 	
@@ -72,24 +71,7 @@ class RedGuildPricesHistory {
     }
 	
 	public function DeletePrice($gw_item_id) {
-        $prices = Facade::find(SELF::GUILDPRICEHISTORY,' gw_item_id = ? ', array( $gw_item_id ));
-		
-		if (empty($prices)) {
-			return false;
-		} else {
-            if (is_array($prices)) {
-                foreach ($prices as $price)
-                    Facade::trash($price);
-            } else {
-                Facade::trash($prices);
-            }
-			return true;
-		}
+        return parent::delete("gwItemId",$gw_item_id);
 	}
-	
-	public function DeleteAll() {
-		  Facade::wipe( SELF::GUILDPRICEHISTORY );
-		  return true;
-	}
-	
+
 }

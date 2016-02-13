@@ -13,41 +13,47 @@ class Achievements
      *
      * @var int
      */
-    public $offset;
-
-    /**
-     *
-     * @var Result[]
-     */
-    public $results;
-
-    /**
-     *
-     * @var Object[]
-     */
-    public $cookies;
+    public $id;
 
     /**
      *
      * @var string
      */
-    public $connectorVersionGuid;
+    public $name;
 
     /**
      *
      * @var string
      */
-    public $connectorGuid;
+    public $description;
 
     /**
      *
      * @var string
      */
-    public $pageUrl;
+    public $requirement;
 
     /**
      *
-     * @var OutputProperty[]
+     * @var string
      */
-    public $outputProperties;
+    public $type;
+
+    /**
+     *
+     * @var object[]
+     */
+    public $flags;
+
+    /**
+     *
+     * @var Tier[]
+     */
+    public $tiers;
+
+    /**
+     *
+     * @var Bit[]
+     */
+    public $bits;
 }

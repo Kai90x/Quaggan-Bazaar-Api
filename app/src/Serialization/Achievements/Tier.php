@@ -7,17 +7,18 @@
  */
 namespace KaiApp\Serialization\Achievements;
 
-class OutputProperty
+class Tier
 {
     /**
      *
-     * @var string
+     * @var int
      */
-    public $name;
+    public $count;
 
     /**
      *
-     * @var string
+     * @var int
      */
-    public $type;
+    public $points;
+
 }

@@ -47,6 +47,20 @@ $container['RedIngredients'] = function ($c) {
     return new KaiApp\RedBO\RedIngredients();
 };
 
+$container['RedDailies'] = function ($c) {
+    return new KaiApp\RedBO\RedDaily();
+};
+$container['RedAchievements'] = function ($c) {
+    return new KaiApp\RedBO\RedAchievements();
+};
+$container['RedAchievementsBit'] = function ($c) {
+    return new KaiApp\RedBO\RedAchievementsBit();
+};
+$container['RedAchievementsTier'] = function ($c) {
+    return new KaiApp\RedBO\RedAchievementsTier();
+};
+
+
 // Register component on container
 $container['view'] = function ($container) {
     $view = new \Slim\Views\Twig('Views');
@@ -81,9 +95,22 @@ $container['\KaiApp\Controller\DungeonsController'] = function ($container) {
     return $controller;
 };
 
+$container['\KaiApp\Controller\DailyController'] = function ($container) {
+    $controller = new KaiApp\Controller\DailyController($container->get("RedDailies"));
+    $controller->setContainer($container);
+    return $controller;
+};
+
 
 $container['\KaiApp\Controller\RecipeController'] = function ($container) {
     $controller = new KaiApp\Controller\RecipeController($container->get("RedRecipe"),$container->get("RedIngredients"));
+    $controller->setContainer($container);
+    return $controller;
+};
+
+$container['\KaiApp\Controller\AchievementController'] = function ($container) {
+    $controller = new KaiApp\Controller\AchievementController($container->get("RedAchievements"),$container->get("RedAchievementsTier")
+        ,$container->get("RedAchievementsBit"));
     $controller->setContainer($container);
     return $controller;
 };

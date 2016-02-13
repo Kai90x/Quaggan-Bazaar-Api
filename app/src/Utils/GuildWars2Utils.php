@@ -14,6 +14,7 @@ class GuildWars2Utils {
     const GUILDWAR2_RECIPE = "recipes";
     const GUILDWAR2_PRICES = "commerce/prices";
     const GUILDWAR2_DAILIES = "achievements/daily";
+    const GUILDWAR2_ACHIEVEMENTS = "achievements";
 
     const ORDERBY_DEFAULT = 1;
     const ORDERBY_BUYPRICE = 2;
@@ -38,5 +39,19 @@ class GuildWars2Utils {
 
     public static function getDailiesUrl() {
         return  SELF::GUILDWAR2_BASE_URL.SELF::GUILDWAR2_DAILIES;
+    }
+
+    public static function getAchievementsUrl() {
+        return  SELF::GUILDWAR2_BASE_URL.SELF::GUILDWAR2_DAILIES;
+    }
+
+    public static function getIds($url) {
+        $recipeIds = \Httpful\Request::get($url)->send();
+
+        $recipeIds = substr($recipeIds, 1);
+        $recipeIds = substr($recipeIds, 0, -1);
+
+        $ids = explode(",",$recipeIds);
+        return $ids;
     }
 }

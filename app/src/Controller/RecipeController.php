@@ -31,12 +31,8 @@ class RecipeController extends BaseController
 
     public function sync(Request $request,Response $response, array $args) {
         $mapper = new JsonMapper();
-		$recipeIds = \Httpful\Request::get(Utils\GuildWars2Utils::getRecipeUrl())->send();
 
-        $recipeIds = substr($recipeIds, 1);
-        $recipeIds = substr($recipeIds, 0, -1);
-
-        $recipeArr = explode(",",$recipeIds);
+        $recipeArr = Utils\GuildWars2Utils::getIds(Utils\GuildWars2Utils::getRecipeUrl());
         $unsyncedRecipeArr = array();
 
         $x = 0;
@@ -49,8 +45,7 @@ class RecipeController extends BaseController
                 $x++;
             } else {
                 //If found, check last time recipe was synced
-                $sync_date = $recipe->sync_date;
-                if (empty($sync_date) || (strtotime("+2 day", strtotime($sync_date)) < time())) {
+                if (empty($recipe->date_modified) || (strtotime("+2 day", strtotime($recipe->date_modified)) < time())) {
                     //put in Update item array
                     $unsyncedRecipeArr[$x] = $value;
                     $x++;
@@ -96,22 +91,17 @@ class RecipeController extends BaseController
 	}
 
     public function getByItemId(Request $request,Response $response, array $args) {
-        $recipes = $this->redRecipe->getByOutputItemId($args['id']);
+        $recipe = $this->redRecipe->getByOutputItemId($args['id']);
         if (empty($recipes)) {
             return $this->response(new Item("No recipe found", new SimpleTransformer()),$response,404);
         } else {
-            $recipeDetail = $this->getDetails($recipes);
-            return $this->response(new Item($recipeDetail, new RecipesTransformer()),$response);
+            $recipe->disciples = unserialize($recipe->disciples);
+            $recipe->flags = unserialize($recipe->flags);
+
+            $recipe->ingredients = $this->redIngredients->getWithDetails($recipe->id);
+
+            return $this->response(new Item($recipe, new RecipesTransformer()),$response);
         }
-    }
-
-    private function getDetails($recipe) {
-        $recipe->disciples = unserialize($recipe->disciples);
-        $recipe->flags = unserialize($recipe->flags);
-
-        $recipe->ingredients = $this->redIngredients->getWithDetails($recipe->id);
-
-        return $recipe;
     }
 
     private function update($recipe) {
