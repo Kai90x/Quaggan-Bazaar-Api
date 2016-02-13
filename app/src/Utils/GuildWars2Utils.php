@@ -7,7 +7,7 @@ namespace KaiApp\Utils;
  * Time: 8:18 AM
  */
 
-class GuildWars2Util {
+class GuildWars2Utils {
 
     const GUILDWAR2_BASE_URL = "https://api.guildwars2.com/v2/";
     const GUILDWAR2_ITEM = "items";

@@ -7,16 +7,31 @@
  */
 namespace KaiApp\Controller;
 
-use Serialization\InfixUpgrade;
-use Utils\Common;
+use KaiApp\JsonTransformers\RecipesTransformer;
+use KaiApp\JsonTransformers\SimpleTransformer;
+use KaiApp\RedBO\RedIngredients;
+use KaiApp\RedBO\RedRecipe;
+use KaiApp\Serialization\Recipe\Recipe;
+use KaiApp\Utils;
+use League\Fractal\Resource\Item;
+use Slim\Http\Request;
+use Slim\Http\Response;
 use JsonMapper;
-use RedBO\RedFactory;
 
-class recipe extends BaseController
+class RecipeController extends BaseController
 {
-	public function sync() {
+    private $redRecipe;
+    private $redIngredients;
+
+    public function __construct(RedRecipe $_redRecipe,RedIngredients $_redIngredients) {
+        $this->redRecipe = $_redRecipe;
+        $this->redIngredients = $_redIngredients;
+        parent::__construct();
+    }
+
+    public function sync(Request $request,Response $response, array $args) {
         $mapper = new JsonMapper();
-		$recipeIds = (file_get_contents(Common::GUILDWAR2_BASE_URL.Common::GUILDWAR2_RECIPE));
+		$recipeIds = \Httpful\Request::get(Utils\GuildWars2Utils::getRecipeUrl())->send();
 
         $recipeIds = substr($recipeIds, 1);
         $recipeIds = substr($recipeIds, 0, -1);
@@ -26,38 +41,26 @@ class recipe extends BaseController
 
         $x = 0;
         foreach($recipeArr as $value) {
-            $recipe = RedFactory::GetRedRecipe()->FindByRecipeId($value);
+            $recipe = $this->redRecipe->getByRecipeId($value);
             if (empty($recipe)) {
-                RedFactory::GetRedRecipe()->addId($value);
+                $this->redRecipe->addId($value);
                 //put in Update recipe array
                 $unsyncedRecipeArr[$x] = $value;
                 $x++;
             } else {
                 //If found, check last time recipe was synced
                 $sync_date = $recipe->sync_date;
-                if (empty($sync_date)) {
+                if (empty($sync_date) || (strtotime("+2 day", strtotime($sync_date)) < time())) {
                     //put in Update item array
                     $unsyncedRecipeArr[$x] = $value;
                     $x++;
-                } else {
-                    //Check sync date
-                    //Number of days before syncing recipe (run each week)
-                    $date = strtotime($sync_date);
-                    $date_to_sync = strtotime("+2 day", $date);
-
-                    $current_time = time();
-                    if ($date_to_sync < $current_time) {
-                        //put in Update recipe array
-                        $unsyncedRecipeArr[$x] = $value;
-                        $x++;
-                    }
                 }
             }
         }
 
 
         $i = 0;
-        $url_recipe_fetch = Common::GUILDWAR2_BASE_URL.Common::GUILDWAR2_RECIPE."?ids=";
+        $url_recipe_fetch = Utils\GuildWars2Utils::getRecipeUrl()."?ids=";
         $concat_ids = "";
         foreach($unsyncedRecipeArr as $value) {
             $concat_ids .= $value;
@@ -66,11 +69,11 @@ class recipe extends BaseController
                 $concat_ids .= ",";
                 $i++;
             } else {
-                $jsonArr = json_decode(file_get_contents($url_recipe_fetch . $concat_ids));
+                $jsonArr = json_decode(\Httpful\Request::get(($url_recipe_fetch . $concat_ids))->send());
 
                 foreach ($jsonArr as $json) {
-                    $recipe = $mapper->map($json, new \Serialization\Recipe());
-                    $this->updateRecipe($recipe);
+                    $recipe = $mapper->map($json, new Recipe());
+                    $this->update($recipe);
                 }
 
                 $concat_ids = "";
@@ -84,62 +87,46 @@ class recipe extends BaseController
             $jsonArr = json_decode(file_get_contents( $url_recipe_fetch.$concat_ids));
 
             foreach($jsonArr as $json) {
-
-                $recipe = $mapper->map($json, new \Serialization\Recipe());
-
-                $this->updateRecipe($recipe);
-
+                $recipe = $mapper->map($json, new Recipe());
+                $this->update($recipe);
             }
         }
 
-        echo json_encode(Common::GenerateResponse(Common::STATUS_SUCCESS,"All recipes have been synced"));;
+        return $this->response(new Item("All recipes have been synced",new SimpleTransformer()),$response);
 	}
 
-    public function getByItemId($itemId) {
-        $recipes = RedFactory::GetRedRecipe()->FindByOutputItemId($itemId);
-        $this->ReturnRecipeDetails($recipes);
-    }
-
-    private function ReturnRecipeDetails($recipes) {
-
+    public function getByItemId(Request $request,Response $response, array $args) {
+        $recipes = $this->redRecipe->getByOutputItemId($args['id']);
         if (empty($recipes)) {
-            echo json_encode(Common::GenerateResponse(Common::STATUS_NOTFOUND,"No recipe found"));
+            return $this->response(new Item("No recipe found", new SimpleTransformer()),$response,404);
         } else {
-            $recipeDetail = $this->PutRecipeDetails($recipes);
-            echo json_encode(Common::GenerateResponse(Common::STATUS_SUCCESS, $recipeDetail->export()));
+            $recipeDetail = $this->getDetails($recipes);
+            return $this->response(new Item($recipeDetail, new RecipesTransformer()),$response);
         }
     }
 
-    private function PutRecipeDetails($recipe) {
+    private function getDetails($recipe) {
         $recipe->disciples = unserialize($recipe->disciples);
         $recipe->flags = unserialize($recipe->flags);
 
-        $ingredients = RedFactory::GetRedIngredients()->FindByRecipeId($recipe->id);
-
-        if (!empty($ingredients)) {
-            $recipe->ingredients = Common::ConvertBeanToArray($ingredients,"ingredients");
-        }
+        $recipe->ingredients = $this->redIngredients->getByRecipeId($recipe->id);
 
         return $recipe;
     }
 
-    private function updateRecipe($recipe) {
+    private function update($recipe) {
         if ($recipe != null) {
-            $redRecipe = RedFactory::GetRedRecipe()->FindByRecipeId($recipe->id);
+            $redRecipe = $this->redRecipe->getByRecipeId($recipe->id);
 
-            //AddRecipe($recipeId, $type , $output_item_id, $output_item_count, $time_to_craft_ms, $disciples,$min_rating, $flags ) {
-            $recipe_id = RedFactory::GetRedRecipe()->update($redRecipe->id,$recipe->id, $recipe->type,$recipe->output_item_id,$recipe->output_item_count,
+            $recipe_id = $this->redRecipe->update($redRecipe->id,$recipe->id, $recipe->type,$recipe->output_item_id,$recipe->output_item_count,
                 $recipe->time_to_craft_ms,serialize($recipe->disciplines),$recipe->min_rating,serialize($recipe->flags));
 
-            //Delete all recipe ingredients first and then add everything
-            RedFactory::GetRedIngredients()->DeleteIngredientsByRecipeId($recipe_id);
+            $this->redIngredients->deleteByRecipeId($recipe_id);
 
             if (!empty($recipe->ingredients)) {
-                foreach($recipe->ingredients as $ingredient) {
-                    RedFactory::GetRedIngredients()->AddIngredients($recipe_id,$ingredient->item_id,$ingredient->count);
-                }
+                foreach($recipe->ingredients as $ingredient)
+                    $this->redIngredients->add($recipe_id,$ingredient->item_id,$ingredient->count);
             }
-
         }
     }
 

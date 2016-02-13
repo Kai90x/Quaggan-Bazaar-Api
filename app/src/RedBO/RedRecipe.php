@@ -54,7 +54,7 @@ class RedRecipe extends RedBase{
     }
 
     public function getByRecipeId($id) {
-        return parent::getByOne("gw_recipe_id",$id);
+        return parent::getByOne("gwRecipeId",$id);
     }
 	
 	public function deleteById($id) {

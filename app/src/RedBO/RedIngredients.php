@@ -29,7 +29,7 @@ class RedIngredients extends RedBase{
         return parent::getByAll("recipeId",$id);
     }
 	
-	public function DeleteIngredientsByRecipeId($id) {
+	public function deleteByRecipeId($id) {
         return parent::delete("recipeId",$id);
 	}
 

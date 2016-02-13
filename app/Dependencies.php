@@ -39,6 +39,14 @@ $container['RedDungeons'] = function ($c) {
     return new KaiApp\RedBO\RedDungeons();
 };
 
+$container['RedRecipe'] = function ($c) {
+    return new KaiApp\RedBO\RedRecipe();
+};
+
+$container['RedIngredients'] = function ($c) {
+    return new KaiApp\RedBO\RedIngredients();
+};
+
 // Register component on container
 $container['view'] = function ($container) {
     $view = new \Slim\Views\Twig('Views');
@@ -69,6 +77,13 @@ $container['\KaiApp\Controller\NewsController'] = function ($container) {
 
 $container['\KaiApp\Controller\DungeonsController'] = function ($container) {
     $controller = new KaiApp\Controller\DungeonsController($container->get("RedDungeons"));
+    $controller->setContainer($container);
+    return $controller;
+};
+
+
+$container['\KaiApp\Controller\RecipeController'] = function ($container) {
+    $controller = new KaiApp\Controller\RecipeController($container->get("RedRecipe"),$container->get("RedIngredients"));
     $controller->setContainer($container);
     return $controller;
 };

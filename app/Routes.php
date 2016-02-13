@@ -14,6 +14,8 @@ $app->get('/events','\KaiApp\Controller\EventController:get');
 $app->put('/dungeons','\KaiApp\Controller\DungeonsController:refresh');
 $app->get('/dungeons','\KaiApp\Controller\DungeonsController:all');
 $app->post('/email','\KaiApp\Controller\EmailController:send');
+$app->put('/recipes','\KaiApp\Controller\RecipeController:sync');
+$app->get('/recipes/{id}','\KaiApp\Controller\RecipeController:getByItemId');
 
 $app->get('/', function ($request, $response, $args) {
     $args["routes"] = array();
