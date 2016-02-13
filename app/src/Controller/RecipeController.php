@@ -109,7 +109,7 @@ class RecipeController extends BaseController
         $recipe->disciples = unserialize($recipe->disciples);
         $recipe->flags = unserialize($recipe->flags);
 
-        $recipe->ingredients = $this->redIngredients->getByRecipeId($recipe->id);
+        $recipe->ingredients = $this->redIngredients->getWithDetails($recipe->id);
 
         return $recipe;
     }

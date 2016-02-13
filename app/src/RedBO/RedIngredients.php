@@ -9,7 +9,7 @@ namespace KaiApp\RedBO;
 use RedBeanPHP;
 use RedBeanPHP\Facade;
 
-class RedIngredients extends RedBase{
+class RedIngredients extends RedQuery{
 
 	const INGREDIENTS = 'ingredients';
     public function __construct()
@@ -20,7 +20,7 @@ class RedIngredients extends RedBase{
 	public function add($recipeId, $itemId, $count ) {
         return parent::add(array(
             "recipeId" => $recipeId,
-            "itemId" => $itemId,
+            "gwItemId" => $itemId,
             "count" => $count
         ));
     }
@@ -33,4 +33,10 @@ class RedIngredients extends RedBase{
         return parent::delete("recipeId",$id);
 	}
 
+    public function getWithDetails($recipeId) {
+        $where = $this->addWhereClause($this->type,array(parent::getParamArray("recipeId",$recipeId)));
+        $baseQuery = "SELECT ingredients.id,ingredients.item_id,ingredients.count,item.icon,item.type,
+                      item.rarity,item.level,item.name FROM ingredients LEFT JOIN item ON item.gw_item_id = ingredients.gwItemId";
+        return Facade::getAll($baseQuery.$where);
+    }
 }
