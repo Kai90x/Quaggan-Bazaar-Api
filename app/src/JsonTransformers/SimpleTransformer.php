@@ -12,11 +12,22 @@ use League\Fractal\TransformerAbstract;
 
 class SimpleTransformer extends TransformerAbstract
 {
+    private $extra;
+
+    public function  __construct($_extra = null) {
+        $this->extra = $_extra;
+    }
+
     public function transform($message)
     {
-        return [
+        $jsonArr = [
             'message' => $message
         ];
+
+        if (!empty($this->extra))
+            $jsonArr['extra'] = $this->extra;
+
+        return $jsonArr;
     }
 
 }

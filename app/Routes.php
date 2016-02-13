@@ -11,6 +11,9 @@ $app->get('/legendaries','\KaiApp\Controller\CraftingController:all');
 $app->get('/legendaries/{id}','\KaiApp\Controller\CraftingController:get');
 $app->put('/legendaries','\KaiApp\Controller\CraftingController:reset');
 $app->get('/events','\KaiApp\Controller\EventController:get');
+$app->put('/dungeons','\KaiApp\Controller\DungeonsController:refresh');
+$app->get('/dungeons','\KaiApp\Controller\DungeonsController:all');
+$app->post('/email','\KaiApp\Controller\EmailController:send');
 
 $app->get('/', function ($request, $response, $args) {
     $args["routes"] = array();

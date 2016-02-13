@@ -9,7 +9,8 @@
 use Jgut\Slim\Controller\Resolver;
 
 $controllers = [
-    '\KaiApp\Controller\EventController'
+    '\KaiApp\Controller\EventController',
+    '\KaiApp\Controller\EmailController'
 ];
 
 $container = $app->getContainer();
@@ -32,6 +33,10 @@ $container['RedCraftingSubItem4'] = function ($c) {
 
 $container['RedNews'] = function ($c) {
     return new KaiApp\RedBO\RedNews();
+};
+
+$container['RedDungeons'] = function ($c) {
+    return new KaiApp\RedBO\RedDungeons();
 };
 
 // Register component on container
@@ -58,6 +63,12 @@ $container['\KaiApp\Controller\CraftingController'] = function ($container) {
 
 $container['\KaiApp\Controller\NewsController'] = function ($container) {
     $controller = new KaiApp\Controller\NewsController($container->get("RedNews"));
+    $controller->setContainer($container);
+    return $controller;
+};
+
+$container['\KaiApp\Controller\DungeonsController'] = function ($container) {
+    $controller = new KaiApp\Controller\DungeonsController($container->get("RedDungeons"));
     $controller->setContainer($container);
     return $controller;
 };

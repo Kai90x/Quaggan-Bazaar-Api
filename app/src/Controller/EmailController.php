@@ -7,6 +7,8 @@
  */
 namespace KaiApp\Controller;
 
+use KaiApp\JsonTransformers\SimpleTransformer;
+use League\Fractal\Resource\Item;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Swift_Mailer;
@@ -26,16 +28,16 @@ class EmailController extends BaseController
 
         $missingParams = $this->getMissingParams(array("to" => $to,"body" => $body,"from" => $from,"subject" => $subject));
         if (!empty($missingParams))
-            return $this->simpleResponse("Missing required parameters ".implode(",",$missingParams),$response,500);
+            return $this->response(new Item("Missing required parameters ".implode(",",$missingParams), new SimpleTransformer()),$response,500);
 
 
         $transport = Swift_SmtpTransport::newInstance('mail.kai-mx.net', 25)
-            ->setUsername('guildwarsv2@kai-mx.net')
+            ->setUsername('quagganbazaar@kai-mx.net')
             ->setPassword('OperationN24%');
 
         $mailer = Swift_Mailer::newInstance($transport);
 
-        $emailTemplate = file_get_contents('http://www.kai-mx.net/HTML%20Template/emailTemplateGuildWars.html');
+        $emailTemplate = file_get_contents('assets/templates/email.html',FILE_USE_INCLUDE_PATH);
 
         $emailTemplate = !empty($notificationid) ? str_replace("{title}","Guild Wars Notification",$emailTemplate)
         : $emailTemplate = str_replace("{title}","Guild Wars Report",$emailTemplate);
@@ -43,27 +45,18 @@ class EmailController extends BaseController
         $emailTemplate = (!empty($items)) ? $emailTemplate = str_replace("{Items}",$items,$emailTemplate)
             : $emailTemplate = str_replace("{Items}","",$emailTemplate);
 
-
         $emailTemplate = str_replace("{Body}",$body,$emailTemplate);
 
-        // Create a message
         $message = Swift_Message::newInstance($subject)
-            ->setFrom("guildwarsv2@kai-mx.net")
+            ->setFrom("quagganbazaar@kai-mx.net")
             ->setTo($to)
             ->setBody($emailTemplate,"text/html");
 
         $message->setFrom($from);
 
-        // Send the message
-        $result = $mailer->send($message,$failures);
+        $mailer->send($message,$failures);
 
-        $response = array();
-
-        $response['status'] = $result;
-        if (!empty($notificationid))
-            $response['notification_id'] = $notificationid;
-
-        echo json_encode($response);
+        return $this->response(new Item('Email sent',new SimpleTransformer($notificationid)),$response);
     }
 
 

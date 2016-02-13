@@ -16,7 +16,7 @@ use League\Fractal\Resource\Item;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-class dungeons  extends BaseController
+class DungeonsController  extends BaseController
 {
 	private $redDungeons;
 
@@ -86,7 +86,6 @@ class dungeons  extends BaseController
 
         return !empty($dungeons) ?  $this->response(new Collection($dungeons, new DungeonsTransformer()),$response)
 		: $this->response(new Item("No dungeons found", new SimpleTransformer()),$response,404);
-
     }
 
 }
