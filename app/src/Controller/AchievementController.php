@@ -35,66 +35,15 @@ class AchievementController extends BaseController
     }
 
     public function sync(Request $request,Response $response, array $args) {
-        $mapper = new JsonMapper();
-
-        $recipeArr = Utils\GuildWars2Utils::getIds(Utils\GuildWars2Utils::getAchievementsUrl());
-        $unsyncedAchievementsArr = array();
-
-        $x = 0;
-        foreach($recipeArr as $value) {
-            $achievement = $this->redAchievements->getByAchievementsId($value);
-            if (empty($recipe)) {
-                $this->redAchievements->addId($value);
-                $unsyncedAchievementsArr[$x] = $value;
-                $x++;
-            } else {
-                //If found, check last time recipe was synced
-                if (empty($achievement->date_modified) || (strtotime("+2 day", strtotime($achievement->date_modified)) < time())) {
-                    //put in Update item array
-                    $unsyncedAchievementsArr[$x] = $value;
-                    $x++;
-                }
-            }
-        }
-
-
-        $i = 0;
-        $url_achievement_fetch = Utils\GuildWars2Utils::getAchievementsUrl()."?ids=";
-        $concat_ids = "";
-        foreach($unsyncedAchievementsArr as $value) {
-            $concat_ids .= $value;
-            if ($i != 199) {
-                $concat_ids .= ",";
-                $i++;
-            } else {
-                $jsonArr = json_decode(\Httpful\Request::get($url_achievement_fetch.$concat_ids)->send());
-                foreach ($jsonArr as $json) {
-                    $achievementJsonObj = $mapper->map($json, new Achievements());
-                    $this->update($achievementJsonObj);
-                }
-
-                $concat_ids = "";
-                $i = 0;
-            }
-        }
-
-        if ($i > 0) {
-            if (substr($concat_ids,-1) == ",")
-                $concat_ids = substr($concat_ids, 0, -1);
-            $jsonArr = json_decode(\Httpful\Request::get($url_achievement_fetch.$concat_ids)->send());
-            foreach($jsonArr as $json) {
-                $achievementJsonObj = $mapper->map($json, new Achievements());
-                $this->update($achievementJsonObj);
-            }
-        }
+        Utils\GuildWars2Utils::syncWithGuildWars2(Utils\GuildWars2Utils::getAchievementsUrl(),$this->redAchievements,new Achievements(),array($this,"update"));
 
         return $this->response(new Item("All achievements have been synced",new SimpleTransformer()),$response);
     }
 
 
-    private function update($achievementJsonObj) {
+    public function update($achievementJsonObj) {
         if ($achievementJsonObj != null) {
-            $redachievement = $this->redAchievements->getByAchievementsId($achievementJsonObj->id);
+            $redachievement = $this->redAchievements->getByAchievementId($achievementJsonObj->id);
 
             $achievement_id = $this->redAchievements->update($redachievement->id,$achievementJsonObj->name,
                 $achievementJsonObj->description,$achievementJsonObj->requirement,$achievementJsonObj->type,

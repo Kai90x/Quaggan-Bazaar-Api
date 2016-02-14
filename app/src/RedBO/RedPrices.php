@@ -9,7 +9,7 @@ namespace KaiApp\RedBO;
 use RedBeanPHP;
 use RedBeanPHP\Facade;
 
-class RedGuildPrices extends RedBase {
+class RedPrices extends RedBase {
 
 	const GUILDPRICE = 'prices';
 

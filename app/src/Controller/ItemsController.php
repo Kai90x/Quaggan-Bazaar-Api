@@ -8,210 +8,115 @@
 namespace KaiApp\Controller;
 
 use JsonMapper;
+use KaiApp\JsonTransformers\BatchTransformer;
+use KaiApp\JsonTransformers\ItemTransformer;
+use KaiApp\JsonTransformers\SimpleTransformer;
+use KaiApp\RedBO\RedInfixAttributes;
+use KaiApp\RedBO\RedInfixBuff;
+use KaiApp\RedBO\RedInfusionSlot;
+use KaiApp\RedBO\RedItem;
+use KaiApp\RedBO\RedItemDetails;
+use KaiApp\RedBO\RedItemDetailsInfixUpgrade;
+use KaiApp\RedBO\RedPrices;
+use KaiApp\Serialization\Items\InfixUpgrade;
+use KaiApp\Serialization\Items\Item;
+use KaiApp\Utils\BeanUtils;
 use KaiApp\Utils\GuildWars2Util;
+use KaiApp\Utils\GuildWars2Utils;
+use Slim\Http\Request;
+use Slim\Http\Response;
 
-class items extends BaseController
+class ItemsController extends BaseController
 {
-    public function sync() {
-        $mapper = new JsonMapper();
+    private $redItem;
+    private $redItemDetails;
+    private $redItemDetailsInfixUpgrade;
+    private $redinfusionSlot;
+    private $redInfixBuff;
+    private $redInfixAttribute;
+    private $redPrices;
 
-        $itemIds = (file_get_contents(GuildWars2Util::getItemsUrl()));
-        $itemIds = substr($itemIds,1);
-        $itemIds = substr($itemIds,0,-1);
-
-        $itemIdArr = explode(",",$itemIds);
-
-        //items to sync array
-        $syncItemArr = array();
-        $x = 0;
-
-        //Add all gw item ids first
-        foreach($itemIdArr as $value) {
-            $item = RedFactory::GetRedGuildItem()->SelectitembyGwId($value);
-            //Add item id if not found in database
-            if (empty($item)) {
-                RedFactory::GetRedGuildItem()->AddItemGWIds($value);
-                //put in Update item array
-                $syncItemArr[$x] = $value;
-                $x++;
-            } else {
-                //If found, check last time item was synced
-                $sync_date = $item->synced_time;
-                if (empty($sync_date)) {
-                    //put in Update item array
-                    $syncItemArr[$x] = $value;
-                    $x++;
-                } else {
-                    //Check sync date
-                    //Number of days before syncing items (run each week)
-                    $date = strtotime($sync_date);
-                    $date_to_sync = strtotime("+2 day", $date);
-
-                    $current_time = time();
-                    if ($date_to_sync < $current_time) {
-                        //put in Update item array
-                        $syncItemArr[$x] = $value;
-                        $x++;
-                    }
-                }
-            }
-
-        }
-
-        $i = 0;
-        $url_item_fetch = Common::GUILDWAR2_BASE_URL.Common::GUILDWAR2_ITEM."?ids=";
-        $concat_ids = "";
-        foreach($syncItemArr as $value) {
-            $concat_ids .= $value;
-
-            if ($i != 199) {
-                $concat_ids .= ",";
-                $i++;
-            } else {
-                $jsonArr = json_decode(file_get_contents($url_item_fetch . $concat_ids));
-
-                foreach ($jsonArr as $json) {
-                    $item = $mapper->map($json, new \Serialization\Item());
-                    $redItem = RedFactory::GetRedGuildItem()->SelectitembyGwId($item->id);
-
-                    $this->UpdateItem($item,$redItem->id);
-                }
-
-                $concat_ids = "";
-                $i = 0;
-            }
-
-        }
-
-        //Process last batch
-        if ($i > 0) {
-            if (substr($concat_ids,-1) == ",")
-                $concat_ids = substr($concat_ids, 0, -1);
-
-            $jsonArr = json_decode(file_get_contents($url_item_fetch . $concat_ids));
-
-            foreach ($jsonArr as $json) {
-                $item = $mapper->map($json, new \Serialization\Item());
-                $redItem = RedFactory::GetRedGuildItem()->SelectitembyGwId($item->id);
-
-                $this->UpdateItem($item,$redItem->id);
-            }
-        }
-
-        echo json_encode(Common::GenerateResponse(Common::STATUS_SUCCESS,"All items have been synced"));
-
+    public function __construct(RedItem $_redItem,
+                                RedItemDetails $_redItemDetails,
+                                RedItemDetailsInfixUpgrade $_redItemDetailsInfixUpgrade,
+                                RedInfusionSlot $_redinfusionSlot,
+                                RedInfixBuff $_redInfixBuff,
+                                RedInfixAttributes $_redInfixAttribute,
+                                RedPrices $_redPrices) {
+        $this->redItem = $_redItem;
+        $this->redItemDetails = $_redItemDetails;
+        $this->redItemDetailsInfixUpgrade = $_redItemDetailsInfixUpgrade;
+        $this->redinfusionSlot = $_redinfusionSlot;
+        $this->redInfixBuff = $_redInfixBuff;
+        $this->redInfixAttribute = $_redInfixAttribute;
+        $this->redPrices = $_redPrices;
+        parent::__construct();
     }
 
-    public function SearchItemAction() {
+    public function sync(Request $request,Response $response, array $args) {
+        GuildWars2Utils::syncWithGuildWars2(GuildWars2Utils::getItemsUrl(),$this->redItem,new Item(),array($this,"update"));
+        return $this->response(new \League\Fractal\Resource\Item("All items have been synced",new SimpleTransformer()),$response);
+    }
 
-        $name = $this->app->request()->get('name');
-        $type = $this->app->request()->get('type');
-        $subtype = $this->app->request()->get('subtype');
-        $buyPriceMin = $this->app->request()->get('buyPriceMin');
-        $buyPriceMax = $this->app->request()->get('buyPriceMax');
-        $sellPriceMin = $this->app->request()->get('sellPriceMin');
-        $sellPriceMax = $this->app->request()->get('sellPriceMax');
-        $rarity = $this->app->request()->get('rarity');
-        $levelmin = $this->app->request()->get('levelmin');
-        $levelmax = $this->app->request()->get('levelmax');
+    public function search(Request $request,Response $response, array $args) {
+
+        $name = $request->getParam('name');
+        $type = $request->getParam('type');
+        $subtype = $request->getParam('subtype');
+        $buyPriceMin = $request->getParam('buyPriceMin');
+        $buyPriceMax = $request->getParam('buyPriceMax');
+        $sellPriceMin = $request->getParam('sellPriceMin');
+        $sellPriceMax = $request->getParam('sellPriceMax');
+        $rarity = $request->getParam('rarity');
+        $levelmin = $request->getParam('levelmin');
+        $levelmax = $request->getParam('levelmax');
         $name = str_replace('+',' ',$name);
 
-        $order_by = $this->app->request()->get('orderby');
-        $order_desc_or_asc = $this->app->request()->get('ascOrdesc');
-        if (empty($order_by))
-            $order_by = 1;
+        $order_by = empty($request->getParam('orderby')) ? 1 : $request->getParam('orderby');
+        $order_desc_or_asc = $request->getParam('orderDesc');
 
-        $batch_size = $this->app->request()->params('batch_size');
-        $batch_num = $this->app->request()->params('batch_num');
-        $light = $this->app->request()->params('light');
-        $islight = empty($light) ? false : true;
-        $includePrice = $this->app->request()->params('includePrice');
-        $includePrice = empty($includePrice) ? false : true;
+        $batch_size = empty($request->getParam('batch_size')) ? 100 : $request->getParam('batch_size');
+        $page = empty($request->getParam('page')) ? 1 : $request->getParam('page');
+        $islight = !empty($request->getParam('islight'));
+        $includePrice = !empty($request->getParam('includePrice'));
 
-        if (empty($batch_size) || empty($batch_num)) {
-            $batch_num = 1;
-            $batch_size = 100;
-        }
+        $totalBatches = $this->redItem->getSearchTotalBatch($name,$levelmin,$levelmax,$type,$subtype,$buyPriceMin,$buyPriceMax,$sellPriceMin,$sellPriceMax,$rarity,$batch_size,$order_by);
+        $items = $this->redItem->search($name,$levelmin,$levelmax,$type,$subtype,$buyPriceMin,$buyPriceMax,$sellPriceMin,$sellPriceMax,$rarity,$page,$batch_size,$order_by,$order_desc_or_asc);
 
-        //$start = microtime(true);
-        $totalBatches = RedFactory::GetRedGuildItem()->GetSearchTotalBatch($name,$levelmin,$levelmax,$type,$subtype,$buyPriceMin,$buyPriceMax,$sellPriceMin,$sellPriceMax,$rarity,$batch_size,$order_by);
-
-        $items = RedFactory::GetRedGuildItem()->SearchItem($name,$levelmin,$levelmax,$type,$subtype,$buyPriceMin,$buyPriceMax,$sellPriceMin,$sellPriceMax,$rarity,$batch_num,$batch_size,$order_by,$order_desc_or_asc);
-
-        //$finish = microtime(true) - $start;
-        //echo "Time to fetch items: ".$finish."<br>";
-        $this->ReturnItemsDetails($items,$totalBatches,$batch_num,$islight,$includePrice);
-
+        return $this->returnItemsDetails($response,$items,$totalBatches,$page,$islight,$includePrice);
     }
 
-    public function GetItemByIDListAction($ids)
+    public function getByIds(Request $request,Response $response, array $args)
     {
-        $idsArr  = explode(",", $ids);
+        $idsArr  = explode(",", $args['']);
+        $batch_size = empty($request->getParam('batch_size')) ? 100 : $request->getParam('batch_size');
+        $page = empty($request->getParam('page')) ? 1 : $request->getParam('page');
+        $islight = !empty( $request->getParam('islight'));
+        $includePrice = !empty($request->getParam('includePrice'));
 
-        $batch_size = $this->app->request()->post('batch_size');
-        $batch_num = $this->app->request()->post('batch_num');
-        $light = $this->app->request()->post('light');
-        $islight = empty($light) ? false : true;
-        $includePrice = $this->app->request()->post('includePrice');
-        $includePrice = empty($includePrice) ? false : true;
-
-        if (empty($batch_size) || empty($batch_num)) {
-            $batch_num = 1;
-            $batch_size = 100;
-        }
-        $totalBatches = RedFactory::GetRedGuildItem()->FindItemByGWIdsBatchTotal($idsArr,$batch_size);
-
-        $items = RedFactory::GetRedGuildItem()->FindItemByGWIds($idsArr,$batch_num,$batch_size);
-        $this->ReturnItemsDetails($items,$totalBatches,$batch_num,$islight,$includePrice);
+        $totalBatches = $this->redItem->getByGwIdsBatchTotal($idsArr,$batch_size);
+        $items = $this->redItem->getByGwIds($idsArr,$page,$batch_size);
+        return $this->returnItemsDetails($response,$items,$totalBatches,$page,$islight,$includePrice);
     }
 
-    public function GetItemsByBatchAction()
-    {
-        $batch_size = $this->app->request()->post('batch_size');
-        $batch_num = $this->app->request()->post('batch_num');
-        $light = $this->app->request()->post('light');
-        $islight = empty($light) ? false : true;
-        $includePrice = $this->app->request()->post('includePrice');
-        $includePrice = empty($includePrice) ? false : true;
+    private function returnItemsDetails(Response $response,$items,$batch_total,$page,$islight,$includePrice) {
 
-        if (empty($batch_size) || empty($batch_num)) {
-            $batch_num = 1;
-            $batch_size = 100;
-        }
-        $totalBatches = RedFactory::GetRedGuildItem()->GetTotalBatches($batch_size);
-
-        $items = RedFactory::GetRedGuildItem()->SelectItemByBatch($batch_num,$batch_size);
-
-        $this->ReturnItemsDetails($items,$totalBatches,$batch_num,$islight,$includePrice);
-    }
-
-
-    private function ReturnItemsDetails($items,$batch_total,$batch_current,$isLight,$includePrice) {
-
-        if (empty($items)) {
-            echo json_encode(Common::GenerateResponse(Common::STATUS_NOTFOUND,"No items found"));
-        } else {
+        if (empty($items))
+            return $this->response(new \League\Fractal\Resource\Item("No items found",new SimpleTransformer()),$response,404);
+        else {
             if (is_array($items)) {
-                //$start = microtime(true);
-                $items = $this->PutBatchitemDetails($items,$isLight,$includePrice);
-                $reponse = Common::GenerateResponse(Common::STATUS_SUCCESS, Common::ConvertBeanToArray($items, "items"));
-                $reponse["BatchTotalNum"] = $batch_total;
-                $reponse["CurrentBatch"] = $batch_current;
-                //$finish = microtime(true) - $start;
-                //echo "Time to add details: $finish <br>";
-                echo json_encode($reponse);
+                $items = $this->putBatchitemDetails($items,$islight,$includePrice);
+                //var_dump($items);
+                return $this->response(new \League\Fractal\Resource\Item($items, new BatchTransformer(new ItemTransformer(),$page,$batch_total)),$response);
             } else {
-                if($isLight)
-                    $item = $this->PutItemLightDetails($items,$includePrice);
-                else
-                    $item = $this->PutItemDetails($items);
-
-                echo json_encode(Common::GenerateResponse(Common::STATUS_SUCCESS,$item->export()));
+                $item = ($islight)? $this->putItemLightDetails($items,$includePrice) :  $this->putItemDetails($items);
+                var_dump($item);
+                return "";
             }
         }
     }
 
-    private function PutBatchitemDetails($items,$islight,$includePrice)
+    private function putBatchitemDetails($items,$islight,$includePrice)
     {
         $x = 0;
         $itemGwIds = array();
@@ -234,7 +139,7 @@ class items extends BaseController
         }
 
         if (!$islight) {
-            $details = RedFactory::GetRedItemDetails()->FindByItemIds($itemIds);
+            $details = $this->redItemDetails->getByItemIds($itemIds);
 
             if (!empty($details)) {
                 $x = 0;
@@ -243,8 +148,8 @@ class items extends BaseController
                     $x++;
                 }
 
-                $infusionSlots = RedFactory::GetRedInfusionSlot()->FindByItemDetailsIds($detailIds);
-                $infixUpgrades = RedFactory::GetRedInfixUpgrade()->FindByItemDetailsIds($detailIds);
+                $infusionSlots = $this->redinfusionSlot->getByItemDetailsIds($detailIds);
+                $infixUpgrades = $this->redItemDetailsInfixUpgrade->getByItemDetailsIds($detailIds);
 
                 $x = 0;
                 if (!empty($infixUpgrades)) {
@@ -253,24 +158,22 @@ class items extends BaseController
                         $x++;
                     }
 
-                    $infixBuffs = RedFactory::GetRedInfixBuff()->FindByInfixUpgradeIds($infixUpgradeIds);
-                    $infixAttrs = RedFactory::GetRedInfixAttributes()->FindByInfixUpgradeIds($infixUpgradeIds);
+                    $infixBuffs = $this->redInfixBuff->getByInfixIds($infixUpgradeIds);
+                    $infixAttrs = $this->redInfixAttribute->getByInfixIds($infixUpgradeIds);
                 }
             }
         }
 
-        if ($includePrice) {
-            $prices = RedFactory::GetRedGuildPrices()->FindByItemIds($itemGwIds);
-        }
+        if ($includePrice)
+            $prices = $this->redPrices->getByItemIds($itemGwIds);
+
 
         foreach($items as $item) {
-
             $item->flags = unserialize($item->flags);
             $item->game_types = unserialize($item->game_types);
             $item->restrictions = unserialize($item->restrictions);
 
             if (!$islight && !empty($details)) {
-                //Get Item Details from batch retrieved
                 foreach ($details as $detail) {
 
                     if ($detail->itemId == $item->id) {
@@ -296,14 +199,10 @@ class items extends BaseController
                             $item->details->infusion_slots = $localInfusionArr ;
                         }
 
-                        //Add infix upgrades
                         if (!empty($infixUpgrades)) {
-
                             foreach($infixUpgrades as $infixUpgrade) {
-
                                 if ($infixUpgrade->itemdetailsId == $detail->id) {
                                     $item->details->infix_upgrade = new InfixUpgrade();
-
                                     //Get single infix buff
                                     if (!empty($infixBuffs)) {
                                         foreach ($infixBuffs as $infixBuff) {
@@ -347,9 +246,7 @@ class items extends BaseController
                 //Get Item Prices from batch retrieved
                 foreach ($prices as $price) {
                     if ($price->gw_item_id == $item->gwItemId) {
-
                         $item->price = $price;
-
                         break;
                     }
                 }
@@ -360,13 +257,13 @@ class items extends BaseController
         return $items;
     }
 
-    private function PutItemDetails($item)
+    private function putItemDetails($item)
     {
         $item->flags = unserialize($item->flags);
         $item->game_types = unserialize($item->game_types);
         $item->restrictions = unserialize($item->restrictions);
 
-        $detail = RedFactory::GetRedItemDetails()->FindByItemId($item->id);
+        $detail = $this->redItemDetails->getByItemId($item->id);
 
         if (!empty($detail)) {
             $item->details = $detail;
@@ -374,109 +271,100 @@ class items extends BaseController
             $item->details->infusion_upgrade_flags = unserialize($item->details->infusion_upgrade_flags);
             $item->details->bonuses = unserialize($item->details->bonuses);
 
-            $infusionSlots = RedFactory::GetRedInfusionSlot()->FindByItemDetailsId($detail->id);
+            $infusionSlots = $this->redinfusionSlot->getByItemDetailsId($detail->id);
             if (!empty($infusionSlots)) {
-                $item->details->infusion_slots = Common::ConvertBeanToArray($infusionSlots, "infusion_slots");
+                $item->details->infusion_slots = $infusionSlots;
                 foreach ($item->details->infusion_slots as $infusion) {
                     $infusion->flags = unserialize($infusion->flags);
                 }
             }
 
-            $infixUpgrade = RedFactory::GetRedInfixUpgrade()->FindByItemDetailsId($detail->id);
+            $infixUpgrade = $this->redItemDetailsInfixUpgrade->getByItemDetailsId($detail->id);
             if (!empty($infixUpgrade)) {
-                $attributes = RedFactory::GetRedInfixAttributes()->FindByInfixUpgradeId($infixUpgrade->id);
+                $attributes = $this->redInfixAttribute->getByInfixId($infixUpgrade->id);
                 if (!empty($attributes)) {
                     $item->details->infix_upgrade = new InfixUpgrade();
-                    $item->details->infix_upgrade->attributes = Common::ConvertBeanToArray($attributes, "attributes");
+                    $item->details->infix_upgrade->attributes = $attributes;
                 }
             }
 
             if (!empty($infixUpgrade)) {
-                $buff = RedFactory::GetRedInfixBuff()->FindByInfixUpgradeId($infixUpgrade->id);
+                $buff = $this->redInfixBuff->getByInfixId($infixUpgrade->id);
                 if (!empty($buff))
                     $item->details->infix_upgrade->buff = $buff;
             }
 
-            $price = RedFactory::GetRedGuildPrices()->FindByItemId($item->gwItemId);
-
+            $price = $this->redPrices->getByItemId($item->gwItemId);
             $item->price = $price;
-
         }
-
 
         return $item;
     }
 
-    private function PutItemLightDetails($item,$includePrice)
+    private function putItemLightDetails($item,$includePrice)
     {
         $item->flags = unserialize($item->flags);
         $item->game_types = unserialize($item->game_types);
         $item->restrictions = unserialize($item->restrictions);
 
         if ($includePrice) {
-            $price = RedFactory::GetRedGuildPrices()->FindByItemId($item->gwItemId);
-
+            $price = $this->redPrices->getByItemId($item->gwItemId);
             $item->price = $price;
         }
 
         return $item;
     }
 
-    private function UpdateItem($item,$id) {
+    public function update($item) {
         if ($item != null) {
-
-            $item_id = RedFactory::GetRedGuildItem()->UpdateItem($id,$item->id,$item->name,$item->icon,$item->description,$item->type,$item->rarity,$item->level,$item->vendor_value,$item->default_skin,
+            $id = $this->redItem->getByGwId($item->id)->id;
+            $item_id = $this->redItem->update($id,$item->id,$item->name,$item->icon,$item->description,$item->type,$item->rarity,$item->level,$item->vendor_value,$item->default_skin,
                 serialize($item->flags),serialize($item->game_types),serialize($item->restrictions));
 
-            $reddetail = RedFactory::GetRedItemDetails()->FindByItemId($id);
+            $reddetail = $this->redItemDetails->getByItemId($id);
             if ($item->details != null ) {
                 $details = $item->details;
 
                 $detailsId = 0;
-                if(empty($reddetail)) {
-                    //if not found, add new item details
-                    $detailsId = RedFactory::GetRedItemDetails()->AddItemDetails($item_id, $details->type, $details->weight_class, $details->defense, $details->suffix_item_id, $details->secondary_suffix_item_id, $details->size, $details->no_sell_or_sort,
+                if(empty($reddetail))
+                    $detailsId = $this->redItemDetails->add($item_id, $details->type, $details->weight_class, $details->defense, $details->suffix_item_id, $details->secondary_suffix_item_id, $details->size, $details->no_sell_or_sort,
                         $details->description, $details->duration_ms, $details->unlock_type, $details->color_id, $details->recipe_id, $details->charges,
                         serialize($details->flags), serialize($details->infusion_upgrade_flags),
                         $details->suffix, serialize($details->bonuses), $details->damage_type, $details->min_power, $details->max_power);
-                } else {
-                    //if found just update it
-                    $detailsId = RedFactory::GetRedItemDetails()->UpdateItemDetails($reddetail->id, $item_id, $details->type, $details->weight_class, $details->defense, $details->suffix_item_id, $details->secondary_suffix_item_id, $details->size, $details->no_sell_or_sort,
+                else
+                    $detailsId = $this->redItemDetails->update($reddetail->id, $item_id, $details->type, $details->weight_class, $details->defense, $details->suffix_item_id, $details->secondary_suffix_item_id, $details->size, $details->no_sell_or_sort,
                         $details->description, $details->duration_ms, $details->unlock_type, $details->color_id, $details->recipe_id, $details->charges,
                         serialize($details->flags), serialize($details->infusion_upgrade_flags),
                         $details->suffix, serialize($details->bonuses), $details->damage_type, $details->min_power, $details->max_power);
-                }
 
                 //Delete all current infusion slots
-                RedFactory::GetRedInfusionSlot()->DeleteItemDetailsInfixUpgrade($detailsId);
+                $this->redinfusionSlot->deleteByItemDetailsId($detailsId);
                 //Add All infusion slots again
                 if ($details->infusion_slots != null) {
-                    foreach($details->infusion_slots as $infusionSlots){
-                        RedFactory::GetRedInfusionSlot()->AddItemDetailsInfusionSlot($detailsId,serialize($infusionSlots->flags),$infusionSlots->item_id);
-                    }
+                    foreach($details->infusion_slots as $infusionSlots)
+                        $this->redinfusionSlot->add($detailsId,serialize($infusionSlots->flags),$infusionSlots->item_id);
                 }
 
                 //Delete all infuxUpgrade first
-                $infuxUpgrade = RedFactory::GetRedInfixUpgrade()->FindByItemDetailsId($detailsId);
+                $infuxUpgrade = $this->redItemDetailsInfixUpgrade->getByItemDetailsId($detailsId);
                 if (!empty($infuxUpgrade)) {
-                    RedFactory::GetRedInfixAttributes()->DeleteInfixAttributeByInfuxId($infuxUpgrade->id);
-                    RedFactory::GetRedInfixBuff()->DeleteInfixBuffByInfuxId($infuxUpgrade->id);
-                    RedFactory::GetRedInfixUpgrade()->DeleteItemDetailsInfixUpgrade($detailsId);
+                    $this->redInfixAttribute->deleteByInfuxId($infuxUpgrade->id);
+                    $this->redInfixBuff->deleteByInfuxId($infuxUpgrade->id);
+                    $this->redItemDetailsInfixUpgrade->deleteByItemDetailsId($detailsId);
                 }
 
                 //Add all infix upgrade again
                 if ($details->infix_upgrade != null) {
-                    $infixUpgradeId = RedFactory::GetRedInfixUpgrade()->AddItemDetailsInfixUpgrade($detailsId);
+                    $infixUpgradeId = $this->redItemDetailsInfixUpgrade->add($detailsId);
 
                     if ($details->infix_upgrade->attributes != null) {
-                        foreach($details->infix_upgrade->attributes as $attributes) {
-                            RedFactory::GetRedInfixAttributes()->AddInfixAttribute($infixUpgradeId, $attributes->attribute, $attributes->modifier);
-                        }
+                        foreach($details->infix_upgrade->attributes as $attributes)
+                            $this->redInfixAttribute->add($infixUpgradeId, $attributes->attribute, $attributes->modifier);
                     }
 
                     if ($details->infix_upgrade->buff != null) {
                         $buff = $details->infix_upgrade->buff;
-                        RedFactory::GetRedInfixBuff()->AddInfixBuff($infixUpgradeId,$buff->skill_id,$buff->description);
+                        $this->redInfixBuff->add($infixUpgradeId,$buff->skill_id,$buff->description);
                     }
                 }
 

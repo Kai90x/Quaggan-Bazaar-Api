@@ -5,7 +5,7 @@
  * Date: 2/6/16
  * Time: 2:21 PM
  */
-$app->post('/news','\KaiApp\Controller\NewsController:sync');
+$app->put('/news','\KaiApp\Controller\NewsController:sync');
 $app->get('/news','\KaiApp\Controller\NewsController:get');
 $app->get('/legendaries','\KaiApp\Controller\CraftingController:all');
 $app->get('/legendaries/{id}','\KaiApp\Controller\CraftingController:get');
@@ -18,6 +18,8 @@ $app->put('/recipes','\KaiApp\Controller\RecipeController:sync');
 $app->get('/recipes/{id}','\KaiApp\Controller\RecipeController:getByItemId');
 $app->get('/dailies','\KaiApp\Controller\DailyController:get');
 $app->put('/achievements','\KaiApp\Controller\AchievementController:sync');
+$app->put('/items','\KaiApp\Controller\ItemsController:sync');
+$app->get('/items','\KaiApp\Controller\ItemsController:search');
 
 $app->get('/', function ($request, $response, $args) {
     $args["routes"] = array();

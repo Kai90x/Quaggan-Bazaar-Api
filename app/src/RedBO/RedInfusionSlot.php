@@ -16,7 +16,7 @@ class RedInfusionSlot extends RedBase {
         parent::__construct(SELF::ITEMDETAILSINFUSIONSLOT);
     }
 
-    public function AddItemDetailsInfusionSlot($itemDetailsId,$flags,$item_id) {
+    public function add($itemDetailsId,$flags,$item_id) {
         return parent::add(array(
             "itemdetailsId" => $itemDetailsId,
             "flags" => $flags,
@@ -32,7 +32,7 @@ class RedInfusionSlot extends RedBase {
         return parent::getByIn("itemdetailsId",$idArr);
     }
 
-    public function DeleteItemDetailsInfixUpgrade($itemDetailsId) {
+    public function deleteByItemDetailsId($itemDetailsId) {
         return parent::delete("itemdetailsId",$itemDetailsId);
     }
 	

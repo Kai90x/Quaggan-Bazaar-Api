@@ -72,7 +72,7 @@ class RedItemDetails extends RedBase{
         ));
     }
 
-    public function getByOne($id) {
+    public function getByItemId($id) {
         return parent::getByOne("itemId",$id);
     }
 

@@ -26,6 +26,12 @@ abstract class RedBase
         $this->type = $type;
     }
 
+    public function addGwId($id) {
+        return $this::add(array(
+            "gw_".$this->type."_id" => $id
+        ));
+    }
+
     protected function add($beanArr) {
         $bean = $this->createBean($beanArr);
         $bean[$this->dateCreated] = Facade::isoDateTime();
@@ -51,6 +57,10 @@ abstract class RedBase
 
     public function getByAll($attribute, $value) {
         return Facade::findAll($this->type,$this->toBeanColumn($attribute).' = ? ', array($value));
+    }
+
+    public function getByGwId($value) {
+        return Facade::findAll($this->type,"gw_".$this->type."_id = ? ", array($value));
     }
 
     public function getAll($orderby = null,$asc = true) {
@@ -90,8 +100,8 @@ abstract class RedBase
         return ceil($items / $batch_size);
     }
 
-    protected function getByBatch($batchNum,$batchSize,$columnName) {
-        return Facade::findAll($this->type,"ORDER BY ".$columnName." DESC LIMIT ? , ? ",array((int)(($batchNum-1)*$batchSize),(int)$batchSize));
+    protected function getByBatch($page,$batchSize,$columnName) {
+        return Facade::findAll($this->type,"ORDER BY ".$columnName." DESC LIMIT ? , ? ",array((int)(($page-1)*$batchSize),(int)$batchSize));
     }
 
     protected function toBeanColumn($column) {

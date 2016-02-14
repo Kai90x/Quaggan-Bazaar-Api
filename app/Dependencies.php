@@ -60,6 +60,28 @@ $container['RedAchievementsTier'] = function ($c) {
     return new KaiApp\RedBO\RedAchievementsTier();
 };
 
+$container['RedItem'] = function ($c) {
+    return new KaiApp\RedBO\RedItem();
+};
+$container['RedItemDetails'] = function ($c) {
+    return new KaiApp\RedBO\RedItemDetails();
+};
+$container['RedItemDetailsInfixUpgrade'] = function ($c) {
+    return new KaiApp\RedBO\RedItemDetailsInfixUpgrade();
+};
+$container['RedInfixAttributes'] = function ($c) {
+    return new KaiApp\RedBO\RedInfixAttributes();
+};
+$container['RedInfusionSlot'] = function ($c) {
+    return new KaiApp\RedBO\RedInfusionSlot();
+};
+$container['RedInfixBuff'] = function ($c) {
+    return new KaiApp\RedBO\RedInfixBuff();
+};
+$container['RedPrices'] = function ($c) {
+    return new KaiApp\RedBO\RedPrices();
+};
+
 
 // Register component on container
 $container['view'] = function ($container) {
@@ -111,6 +133,19 @@ $container['\KaiApp\Controller\RecipeController'] = function ($container) {
 $container['\KaiApp\Controller\AchievementController'] = function ($container) {
     $controller = new KaiApp\Controller\AchievementController($container->get("RedAchievements"),$container->get("RedAchievementsTier")
         ,$container->get("RedAchievementsBit"));
+    $controller->setContainer($container);
+    return $controller;
+};
+
+$container['\KaiApp\Controller\ItemsController'] = function ($container) {
+    $controller = new KaiApp\Controller\ItemsController(
+        $container->get("RedItem"),
+        $container->get("RedItemDetails"),
+        $container->get("RedItemDetailsInfixUpgrade"),
+        $container->get("RedInfusionSlot"),
+        $container->get("RedInfixBuff"),
+        $container->get("RedInfixAttributes"),
+        $container->get("RedPrices"));
     $controller->setContainer($container);
     return $controller;
 };

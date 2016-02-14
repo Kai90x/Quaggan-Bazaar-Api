@@ -26,7 +26,7 @@ class NewsController extends BaseController
 
     public function sync($request, $response, array $args) {
         try {
-            $xml = simplexml_load_string(file_get_contents($this::GUILDWAR2_NEWS));
+            $xml = simplexml_load_string(\Httpful\Request::get(SELF::GUILDWAR2_NEWS)->send());
             $channels = $xml->channel;
 
             foreach($channels as $channel) {

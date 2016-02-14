@@ -15,8 +15,6 @@ class DailiesTransformer extends TransformerAbstract
 {
     public function transform($daily)
     {
-
-
         if (!empty($daily->pve_achievement))
             $dailyJson["pvp"] = $this->getAchievementsDetails($daily->pve_achievement,$daily->level1_min,$daily->level1_max);
 

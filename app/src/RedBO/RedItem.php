@@ -8,10 +8,11 @@ require_once("RedConnection.php");
  * Time: 7:41 PM
  */
 use KaiApp\Utils\GuildWars2Util;
+use KaiApp\Utils\GuildWars2Utils;
 use RedBeanPHP;
 use RedBeanPHP\Facade;
 
-class RedGuildItem extends RedQuery{
+class RedItem extends RedQuery {
 
     const ITEM = 'item';
 
@@ -20,9 +21,9 @@ class RedGuildItem extends RedQuery{
         parent::__construct(SELF::ITEM);
     }
 
-    public function addGwIds($id) {
+    public function addGwId($recipeId) {
         return parent::add(array(
-            "gwItemId" => $id
+            "gwItemId" => $recipeId
         ));
     }
 
@@ -60,97 +61,26 @@ class RedGuildItem extends RedQuery{
         ));
     }
 
-    public function SelectAllItem() {
-        $items = Facade::findAll(SELF::ITEM);
-        if(empty($items)) {
-            return null;
-        } else {
-            return $items;
-        }
-    }
-
-    public function GetTotalBatches($batch_size) {
-        $items_num = Facade::count(SELF::ITEM);
-        $batches = ceil($items_num / $batch_size);
-
-        if(empty($batches)) {
-            return null;
-        } else {
-            return $batches;
-        }
-    }
-
-    public function SelectItemByBatch($batch_num,$batch_size) {
-        $items = Facade::findAll(SELF::ITEM,'ORDER BY id LIMIT ? , ? ',array((int)(($batch_num-1)*$batch_size),(int)$batch_size));
-        if(empty($items)) {
-            return null;
-        } else {
-            return $items;
-        }
-    }
-
-    public function SelectitembyId($id) {
-        $item = Facade::load(SELF::ITEM,$id);
-        if(empty($item)) {
-            return null;
-        }
-        return $item;
-    }
-
-    public function SelectitembyGwId($id) {
-        $item = Facade::findOne(SELF::ITEM,' gw_item_id = ? ',array($id));
-        if(empty($item)) {
-            return null;
-        }
-        return $item;
-    }
-
-    public function FindItemByName($name,$batch_num,$batch_size) {
-        $items = Facade::find(SELF::ITEM,"name LIKE ? ORDER BY name LIMIT ? , ? ",array("%$name%",(int)(($batch_num-1)*$batch_size),(int)$batch_size));
-        if (empty($items))
-            return null;
-
-        return $items;
-    }
-
-
-    public function GetSearchTotalBatch($name,$levelmin,$levelmax,$type,$subtype,$buyPriceMin,$buyPriceMax,$sellPriceMin,$sellPriceMax,$rarity,$batch_size,$order_by = SELF::ORDERBY_ID) {
-        $joinItemDetails = $this->JoinItemDetails($subtype);
-        $joinPrice = $this->JoinPrices($buyPriceMin,$buyPriceMax,$sellPriceMin,$sellPriceMax,$order_by);
-
+    public function getSearchTotalBatch($name,$levelmin,$levelmax,$type,$subtype,$buyPriceMin,$buyPriceMax,$sellPriceMin,$sellPriceMax,$rarity,$batch_size,$order_by = SELF::ORDERBY_ID) {
+        $joinItemDetails = $this->joinItemDetails($subtype);
+        $joinPrice = $this->joinPrices($buyPriceMin,$buyPriceMax,$sellPriceMin,$sellPriceMax,$order_by);
         $whereClause = $this->AddWhereClause($name,$levelmin,$levelmax,$type,$subtype,$buyPriceMin,$buyPriceMax,$sellPriceMin,$sellPriceMax,$rarity);
-
         $searchClause = $joinItemDetails.$joinPrice.$whereClause;
 
         $params = $this->getSearchParams(true,$name,$levelmin,$levelmax,$type,$subtype,$buyPriceMin,$buyPriceMax,$sellPriceMin,$sellPriceMax,$rarity,null,null);
         $items_num = Facade::count(SELF::ITEM,"$searchClause ",$params);
-        $batches = ceil($items_num / $batch_size);
-
-        if(empty($batches)) {
-            return null;
-        } else {
-            return $batches;
-        }
+        return ceil($items_num / $batch_size);
     }
 
-    public function SearchItem($name,$levelmin,$levelmax,$type,$subtype,$buyPriceMin,$buyPriceMax,$sellPriceMin,$sellPriceMax,$rarity,$batch_num,$batch_size,$order_by = 1, $descOrAsc = 0) {
-        $joinItemDetails = $this->JoinItemDetails($subtype);
-        $joinPrice = $this->JoinPrices($buyPriceMin,$buyPriceMax,$sellPriceMin,$sellPriceMax,$order_by);
-
-        $whereClause = $this->AddWhereClause($name,$levelmin,$levelmax,$type,$subtype,$buyPriceMin,$buyPriceMax,$sellPriceMin,$sellPriceMax,$rarity);
-
-        $orderClause = $this->OrderBy($order_by,$descOrAsc);
-
+    public function search($name,$levelmin,$levelmax,$type,$subtype,$buyPriceMin,$buyPriceMax,$sellPriceMin,$sellPriceMax,$rarity,$batch_num,$batch_size,$order_by = 1, $descOrAsc = 0) {
+        $joinItemDetails = $this->joinItemDetails($subtype);
+        $joinPrice = $this->joinPrices($buyPriceMin,$buyPriceMax,$sellPriceMin,$sellPriceMax,$order_by);
+        $whereClause = $this->addWhereClause($name,$levelmin,$levelmax,$type,$subtype,$buyPriceMin,$buyPriceMax,$sellPriceMin,$sellPriceMax,$rarity);
+        $orderClause = $this->orderBy($order_by,$descOrAsc);
         $searchClause = $joinItemDetails.$joinPrice.$whereClause.$orderClause;
+
         $params = $this->getSearchParams(false,$name,$levelmin,$levelmax,$type,$subtype,$buyPriceMin,$buyPriceMax,$sellPriceMin,$sellPriceMax,$rarity,$batch_num,$batch_size);
-
-        $items = Facade::find(SELF::ITEM," $searchClause LIMIT :batchNum , :batchSize ",$params );
-
-        if(empty($items)) {
-            return null;
-        } else {
-            return $items;
-        }
+        return Facade::find(SELF::ITEM," $searchClause LIMIT :batchNum , :batchSize ",$params );
     }
 
     private function getSearchParams($isCount,$name,$levelmin,$levelmax,$type,$subtype,$buyPriceMin,$buyPriceMax,$sellPriceMin,$sellPriceMax,$rarity,$batch_num,$batch_size) {
@@ -175,36 +105,24 @@ class RedGuildItem extends RedQuery{
         return $params;
     }
 
-    public function FindItemByGWIdsBatchTotal($idsArr,$batch_size) {
+    public function getByGwIdsBatchTotal($idsArr,$batch_size) {
         $items_num = Facade::count(SELF::ITEM,"gw_item_id IN ( ".Facade::genSlots($idsArr)." ) ",$idsArr);
-        $batches = ceil($items_num / $batch_size);
-
-        if(empty($batches)) {
-            return null;
-        } else {
-            return $batches;
-        }
+        return ceil($items_num / $batch_size);
     }
 
-    public function FindItemByGWIds($idsArr,$batch_num,$batch_size) {
+    public function getByGwId($id) {
+        return parent::getByOne("gwItemId",$id);
+    }
+    public function getByGwIds($idsArr,$batch_num,$batch_size) {
 
         if (!is_numeric($batch_size) || !is_numeric($batch_num))
             return null;
 
         $batchNumParam = (int)(($batch_num-1)*$batch_size);
-
-        $items = Facade::findAll(SELF::ITEM,"gw_item_id IN ( ".Facade::genSlots($idsArr)." ) ORDER BY id ASC LIMIT $batchNumParam , $batch_size ",$idsArr);
-        if (empty($items))
-            return null;
-
-        return $items;
+        return Facade::findAll(SELF::ITEM,"gw_item_id IN ( ".Facade::genSlots($idsArr)." ) ORDER BY id ASC LIMIT $batchNumParam , $batch_size ",$idsArr);
     }
-	
-	public function DeleteItem($id) {
-        return parent::delete("id",$id);
-	}
 
-    private function AddWhereClause($name,$levelmin,$levelmax,$type,$subtype,$buyPriceMin,$buyPriceMax,$sellPriceMin,$sellPriceMax,$rarity) {
+    protected function addWhereClause($name,$levelmin,$levelmax,$type,$subtype,$buyPriceMin,$buyPriceMax,$sellPriceMin,$sellPriceMax,$rarity) {
         $where = "";
 
         if (!empty($name) || !empty($type) || !empty($subtype) || !empty($buyPriceMin) || !empty($buyPriceMax)
@@ -264,33 +182,28 @@ class RedGuildItem extends RedQuery{
         return $where;
     }
 
-    private function JoinItemDetails($subtype) {
-        if (empty($subtype))
-            return "";
-        else
-            return " INNER JOIN itemdetails ON itemdetails.item_id = item.id ";
+    protected function joinItemDetails($subtype) {
+        return (empty($subtype)) ? "" :" INNER JOIN itemdetails ON itemdetails.item_id = item.id ";
     }
 
-    private function JoinPrices($buyPriceMin,$buyPriceMax,$sellPriceMin,$sellPriceMax,$order) {
-        if (empty($buyPriceMin) && empty($buyPriceMax) && empty($sellPriceMin) && empty($sellPriceMax) && $order != SELF::ORDERBY_BUYPRICE
-            && $order != SELF::ORDERBY_SELLPRICE && $order != SELF::ORDERBY_DATEUPDATED)
-            return "";
-        else
-            return " INNER JOIN guildprices ON guildprices.gw_item_id = item.gw_item_id ";
+    protected function joinPrices($buyPriceMin,$buyPriceMax,$sellPriceMin,$sellPriceMax,$order) {
+        return (empty($buyPriceMin) && empty($buyPriceMax) && empty($sellPriceMin) && empty($sellPriceMax) && $order != GuildWars2Utils::ORDERBY_BUYPRICE
+            && $order != GuildWars2Utils::ORDERBY_SELLPRICE && $order != GuildWars2Utils::ORDERBY_DATEUPDATED) ? ""
+        : " INNER JOIN guildprices ON guildprices.gw_item_id = item.gw_item_id ";
     }
 
-    private function OrderBy($order, $DescOrAsc) {
+    protected function orderBy($order, $DescOrAsc) {
         switch($order) {
-            case GuildWars2Util::ORDERBY_DEFAULT:
+            case GuildWars2Utils::ORDERBY_DEFAULT:
                 $orderClause = " ORDER BY item.id ";
                 break;
-            case GuildWars2Util::ORDERBY_BUYPRICE:
+            case GuildWars2Utils::ORDERBY_BUYPRICE:
                 $orderClause = " ORDER BY guildprices.buyprice ";
                 break;
-            case GuildWars2Util::ORDERBY_SELLPRICE:
+            case GuildWars2Utils::ORDERBY_SELLPRICE:
                 $orderClause = " ORDER BY guildprices.sellprice ";
                 break;
-            case GuildWars2Util::ORDERBY_DATEUPDATED:
+            case GuildWars2Utils::ORDERBY_DATEUPDATED:
                 $orderClause = " ORDER BY guildprices.date_updated ";
                 break;
             default:
@@ -299,10 +212,7 @@ class RedGuildItem extends RedQuery{
         }
 
         if (!empty($orderClause)) {
-            if ($DescOrAsc == GuildWars2Util::ORDER_DESC)
-                $orderClause .= " DESC ";
-            else
-                $orderClause .= " ASC ";
+            $orderClause .= ($DescOrAsc == GuildWars2Utils::ORDER_DESC) ?  " DESC " : " ASC ";
         }
 
         return $orderClause;

@@ -1,5 +1,9 @@
 <?php
 namespace KaiApp\Utils;
+use Httpful\Request;
+use JsonMapper;
+use KaiApp\RedBO\RedBase;
+
 /**
  * Created by PhpStorm.
  * User: Kai
@@ -45,13 +49,59 @@ class GuildWars2Utils {
         return  SELF::GUILDWAR2_BASE_URL.SELF::GUILDWAR2_ACHIEVEMENTS;
     }
 
-    public static function getIds($url) {
-        $recipeIds = \Httpful\Request::get($url)->send();
+    public static function syncWithGuildWars2($url,RedBase $redBase,$jsonMapClass,$callbackMethod) {
+        $ids = Request::get($url)->send();
+        $mapper = new JsonMapper();
 
-        $recipeIds = substr($recipeIds, 1);
-        $recipeIds = substr($recipeIds, 0, -1);
+        $ids = substr($ids, 1);
+        $ids = substr($ids, 0, -1);
+        $ids = explode(",",$ids);
 
-        $ids = explode(",",$recipeIds);
-        return $ids;
+        $unsyncedArr = array();
+        $x = 0;
+        foreach($ids as $value) {
+            $item = $redBase->getByGwId($value);
+            if (empty($item)) {
+                $redBase->addGwId($value);
+                $unsyncedArr[$x++] = $value;
+                break;
+            } else if (empty($item->date_modified) || (strtotime("+2 day", strtotime($item->date_modified)) < time())) {
+                $unsyncedArr[$x++] = $value;
+                break;
+            }
+        }
+
+        $i = 0;
+        $url_fetch = $url."?ids=";
+        $concat_ids = "";
+        foreach($unsyncedArr as $value) {
+            $concat_ids .= $value;
+
+            if ($i != 199) {
+                $concat_ids .= ",";
+                $i++;
+            } else {
+                $jsonArr = json_decode(Request::get(($url_fetch . $concat_ids))->send());
+                foreach ($jsonArr as $json) {
+                    $itemJsonObj = $mapper->map($json,$jsonMapClass);
+                    call_user_func($callbackMethod, $itemJsonObj);
+                }
+
+                $concat_ids = "";
+                $i = 0;
+            }
+        }
+
+        if ($i > 0) {
+            if (substr($concat_ids,-1) == ",")
+                $concat_ids = substr($concat_ids, 0, -1);
+            $jsonArr = json_decode(file_get_contents( $url_fetch.$concat_ids));
+
+            foreach($jsonArr as $json) {
+                $itemJsonObj = $mapper->map($json,$jsonMapClass);
+                call_user_func($callbackMethod, $itemJsonObj);
+            }
+        }
     }
+
 }

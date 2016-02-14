@@ -19,12 +19,6 @@ class RedAchievements extends RedQuery {
         parent::__construct(SELF::ACHIEVEMENTS);
     }
 
-    public function addId($id) {
-        return parent::add(array(
-            "gw_achievements_id" => $id,
-        ));
-    }
-
     public function update($id,$name,$description,$requirement,$type,$flags) {
         return parent::update($id,array(
             "name" => $name,

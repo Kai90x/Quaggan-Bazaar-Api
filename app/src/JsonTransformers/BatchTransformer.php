@@ -12,8 +12,7 @@ use League\Fractal\TransformerAbstract;
 
 class BatchTransformer extends TransformerAbstract
 {
-    private $batchSize;
-    private $currentBatch;
+    private $page;
     private $totalBatches;
     private  $itemtransformer;
 
@@ -21,9 +20,8 @@ class BatchTransformer extends TransformerAbstract
         'details'
     ];
 
-    public function __construct(TransformerAbstract $_itemtransformer, $_batchSize,$_currentBatch,$_totalBatches) {
-        $this->batchSize = $_batchSize;
-        $this->currentBatch = $_currentBatch;
+    public function __construct(TransformerAbstract $_itemtransformer,$_page,$_totalBatches) {
+        $this->page = $_page;
         $this->totalBatches = $_totalBatches;
         $this->itemtransformer = $_itemtransformer;
     }
@@ -33,7 +31,7 @@ class BatchTransformer extends TransformerAbstract
         return [
             "Batch" => [
                 'size' => count($batch),
-                'current' => $this->currentBatch,
+                'current' => $this->page,
                 'total' => $this->totalBatches,
             ],
         ];

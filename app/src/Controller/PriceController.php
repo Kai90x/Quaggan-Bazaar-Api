@@ -100,10 +100,6 @@ class price extends BaseController
         $this->UpdateItemsPrices($prices);
     }
 
-    public function DeleteHistoryAction() {
-        RedFactory::GetRedGuildPricesHistory()->DeleteOldPrices();
-    }
-
     private function UpdateItemsPrices($prices) {
 
         $mapper = new JsonMapper();

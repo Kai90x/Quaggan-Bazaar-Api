@@ -17,7 +17,7 @@ class RedRecipe extends RedBase{
         parent::__construct(SELF::RECIPE);
     }
 
-    public function addId($recipeId) {
+    public function addGwId($recipeId) {
         return parent::add(array(
             "gwRecipeId" => $recipeId
         ));

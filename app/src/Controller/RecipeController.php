@@ -30,63 +30,7 @@ class RecipeController extends BaseController
     }
 
     public function sync(Request $request,Response $response, array $args) {
-        $mapper = new JsonMapper();
-
-        $recipeArr = Utils\GuildWars2Utils::getIds(Utils\GuildWars2Utils::getRecipeUrl());
-        $unsyncedRecipeArr = array();
-
-        $x = 0;
-        foreach($recipeArr as $value) {
-            $recipe = $this->redRecipe->getByRecipeId($value);
-            if (empty($recipe)) {
-                $this->redRecipe->addId($value);
-                //put in Update recipe array
-                $unsyncedRecipeArr[$x] = $value;
-                $x++;
-            } else {
-                //If found, check last time recipe was synced
-                if (empty($recipe->date_modified) || (strtotime("+2 day", strtotime($recipe->date_modified)) < time())) {
-                    //put in Update item array
-                    $unsyncedRecipeArr[$x] = $value;
-                    $x++;
-                }
-            }
-        }
-
-
-        $i = 0;
-        $url_recipe_fetch = Utils\GuildWars2Utils::getRecipeUrl()."?ids=";
-        $concat_ids = "";
-        foreach($unsyncedRecipeArr as $value) {
-            $concat_ids .= $value;
-
-            if ($i != 199) {
-                $concat_ids .= ",";
-                $i++;
-            } else {
-                $jsonArr = json_decode(\Httpful\Request::get(($url_recipe_fetch . $concat_ids))->send());
-
-                foreach ($jsonArr as $json) {
-                    $recipe = $mapper->map($json, new Recipe());
-                    $this->update($recipe);
-                }
-
-                $concat_ids = "";
-                $i = 0;
-            }
-        }
-
-        if ($i > 0) {
-            if (substr($concat_ids,-1) == ",")
-                $concat_ids = substr($concat_ids, 0, -1);
-            $jsonArr = json_decode(file_get_contents( $url_recipe_fetch.$concat_ids));
-
-            foreach($jsonArr as $json) {
-                $recipe = $mapper->map($json, new Recipe());
-                $this->update($recipe);
-            }
-        }
-
+        Utils\GuildWars2Utils::syncWithGuildWars2(Utils\GuildWars2Utils::getRecipeUrl(),$this->redRecipe,new Recipe(),array($this,'update'));
         return $this->response(new Item("All recipes have been synced",new SimpleTransformer()),$response);
 	}
 
@@ -104,7 +48,7 @@ class RecipeController extends BaseController
         }
     }
 
-    private function update($recipe) {
+    public function update($recipe) {
         if ($recipe != null) {
             $redRecipe = $this->redRecipe->getByRecipeId($recipe->id);
 
