@@ -42,7 +42,7 @@ class GuildWars2Utils {
     }
 
     public static function getAchievementsUrl() {
-        return  SELF::GUILDWAR2_BASE_URL.SELF::GUILDWAR2_DAILIES;
+        return  SELF::GUILDWAR2_BASE_URL.SELF::GUILDWAR2_ACHIEVEMENTS;
     }
 
     public static function getIds($url) {

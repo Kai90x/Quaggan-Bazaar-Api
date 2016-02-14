@@ -47,8 +47,6 @@ class AchievementController extends BaseController
                 $this->redAchievements->addId($value);
                 $unsyncedAchievementsArr[$x] = $value;
                 $x++;
-                if ($x > 1)
-                    break;
             } else {
                 //If found, check last time recipe was synced
                 if (empty($achievement->date_modified) || (strtotime("+2 day", strtotime($achievement->date_modified)) < time())) {
@@ -69,11 +67,10 @@ class AchievementController extends BaseController
                 $concat_ids .= ",";
                 $i++;
             } else {
-                $jsonArr = json_decode(\Httpful\Request::get(($url_achievement_fetch . $concat_ids))->send());
-
+                $jsonArr = json_decode(\Httpful\Request::get($url_achievement_fetch.$concat_ids)->send());
                 foreach ($jsonArr as $json) {
-                   // $achievementJsonObj = $mapper->map($json, new Achievements());
-                    //$this->update($achievementJsonObj);
+                    $achievementJsonObj = $mapper->map($json, new Achievements());
+                    $this->update($achievementJsonObj);
                 }
 
                 $concat_ids = "";
@@ -84,15 +81,14 @@ class AchievementController extends BaseController
         if ($i > 0) {
             if (substr($concat_ids,-1) == ",")
                 $concat_ids = substr($concat_ids, 0, -1);
-            $jsonArr = json_decode(file_get_contents( $url_achievement_fetch.$concat_ids));
-            echo $jsonArr;
+            $jsonArr = json_decode(\Httpful\Request::get($url_achievement_fetch.$concat_ids)->send());
             foreach($jsonArr as $json) {
-               // $achievementJsonObj = $mapper->map($json, new Achievements());
-                //$this->update($achievementJsonObj);
+                $achievementJsonObj = $mapper->map($json, new Achievements());
+                $this->update($achievementJsonObj);
             }
         }
 
-        //return $this->response(new Item("All achievements have been synced",new SimpleTransformer()),$response);
+        return $this->response(new Item("All achievements have been synced",new SimpleTransformer()),$response);
     }
 
 

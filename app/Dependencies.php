@@ -96,7 +96,7 @@ $container['\KaiApp\Controller\DungeonsController'] = function ($container) {
 };
 
 $container['\KaiApp\Controller\DailyController'] = function ($container) {
-    $controller = new KaiApp\Controller\DailyController($container->get("RedDailies"));
+    $controller = new KaiApp\Controller\DailyController($container->get("RedDailies"),$container->get("RedAchievements"));
     $controller->setContainer($container);
     return $controller;
 };

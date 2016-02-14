@@ -15,31 +15,35 @@ class DailiesTransformer extends TransformerAbstract
 {
     public function transform($daily)
     {
+
+
+        if (!empty($daily->pve_achievement))
+            $dailyJson["pvp"] = $this->getAchievementsDetails($daily->pve_achievement,$daily->level1_min,$daily->level1_max);
+
+        if (!empty($daily->pvp_achievement))
+            $dailyJson["pve"] = $this->getAchievementsDetails($daily->pvp_achievement,$daily->level2_min,$daily->level2_max);
+
+        if (!empty($daily->wvw_achievement))
+            $dailyJson["wvw"] = $this->getAchievementsDetails($daily->wvw_achievement,$daily->level3_min,$daily->level3_max);
+
+        $dailyJson["special"] = unserialize($daily->tokenreward);
+        $dailyJson["date"] = $daily->date_created;
+
+        return $dailyJson;
+    }
+
+    private function getAchievementsDetails($achievement,$levelmin,$levelmax) {
         return [
-            "pvp" => [
-                "id" => $daily->pvp_id,
-                "level" => [
-                    "min" => $daily->level1_min,
-                    "max" => $daily->level1_max
-                ]
-            ],
-            "pve" => [
-                "id" => $daily->pve_id,
-                "level" => [
-                    "min" => $daily->level2_min,
-                    "max" => $daily->level2_max
-                ]
-            ],
-            "wvw" => [
-                "id" => $daily->wvw_id,
-                "level" => [
-                    "min" => $daily->level3_min,
-                    "max" => $daily->level3_max
-                ]
-            ],
-            "special" => unserialize($daily->tokenreward),
-            "date" => $daily->date_created
-        ];
+                "name" => $achievement->name,
+                "description" => $achievement->description,
+                "requirement" => $achievement->requirement,
+                "type" => $achievement->type,
+                "flags" => unserialize($achievement->flags),
+                    "level" => [
+                        "min" => $levelmin,
+                        "max" => $levelmax
+                    ]
+            ];
     }
 
 }

@@ -35,7 +35,7 @@ class RedAchievements extends RedQuery {
         ));
     }
 
-    public function getByAchievementsId($id) {
-        return parent::getByOne("gw_achievements_id",$id);
+    public function getByAchievementId($gwAchievementId) {
+       return parent::getByOne("gw_achievements_id",$gwAchievementId);
     }
 }
