@@ -81,6 +81,9 @@ $container['RedInfixBuff'] = function ($c) {
 $container['RedPrices'] = function ($c) {
     return new KaiApp\RedBO\RedPrices();
 };
+$container['RedPricesHistory'] = function ($c) {
+    return new KaiApp\RedBO\RedPricesHistory();
+};
 
 
 // Register component on container
@@ -146,6 +149,12 @@ $container['\KaiApp\Controller\ItemsController'] = function ($container) {
         $container->get("RedInfixBuff"),
         $container->get("RedInfixAttributes"),
         $container->get("RedPrices"));
+    $controller->setContainer($container);
+    return $controller;
+};
+
+$container['\KaiApp\Controller\PriceController'] = function ($container) {
+    $controller = new KaiApp\Controller\PriceController($container->get("RedPrices"),$container->get("RedPricesHistory"));
     $controller->setContainer($container);
     return $controller;
 };

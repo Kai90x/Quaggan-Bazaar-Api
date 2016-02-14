@@ -9,69 +9,52 @@ namespace KaiApp\RedBO;
 use RedBeanPHP;
 use RedBeanPHP\Facade;
 
-class RedGuildPricesHistory extends RedQuery {
+class RedPricesHistory extends RedQuery {
 
 	const GUILDPRICEHISTORY = 'priceshistory';
-	
-	public function AddPrice($itemId,$buyprice,$buyquantity,$sellprice,$sellquantity) {
-        $price = Facade::dispense(SELF::GUILDPRICEHISTORY);
 
-        $price->gwItemId = $itemId;
-        $price->buyprice = $buyprice;
-        $price->buyquantity = $buyquantity;
-        $price->sellprice = $sellprice;
-        $price->sellquantity = $sellquantity;
-        $price->date_updated = Facade::isoDateTime();
-        return Facade::store($price);
+    public function __construct()
+    {
+        parent::__construct(SELF::GUILDPRICEHISTORY);
     }
 
-    public function FindByItemId($id) {
-        $price = Facade::find(SELF::GUILDPRICEHISTORY, ' gw_item_id = ? ',array($id));
-
-        if(empty($price)) {
-            return null;
-        } else {
-            return $price;
-        }
-    }
-	
-	public function FindByItemIds($ids) {
-        $price = Facade::find(SELF::GUILDPRICEHISTORY, ' gw_item_id = '.Facade::genSlots($ids).' ',$ids);
-
-        if(empty($price)) {
-            return null;
-        } else {
-            return $price;
-        }
+    public function add($itemId,$buyprice,$buyquantity,$sellprice,$sellquantity) {
+        return parent::add(array(
+            "gwItemId" => $itemId,
+            "buyprice" => $buyprice,
+            "buyquantity" => $buyquantity,
+            "sellprice" => $sellprice,
+            "sellquantity" => $sellquantity
+        ));
     }
 
-
-    public function FindAllUnsyncedPrices() {
-        $price = Facade::find(SELF::GUILDPRICEHISTORY,"WHERE DATE_ADD(date_updated, INTERVAL 15 MINUTE) < UTC_TIMESTAMP()");
-
-        if(empty($price)) {
-            return null;
-        } else {
-            return $price;
-        }
+    public function update($id,$itemId,$buyprice,$buyquantity,$sellprice,$sellquantity) {
+        return parent::update($id,array(
+            "gwItemId" => $itemId,
+            "buyprice" => $buyprice,
+            "buyquantity" => $buyquantity,
+            "sellprice" => $sellprice,
+            "sellquantity" => $sellquantity
+        ));
     }
 
-    public function FindPricesByDays($days) {
-        $price = Facade::find(SELF::GUILDPRICEHISTORY," DATE_ADD(date_updated, INTERVAL ? DAY) < UTC_TIMESTAMP()", array($days));
-
-        if(empty($price)) {
-            return null;
-        } else {
-            return $price;
-        }
+    public function getByItemId($id) {
+        return parent::getByOne(("gwItemId"),$id);
     }
 
-    public function DeleteOldPrices() {
-        Facade::exec("DELETE FROM guildpriceshistory WHERE DATE_ADD(date_updated, INTERVAL 2 DAY) < UTC_TIMESTAMP() ORDER BY id LIMIT 500");
+    public function getAllByItemId($id) {
+        return parent::getByAll(("gwItemId"),$id);
     }
-	
-	public function DeletePrice($gw_item_id) {
-        return parent::delete("gwItemId",$gw_item_id);
-	}
 
+    public function getUnsyncedPrices() {
+        return Facade::find(SELF::GUILDPRICEHISTORY,"DATE_ADD(".parent::toBeanColumn($this->dateModified).", INTERVAL 15 MINUTE) < UTC_TIMESTAMP()");
+    }
+
+    public function getAllUnsyncedPricesByIds($ids) {
+        return Facade::find(SELF::GUILDPRICEHISTORY,'DATE_ADD('.parent::toBeanColumn($this->dateModified).', INTERVAL 15 MINUTE) < UTC_TIMESTAMP() AND gw_item_id IN ( '.Facade::genSlots($ids).') ',$ids);
+    }
+
+    public function delete($gw_item_id) {
+        return parent::delete(("gwItemId"),$gw_item_id);
+    }
 }

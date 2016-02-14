@@ -18,28 +18,34 @@ class RedPrices extends RedBase {
         parent::__construct(SELF::GUILDPRICE);
     }
 
+    public function addGwId($recipeId) {
+        return parent::add(array(
+            "gwItemId" => $recipeId
+        ));
+    }
+
 	public function add($itemId,$buyprice,$buyquantity,$sellprice,$sellquantity) {
         return parent::add(array(
             "gwItemId" => $itemId,
-            "buyprice" => $itemId,
-            "buyquantity" => $itemId,
-            "sellprice" => $itemId,
-            "sellquantity" => $itemId
+            "buyprice" => $buyprice,
+            "buyquantity" => $buyquantity,
+            "sellprice" => $sellprice,
+            "sellquantity" => $sellquantity
         ));
     }
 	
 	public function update($id,$itemId,$buyprice,$buyquantity,$sellprice,$sellquantity) {
         return parent::update($id,array(
             "gwItemId" => $itemId,
-            "buyprice" => $itemId,
-            "buyquantity" => $itemId,
-            "sellprice" => $itemId,
-            "sellquantity" => $itemId
+            "buyprice" => $buyprice,
+            "buyquantity" => $buyquantity,
+            "sellprice" => $sellprice,
+            "sellquantity" => $sellquantity
         ));
     }
 
     public function getByItemId($id) {
-        return parent::getByOne(parent::toBeanColumn("gwItemId"),$id);
+        return parent::getByOne("gwItemId",$id);
     }
 
 	public function getByItemIds($ids) {
@@ -59,7 +65,7 @@ class RedPrices extends RedBase {
     }
 	
 	public function delete($gw_item_id) {
-        return parent::delete($this->toBeanColumn("gwItemId"),$gw_item_id);
+        return parent::delete(("gwItemId"),$gw_item_id);
 	}
 
 }

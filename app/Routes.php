@@ -20,6 +20,9 @@ $app->get('/dailies','\KaiApp\Controller\DailyController:get');
 $app->put('/achievements','\KaiApp\Controller\AchievementController:sync');
 $app->put('/items','\KaiApp\Controller\ItemsController:sync');
 $app->get('/items','\KaiApp\Controller\ItemsController:search');
+$app->put('/items','\KaiApp\Controller\PriceController:sync');
+$app->post('/items','\KaiApp\Controller\PriceController:updateByIds');
+$app->get('/items/{id}','\KaiApp\Controller\PriceController:all');
 
 $app->get('/', function ($request, $response, $args) {
     $args["routes"] = array();

@@ -77,8 +77,9 @@ class ItemsController extends BaseController
 
         $batch_size = empty($request->getParam('batch_size')) ? 100 : $request->getParam('batch_size');
         $page = empty($request->getParam('page')) ? 1 : $request->getParam('page');
-        $islight = !empty($request->getParam('islight'));
-        $includePrice = !empty($request->getParam('includePrice'));
+        $islight = $request->getParam('islight') == "1";
+        var_dump($islight);
+        $includePrice = $request->getParam('includePrice') == "1";
 
         $totalBatches = $this->redItem->getSearchTotalBatch($name,$levelmin,$levelmax,$type,$subtype,$buyPriceMin,$buyPriceMax,$sellPriceMin,$sellPriceMax,$rarity,$batch_size,$order_by);
         $items = $this->redItem->search($name,$levelmin,$levelmax,$type,$subtype,$buyPriceMin,$buyPriceMax,$sellPriceMin,$sellPriceMax,$rarity,$page,$batch_size,$order_by,$order_desc_or_asc);
@@ -91,8 +92,8 @@ class ItemsController extends BaseController
         $idsArr  = explode(",", $args['']);
         $batch_size = empty($request->getParam('batch_size')) ? 100 : $request->getParam('batch_size');
         $page = empty($request->getParam('page')) ? 1 : $request->getParam('page');
-        $islight = !empty( $request->getParam('islight'));
-        $includePrice = !empty($request->getParam('includePrice'));
+        $islight =  $request->getParam('islight') == "1";
+        $includePrice = $request->getParam('includePrice') == "1";
 
         $totalBatches = $this->redItem->getByGwIdsBatchTotal($idsArr,$batch_size);
         $items = $this->redItem->getByGwIds($idsArr,$page,$batch_size);
@@ -100,18 +101,15 @@ class ItemsController extends BaseController
     }
 
     private function returnItemsDetails(Response $response,$items,$batch_total,$page,$islight,$includePrice) {
-
         if (empty($items))
             return $this->response(new \League\Fractal\Resource\Item("No items found",new SimpleTransformer()),$response,404);
         else {
             if (is_array($items)) {
                 $items = $this->putBatchitemDetails($items,$islight,$includePrice);
-                //var_dump($items);
                 return $this->response(new \League\Fractal\Resource\Item($items, new BatchTransformer(new ItemTransformer(),$page,$batch_total)),$response);
             } else {
                 $item = ($islight)? $this->putItemLightDetails($items,$includePrice) :  $this->putItemDetails($items);
-                var_dump($item);
-                return "";
+                return $this->response(new \League\Fractal\Resource\Item($item, new BatchTransformer(new ItemTransformer(),$page,$batch_total)),$response);
             }
         }
     }

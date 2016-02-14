@@ -64,11 +64,8 @@ class GuildWars2Utils {
             if (empty($item)) {
                 $redBase->addGwId($value);
                 $unsyncedArr[$x++] = $value;
-                break;
-            } else if (empty($item->date_modified) || (strtotime("+2 day", strtotime($item->date_modified)) < time())) {
+            } else if (empty($item->date_modified) || (strtotime("+2 day", strtotime($item->date_modified)) < time()))
                 $unsyncedArr[$x++] = $value;
-                break;
-            }
         }
 
         $i = 0;
