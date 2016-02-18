@@ -189,7 +189,7 @@ class RedItem extends RedQuery {
     protected function joinPrices($buyPriceMin,$buyPriceMax,$sellPriceMin,$sellPriceMax,$order) {
         return (empty($buyPriceMin) && empty($buyPriceMax) && empty($sellPriceMin) && empty($sellPriceMax) && $order != GuildWars2Utils::ORDERBY_BUYPRICE
             && $order != GuildWars2Utils::ORDERBY_SELLPRICE && $order != GuildWars2Utils::ORDERBY_DATEUPDATED) ? ""
-        : " INNER JOIN guildprices ON guildprices.gw_item_id = item.gw_item_id ";
+        : " INNER JOIN prices ON prices.gw_prices_id = item.gw_item_id ";
     }
 
     protected function orderBy($order, $DescOrAsc) {

@@ -20,7 +20,7 @@ class RedPrices extends RedBase {
 
     public function addGwId($recipeId) {
         return parent::add(array(
-            "gwItemId" => $recipeId
+            "gwPricesId" => $recipeId
         ));
     }
 
@@ -45,11 +45,11 @@ class RedPrices extends RedBase {
     }
 
     public function getByItemId($id) {
-        return parent::getByOne("gwItemId",$id);
+        return parent::getByOne("gwPricesId",$id);
     }
 
 	public function getByItemIds($ids) {
-        return Facade::find(SELF::GUILDPRICE, parent::toBeanColumn("gwItemId").' IN ( '.Facade::genSlots($ids).') ',$ids);
+        return Facade::find(SELF::GUILDPRICE, parent::toBeanColumn("gwPricesId").' IN ( '.Facade::genSlots($ids).') ',$ids);
     }
 
     public function getUnsyncedPrices() {
@@ -57,7 +57,7 @@ class RedPrices extends RedBase {
     }
 
     public function getAllUnsyncedPricesByIds($ids) {
-        return Facade::find(SELF::GUILDPRICE,'DATE_ADD('.parent::toBeanColumn($this->dateModified).', INTERVAL 15 MINUTE) < UTC_TIMESTAMP() AND gw_item_id IN ( '.Facade::genSlots($ids).') ',$ids);
+        return Facade::find(SELF::GUILDPRICE,'DATE_ADD('.parent::toBeanColumn($this->dateModified).', INTERVAL 15 MINUTE) < UTC_TIMESTAMP() AND '.parent::toBeanColumn('gwPricesId').' IN ( '.Facade::genSlots($ids).') ',$ids);
     }
 
     public function getByDays($days) {
@@ -65,7 +65,7 @@ class RedPrices extends RedBase {
     }
 	
 	public function delete($gw_item_id) {
-        return parent::delete(("gwItemId"),$gw_item_id);
+        return parent::delete(("gwPricesId"),$gw_item_id);
 	}
 
 }

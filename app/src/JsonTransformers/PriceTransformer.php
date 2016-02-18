@@ -15,5 +15,18 @@ class PriceTransformer extends TransformerAbstract
 {
     public function transform($price)
     {
+        return  [
+            'id' => $price['gw_priceshistory_id'],
+            "buy" => [
+                'price' => $price['buyprice'],
+                'quantity' => $price['buyquantity']
+            ],
+            "sell" => [
+                'price' => $price['sellprice'],
+                'quantity' => $price['sellquantity'],
+            ],
+            'date_modified' => $price['date_modified']
+        ];
+
     }
 }

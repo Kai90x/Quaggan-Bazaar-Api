@@ -24,7 +24,7 @@ class LegendaryBaseTransformer extends TransformerAbstract
             'type' => $legendary['type']
         ];
 
-        if (array_key_exists("amount",$legendary))
+        if (isset($legendary["amount"]))
             $jsonNodes["amount"] = $legendary["amount"];
 
         return $jsonNodes;

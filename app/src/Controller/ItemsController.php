@@ -78,7 +78,6 @@ class ItemsController extends BaseController
         $batch_size = empty($request->getParam('batch_size')) ? 100 : $request->getParam('batch_size');
         $page = empty($request->getParam('page')) ? 1 : $request->getParam('page');
         $islight = $request->getParam('islight') == "1";
-        var_dump($islight);
         $includePrice = $request->getParam('includePrice') == "1";
 
         $totalBatches = $this->redItem->getSearchTotalBatch($name,$levelmin,$levelmax,$type,$subtype,$buyPriceMin,$buyPriceMax,$sellPriceMin,$sellPriceMax,$rarity,$batch_size,$order_by);
@@ -89,7 +88,7 @@ class ItemsController extends BaseController
 
     public function getByIds(Request $request,Response $response, array $args)
     {
-        $idsArr  = explode(",", $args['']);
+        $idsArr  = explode(",", $args['ids']);
         $batch_size = empty($request->getParam('batch_size')) ? 100 : $request->getParam('batch_size');
         $page = empty($request->getParam('page')) ? 1 : $request->getParam('page');
         $islight =  $request->getParam('islight') == "1";

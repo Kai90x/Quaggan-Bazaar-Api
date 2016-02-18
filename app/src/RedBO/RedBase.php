@@ -32,10 +32,10 @@ abstract class RedBase
         ));
     }
 
-    protected function add($beanArr) {
+    protected function add($beanArr,$hasDateModified = false) {
         $bean = $this->createBean($beanArr);
         $bean[$this->dateCreated] = Facade::isoDateTime();
-        $bean[$this->dateModified] = Facade::isoDateTime();
+        $bean[$this->dateModified] = $hasDateModified ? Facade::isoDateTime() : NULL;
         return Facade::store($bean);
     }
 

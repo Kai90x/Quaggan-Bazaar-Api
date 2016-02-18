@@ -20,17 +20,17 @@ class RedPricesHistory extends RedQuery {
 
     public function add($itemId,$buyprice,$buyquantity,$sellprice,$sellquantity) {
         return parent::add(array(
-            "gwItemId" => $itemId,
+            "gwPriceshistoryId" => $itemId,
             "buyprice" => $buyprice,
             "buyquantity" => $buyquantity,
             "sellprice" => $sellprice,
             "sellquantity" => $sellquantity
-        ));
+        ),true);
     }
 
     public function update($id,$itemId,$buyprice,$buyquantity,$sellprice,$sellquantity) {
         return parent::update($id,array(
-            "gwItemId" => $itemId,
+            "gwPriceshistoryId" => $itemId,
             "buyprice" => $buyprice,
             "buyquantity" => $buyquantity,
             "sellprice" => $sellprice,
@@ -39,11 +39,11 @@ class RedPricesHistory extends RedQuery {
     }
 
     public function getByItemId($id) {
-        return parent::getByOne(("gwItemId"),$id);
+        return parent::getByOne(("gwPriceshistoryId"),$id);
     }
 
     public function getAllByItemId($id) {
-        return parent::getByAll(("gwItemId"),$id);
+        return parent::getByAll(("gwPriceshistoryId"),$id);
     }
 
     public function getUnsyncedPrices() {
@@ -51,10 +51,10 @@ class RedPricesHistory extends RedQuery {
     }
 
     public function getAllUnsyncedPricesByIds($ids) {
-        return Facade::find(SELF::GUILDPRICEHISTORY,'DATE_ADD('.parent::toBeanColumn($this->dateModified).', INTERVAL 15 MINUTE) < UTC_TIMESTAMP() AND gw_item_id IN ( '.Facade::genSlots($ids).') ',$ids);
+        return Facade::find(SELF::GUILDPRICEHISTORY,'DATE_ADD('.parent::toBeanColumn($this->dateModified).', INTERVAL 15 MINUTE) < UTC_TIMESTAMP() AND '.parent::toBeanColumn('gwPriceshistoryId').' IN ( '.Facade::genSlots($ids).') ',$ids);
     }
 
     public function delete($gw_item_id) {
-        return parent::delete(("gwItemId"),$gw_item_id);
+        return parent::delete(("gwPriceshistoryId"),$gw_item_id);
     }
 }
