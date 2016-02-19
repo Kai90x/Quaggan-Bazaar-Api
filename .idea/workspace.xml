@@ -2,10 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="62307992-24f5-47a4-be70-09a06f3d6bd7" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/Controller/ItemsController.php" afterPath="$PROJECT_DIR$/app/src/Controller/ItemsController.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/JsonTransformers/InfixUpgradeBuffTransformer.php" afterPath="$PROJECT_DIR$/app/src/JsonTransformers/InfixUpgradeBuffTransformer.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/JsonTransformers/ItemTransformer.php" afterPath="$PROJECT_DIR$/app/src/JsonTransformers/ItemTransformer.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/RedBO/RedPrices.php" afterPath="$PROJECT_DIR$/app/src/RedBO/RedPrices.php" />
     </list>
     <ignored path="GuildWarsV2Api.iws" />
@@ -42,10 +38,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ItemsController.php" pinned="false" current-in-tab="true">
+      <file leaf-file-name="ItemsController.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/Controller/ItemsController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.72136223">
+            <state vertical-scroll-proportion="-9.708333">
               <caret line="251" column="9" selection-start-line="251" selection-start-column="9" selection-end-line="251" selection-end-column="9" />
               <folding />
             </state>
@@ -67,8 +63,18 @@
       <file leaf-file-name="RedPrices.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/RedBO/RedPrices.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-6.875">
-              <caret line="59" column="178" selection-start-line="59" selection-start-column="178" selection-end-line="59" selection-end-column="178" />
+            <state vertical-scroll-proportion="-27.5">
+              <caret line="67" column="42" selection-start-line="67" selection-start-column="42" selection-end-line="67" selection-end-column="42" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="RedPricesHistory.php" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/RedBO/RedPricesHistory.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-0.5325077">
+              <caret line="32" column="30" selection-start-line="32" selection-start-column="13" selection-end-line="32" selection-end-column="30" />
               <folding />
             </state>
           </provider>
@@ -169,9 +175,9 @@
         <option value="$PROJECT_DIR$/app/src/RedBO/RedConnection.php" />
         <option value="$PROJECT_DIR$/app/src/RedBO/RedItem.php" />
         <option value="$PROJECT_DIR$/app/src/RedBO/RedPricesHistory.php" />
-        <option value="$PROJECT_DIR$/app/src/RedBO/RedPrices.php" />
         <option value="$PROJECT_DIR$/app/src/JsonTransformers/ItemTransformer.php" />
         <option value="$PROJECT_DIR$/app/src/Controller/ItemsController.php" />
+        <option value="$PROJECT_DIR$/app/src/RedBO/RedPrices.php" />
       </list>
     </option>
   </component>
@@ -2559,22 +2565,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/RedBO/RedPricesHistory.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-13.125">
-          <caret line="32" column="30" selection-start-line="32" selection-start-column="13" selection-end-line="32" selection-end-column="30" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/RedBO/RedPrices.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-6.875">
-          <caret line="59" column="178" selection-start-line="59" selection-start-column="178" selection-end-line="59" selection-end-column="178" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/JsonTransformers/ItemTransformer.php">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-5.9583335">
@@ -2587,8 +2577,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/Controller/ItemsController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.72136223">
+        <state vertical-scroll-proportion="-9.708333">
           <caret line="251" column="9" selection-start-line="251" selection-start-column="9" selection-end-line="251" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/RedBO/RedPrices.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-27.5">
+          <caret line="67" column="42" selection-start-line="67" selection-start-column="42" selection-end-line="67" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/RedBO/RedPricesHistory.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.5325077">
+          <caret line="32" column="30" selection-start-line="32" selection-start-column="13" selection-end-line="32" selection-end-column="30" />
           <folding />
         </state>
       </provider>

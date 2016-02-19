@@ -65,7 +65,7 @@ class RedPrices extends RedBase {
     }
 	
 	public function delete($gw_item_id) {
-        return parent::delete(("gwItemId"),$gw_item_id);
+        return parent::delete(("gwPricesId"),$gw_item_id);
 	}
 
 }
