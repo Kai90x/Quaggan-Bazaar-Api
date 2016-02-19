@@ -8,7 +8,6 @@
 
 namespace KaiApp\JsonTransformers;
 
-
 use League\Fractal\TransformerAbstract;
 
 class InfixUpgradeBuffTransformer extends  TransformerAbstract

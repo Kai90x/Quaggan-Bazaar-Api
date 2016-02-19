@@ -239,10 +239,10 @@ class ItemsController extends BaseController
                 }
             }
 
-            if (!empty($prices) && $includePrice) {
+            if (!empty($prices)) {
                 //Get Item Prices from batch retrieved
                 foreach ($prices as $price) {
-                    if ($price->gw_item_id == $item->gwItemId) {
+                    if ($price->gw_prices_id == $item->gwItemId) {
                         $item->price = $price;
                         break;
                     }
@@ -250,7 +250,6 @@ class ItemsController extends BaseController
             }
 
         }
-
         return $items;
     }
 

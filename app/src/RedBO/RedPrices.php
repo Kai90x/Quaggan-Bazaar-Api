@@ -26,7 +26,7 @@ class RedPrices extends RedBase {
 
 	public function add($itemId,$buyprice,$buyquantity,$sellprice,$sellquantity) {
         return parent::add(array(
-            "gwItemId" => $itemId,
+            "gwPricesId" => $itemId,
             "buyprice" => $buyprice,
             "buyquantity" => $buyquantity,
             "sellprice" => $sellprice,
@@ -36,7 +36,7 @@ class RedPrices extends RedBase {
 	
 	public function update($id,$itemId,$buyprice,$buyquantity,$sellprice,$sellquantity) {
         return parent::update($id,array(
-            "gwItemId" => $itemId,
+            "gwPricesId" => $itemId,
             "buyprice" => $buyprice,
             "buyquantity" => $buyquantity,
             "sellprice" => $sellprice,
@@ -65,7 +65,7 @@ class RedPrices extends RedBase {
     }
 	
 	public function delete($gw_item_id) {
-        return parent::delete(("gwPricesId"),$gw_item_id);
+        return parent::delete(("gwItemId"),$gw_item_id);
 	}
 
 }

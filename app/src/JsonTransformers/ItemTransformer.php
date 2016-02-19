@@ -76,10 +76,9 @@ class ItemTransformer extends TransformerAbstract
             }
         }
 
-
-        if (isset($item['prices'])) {
-            $price = $item['prices'];
-            $jsonNodes["prices"] = [
+        if (isset($item['price'])) {
+            $price = $item['price'];
+            $jsonNodes["price"] = [
                 "buy" => [
                     'price' => $price['buyprice'],
                     'quantity' => $price['buyquantity']
