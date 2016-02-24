@@ -51,8 +51,8 @@ class NewsController extends BaseController
 
     public function get(Request $request, $response, array $args)
     {
-        $batchSize = $request->getParam('batchSize',100);
-        $currentBatch = $request->getParam('currentBatch',1);
+        $batchSize = $request->getParam('batch_size',100);
+        $currentBatch = $request->getParam('page',1);
 
         $totalBatches = $this->redNews->getBatchTotal($batchSize);
         $news = $this->redNews->getByBatch($currentBatch,$batchSize);

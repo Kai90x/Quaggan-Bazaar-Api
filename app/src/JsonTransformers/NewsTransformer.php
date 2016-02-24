@@ -19,6 +19,7 @@ class NewsTransformer extends TransformerAbstract
         return [
             'title' => $news->title,
             'link' => $news['link'],
+            'creator' => $news['creator'],
             'publish_date' => $news['publish_date'],
             'description' => $news['description'],
             'content' => $news['content'],
