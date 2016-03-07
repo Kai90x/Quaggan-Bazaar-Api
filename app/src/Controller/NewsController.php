@@ -58,7 +58,7 @@ class NewsController extends BaseController
         $news = $this->redNews->getByBatch($currentBatch,$batchSize);
 
         return empty($news) ? $this->response("No news found",$response,404)
-            : $this->response(new Item($news,new BatchTransformer(new NewsTransformer(),$batchSize,$currentBatch,$totalBatches)),$response);
+            : $this->response(new Item($news,new BatchTransformer(new NewsTransformer(),$currentBatch,$totalBatches)),$response);
     }
 
 }
