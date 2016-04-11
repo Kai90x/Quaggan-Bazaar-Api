@@ -26,12 +26,6 @@ abstract class RedBase
         $this->type = $type;
     }
 
-    public function addGwId($id) {
-        return $this::add(array(
-            "gw_".$this->type."_id" => $id
-        ));
-    }
-
     protected function add($beanArr,$hasDateModified = false) {
         $bean = $this->createBean($beanArr);
         $bean[$this->dateCreated] = Facade::isoDateTime();
@@ -57,10 +51,6 @@ abstract class RedBase
 
     public function getByAll($attribute, $value) {
         return Facade::findAll($this->type,$this->toBeanColumn($attribute).' = ? ', array($value));
-    }
-
-    public function getByGwId($value) {
-        return Facade::findAll($this->type,"gw_".$this->type."_id = ? ", array($value));
     }
 
     public function getAll($orderby = null,$asc = true) {
