@@ -74,6 +74,11 @@ abstract class RedBase
         return true;
     }
 
+    public function getById($id)
+    {
+        return $this->getByOne("id",$id);
+    }
+
     public function wipe() {
         Facade::exec('DELETE FROM '. $this->type );
         return true;

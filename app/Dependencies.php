@@ -9,15 +9,20 @@
 use Jgut\Slim\Controller\Resolver;
 
 $controllers = [
-    '\KaiApp\Controller\EventController',
-    '\KaiApp\Controller\EmailController'
+    '\KaiApp\Controller\AccountController',
+    '\KaiApp\Controller\RequestController'
 ];
 
 $container = $app->getContainer();
-$container['RedPricesHistory'] = function ($c) {
-    return new KaiApp\RedBO\RedPricesHistory();
+$container['RedClient'] = function ($c) {
+    return new KaiApp\RedBO\RedClient();
 };
-
+$container['RedDriver'] = function ($c) {
+    return new KaiApp\RedBO\RedDriver();
+};
+$container['RedRequest'] = function ($c) {
+    return new KaiApp\RedBO\RedRequest();
+};
 
 // Register component on container
 $container['view'] = function ($container) {
@@ -34,8 +39,13 @@ foreach (Resolver::resolve($controllers) as $controller => $callback) {
     $container[$controller] = $callback;
 }
 
-$container['\KaiApp\Controller\PriceController'] = function ($container) {
-    $controller = new KaiApp\Controller\PriceController($container->get("RedPrices"),$container->get("RedPricesHistory"));
+$container['\KaiApp\Controller\AccountController'] = function ($container) {
+    $controller = new KaiApp\Controller\AccountController($container->get("RedClient"),$container->get("RedDriver"));
+    $controller->setContainer($container);
+    return $controller;
+};
+$container['\KaiApp\Controller\RequestController'] = function ($container) {
+    $controller = new KaiApp\Controller\RequestController($container->get("RedClient"),$container->get("RedDriver"),$container->get("RedRequest"));
     $controller->setContainer($container);
     return $controller;
 };

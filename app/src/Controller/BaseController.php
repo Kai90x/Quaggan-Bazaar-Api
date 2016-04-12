@@ -9,21 +9,17 @@
 namespace KaiApp\Controller;
 
 use Jgut\Slim\Controller\Base as JGutBaseController;
-use KaiApp\RedBO\RedLog;
 use League\Fractal\Manager;
-use League\Fractal\Resource\Collection;
 use League\Fractal\Serializer\DataArraySerializer;
 use Slim\Http\Response;
 
 class BaseController extends JGutBaseController
 {
     protected $fractal;
-    private $redLog;
 
     public function __construct()
     {
         $this->fractal = new Manager();
-        $this->redLog = new RedLog();
         $this->fractal->setSerializer(new DataArraySerializer());
     }
 
@@ -44,7 +40,4 @@ class BaseController extends JGutBaseController
         return $missingParams;
     }
 
-    public function log($filename,$controllername,$methodname,\Exception $ex) {
-        $this->redLog->add($filename,$controllername,$methodname,$ex);
-    }
 }
