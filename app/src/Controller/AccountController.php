@@ -45,15 +45,15 @@ class AccountController extends BaseController
             return $this->response(new Item("Invalid type. Can only be driver or client",new SimpleTransformer()),$response);
 
         $user = $this->redUser->getByName($name);
-        if (!empty($client))
+        if (!empty($user))
             return $this->response(new Item("Name already exists",new SimpleTransformer()),$response);
 
         $user = $this->redUser->getByEmail($email);
-        if (!empty($client))
+        if (!empty($user))
             return $this->response(new Item("Email already exists",new SimpleTransformer()),$response);
 
         $user = $this->redUser->getByUsername($username);
-        if (!empty($client))
+        if (!empty($user))
             return $this->response(new Item("Username already exists",new SimpleTransformer()),$response);
 
         $id = $this->redUser->add($name,$username,$email,$phone,$password,0,0,0,$type);
