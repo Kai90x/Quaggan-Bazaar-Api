@@ -27,7 +27,8 @@ class RedUser extends RedBase{
             "password" => $password,
             "currentLatitude" => $currentLatitude,
             "currentLongitude" => $currentLongitude,
-            "isOnline" => $isOnline
+            "isOnline" => $isOnline,
+            "type" => $type
         ));
     }
 

@@ -15,7 +15,7 @@ $app->put('/request','\KaiApp\Controller\RequestController:update');
 
 $app->get('/', function ($request, $response, $args) {
     $args["routes"] = array();
-    $args["routes"]["client"] = "/account/register";
+    $args["routes"]["register"] = "/account/register";
     $args["routes"]["login"] = "/account/login";
     $args["routes"]["location"] = "/account/location";
     $args["routes"]["request"] = "/request";

@@ -38,10 +38,10 @@ class AccountController extends BaseController
         $password = $request->getParam('password');
         $type = $request->getParam('type');
 
-        if (empty($name) || empty($username) || empty($email) || empty($password) || empty($type))
+        if (empty($username) || empty($email) || empty($password) || empty($type))
             return $this->response(new Item("name,username, email, password,type are required parameters",new SimpleTransformer()),$response,400);
 
-        if ($type != "driver" || $type != "client")
+        if (!($type == "driver" || $type == "client"))
             return $this->response(new Item("Invalid type. Can only be driver or client",new SimpleTransformer()),$response);
 
         $user = $this->redUser->getByName($name);
@@ -74,7 +74,7 @@ class AccountController extends BaseController
 
         $user = $this->redUser->getByUsernameAndPassword($username, $password, $email);
         if (!empty($user))
-                return $this->response(new Item("client", new UserTransformer($user)), $response);
+                return $this->response(new Item($user, new UserTransformer()), $response);
 
         return $this->response(new Item("Invalid credentials or invalid type",new SimpleTransformer()),$response,400);
     }
