@@ -5,8 +5,7 @@
  * Date: 2/6/16
  * Time: 2:21 PM
  */
-$app->post('/account/client','\KaiApp\Controller\AccountController:registerClient');
-$app->post('/account/driver','\KaiApp\Controller\AccountController:registerDriver');
+$app->post('/account/register','\KaiApp\Controller\AccountController:register');
 $app->get('/account/driver','\KaiApp\Controller\AccountController:allDrivers');
 $app->post('/account/login','\KaiApp\Controller\AccountController:login');
 $app->put('/account/location','\KaiApp\Controller\AccountController:updateLocation');
@@ -16,8 +15,7 @@ $app->put('/request','\KaiApp\Controller\RequestController:update');
 
 $app->get('/', function ($request, $response, $args) {
     $args["routes"] = array();
-    $args["routes"]["client"] = "/account/client";
-    $args["routes"]["driver"] = "/account/driver";
+    $args["routes"]["client"] = "/account/register";
     $args["routes"]["login"] = "/account/login";
     $args["routes"]["location"] = "/account/location";
     $args["routes"]["request"] = "/request";

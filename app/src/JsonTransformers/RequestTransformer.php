@@ -9,7 +9,7 @@
 namespace KaiApp\JsonTransformers;
 
 
-use KaiApp\RedBO\RedClient;
+use KaiApp\RedBO\RedUser;
 use KaiApp\RedBO\RedDriver;
 use League\Fractal\Resource\Item;
 use League\Fractal\TransformerAbstract;
@@ -19,7 +19,7 @@ class RequestTransformer extends TransformerAbstract
     private $redClient;
     private $redDriver;
 
-    public function __construct(RedClient $_redClient,RedDriver $_redDriver) {
+    public function __construct(RedUser $_redClient, RedDriver $_redDriver) {
         $this->redClient = $_redClient;
         $this->redDriver = $_redDriver;
     }

@@ -23,17 +23,19 @@ class RedRequest extends RedBase{
             "client_id" => $clientid,
             "driver_id" => $driverid,
             "droplocation" => $droplocation,
+            "price" => -1,
             "hasAccepted" => $hasAccepted,
             "hasEnded" => $hasEnded,
             "hasCancelled" => false
         ));
     }
 
-    public function update($id,$clientid,$driverid, $droplocation, $hasAccepted, $hasEnded,$hasCancelled) {
+    public function update($id,$clientid,$driverid, $droplocation,$price, $hasAccepted, $hasEnded,$hasCancelled) {
         return parent::update($id,array(
             "client_id" => $clientid,
             "driver_id" => $driverid,
             "droplocation" => $droplocation,
+            "price" => $price,
             "hasAccepted" => $hasAccepted,
             "hasEnded" => $hasEnded,
             "hasCancelled" => $hasCancelled

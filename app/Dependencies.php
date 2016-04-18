@@ -14,11 +14,11 @@ $controllers = [
 ];
 
 $container = $app->getContainer();
-$container['RedClient'] = function ($c) {
-    return new KaiApp\RedBO\RedClient();
+$container['RedUser'] = function ($c) {
+    return new KaiApp\RedBO\RedUser();
 };
-$container['RedDriver'] = function ($c) {
-    return new KaiApp\RedBO\RedDriver();
+$container['RedDriverDetails'] = function ($c) {
+    return new KaiApp\RedBO\RedDriverDetails();
 };
 $container['RedRequest'] = function ($c) {
     return new KaiApp\RedBO\RedRequest();
@@ -40,12 +40,12 @@ foreach (Resolver::resolve($controllers) as $controller => $callback) {
 }
 
 $container['\KaiApp\Controller\AccountController'] = function ($container) {
-    $controller = new KaiApp\Controller\AccountController($container->get("RedClient"),$container->get("RedDriver"));
+    $controller = new KaiApp\Controller\AccountController($container->get("RedUser"),$container->get("RedDriverDetails"));
     $controller->setContainer($container);
     return $controller;
 };
 $container['\KaiApp\Controller\RequestController'] = function ($container) {
-    $controller = new KaiApp\Controller\RequestController($container->get("RedClient"),$container->get("RedDriver"),$container->get("RedRequest"));
+    $controller = new KaiApp\Controller\RequestController($container->get("RedUser"),$container->get("RedRequest"));
     $controller->setContainer($container);
     return $controller;
 };

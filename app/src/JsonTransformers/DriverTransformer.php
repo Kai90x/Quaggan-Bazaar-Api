@@ -29,6 +29,12 @@ class DriverTransformer extends TransformerAbstract
             $jsonArr['currentLongitude'] = $driver->currentLongitude;
         }
 
+        if (!empty($driver->details)) {
+            $jsonArr['rating'] = $driver->details->rating;
+            $jsonArr['seats'] = $driver->details->seats;
+            $jsonArr['region'] = $driver->details->region;
+        }
+
         return $jsonArr;
     }
 

@@ -50,15 +50,12 @@ class Twig implements \ArrayAccess
     /**
      * Create new Twig view
      *
-     * @param string|array $path     Path(s) to templates directory
-     * @param array        $settings Twig environment settings
+     * @param string $path     Path to templates directory
+     * @param array  $settings Twig environment settings
      */
     public function __construct($path, $settings = [])
     {
-        $this->loader = is_string($path)
-            ? new \Twig_Loader_Filesystem($path)
-            : $this->addPaths($path);
-
+        $this->loader = new \Twig_Loader_Filesystem($path);
         $this->environment = new \Twig_Environment($this->loader, $settings);
     }
 
@@ -105,27 +102,6 @@ class Twig implements \ArrayAccess
          $response->getBody()->write($this->fetch($template, $data));
 
          return $response;
-    }
-
-    /**
-     * Add a selection of paths with the desired namespace
-     *
-     * @param array $paths
-     * @return \Twig_Loader_Filesystem
-     */
-    private function addPaths(array $paths)
-    {
-        $loader = new \Twig_Loader_Filesystem();
-
-        foreach ($paths as $namespace => $path) {
-            if (is_string($namespace)) {
-                $loader->setPaths($path, $namespace);
-            } else {
-                $loader->addPath($path);
-            }
-        }
-
-        return $loader;
     }
 
     /********************************************************************************
