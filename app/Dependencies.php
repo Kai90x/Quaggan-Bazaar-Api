@@ -40,7 +40,7 @@ foreach (Resolver::resolve($controllers) as $controller => $callback) {
 }
 
 $container['\KaiApp\Controller\AccountController'] = function ($container) {
-    $controller = new KaiApp\Controller\AccountController($container->get("RedUser"),$container->get("RedDriverDetails"));
+    $controller = new KaiApp\Controller\AccountController($container->get("RedUser"),$container->get("RedDriverDetails"),$container->get("RedRequest"));
     $controller->setContainer($container);
     return $controller;
 };

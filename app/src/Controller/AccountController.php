@@ -11,6 +11,7 @@ use KaiApp\JsonTransformers\ClientTransformer;
 use KaiApp\JsonTransformers\DriverTransformer;
 use KaiApp\JsonTransformers\SimpleTransformer;
 use KaiApp\JsonTransformers\UserTransformer;
+use KaiApp\RedBO\RedRequest;
 use KaiApp\RedBO\RedUser;
 use KaiApp\RedBO\RedDriverDetails;
 use KaiApp\Utils;
@@ -23,10 +24,12 @@ class AccountController extends BaseController
 {
     private $redUser;
     private $redDriverDetails;
+    private $redRequest;
 
-    public function __construct(RedUser $_redUser, RedDriverDetails $_redDriverDetails) {
+    public function __construct(RedUser $_redUser, RedDriverDetails $_redDriverDetails, RedRequest $_redRequest) {
         $this->redUser = $_redUser;
         $this->redDriverDetails = $_redDriverDetails;
+        $this->redRequest = $_redRequest;
         parent::__construct();
     }
 
@@ -120,6 +123,8 @@ class AccountController extends BaseController
             $detail = $this->redDriverDetails->getById($driver->id);
             if (!empty($detail))
                 $driver->details = $detail;
+
+            $driver->isAvailable = $this->redRequest->checkDriverAvailable($driver->id);
         }
         return $this->response(new Collection($drivers,new DriverTransformer()),$response);
     }

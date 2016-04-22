@@ -16,6 +16,7 @@ class UserTransformer extends TransformerAbstract
     public function transform($user)
     {
         $jsonArr = [
+            "id" => $user->id,
             "name" => $user->name,
             "username" => $user->username,
             "email" => $user->email,

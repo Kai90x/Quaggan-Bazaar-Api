@@ -16,12 +16,14 @@ class DriverTransformer extends TransformerAbstract
     public function transform($driver)
     {
         $jsonArr = [
+            "id" => $driver->id,
             "name" => $driver->name,
             "username" => $driver->username,
             "email" => $driver->email,
             "phone" => $driver->phone,
             "rating" => $driver->rating,
-            "region" => $driver->region
+            "region" => $driver->region,
+            "available" => $driver->isAvailable
         ];
 
         if (!empty($driver->isOnline)) {

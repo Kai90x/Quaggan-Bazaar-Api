@@ -75,7 +75,7 @@ class RedUser extends RedBase{
 
     public function getAllDrivers()
     {
-        return parent::getByAll("type","driver");
+        return Facade::findAll(SELF::USER,"type = 'driver' AND is_online = '1' ");
     }
 
     public function getByUsernameAndPassword($username, $password, $email)
