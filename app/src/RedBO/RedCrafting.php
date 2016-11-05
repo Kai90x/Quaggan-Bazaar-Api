@@ -33,7 +33,7 @@ class RedCrafting extends RedQuery {
 
     public function getAllWithDetails() {
         $baseQuery = "SELECT craftings.id,craftings.gw_item_id,craftings.date_created,item.icon,item.type,
-                      item.rarity,item.level,item.name FROM craftings INNER JOIN item ON item.gw_item_id = craftings.gw_item_id";
+                      item.rarity,item.level,item.name FROM craftings LEFT JOIN item ON item.gw_item_id = craftings.gw_item_id";
         return Facade::getAll($baseQuery);
     }
 
